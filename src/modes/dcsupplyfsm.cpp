@@ -9,7 +9,7 @@
 #include "mtools.h"
 #include "board/mboard.h"
 #include "measure/mkeyboard.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 #include <Arduino.h>
 
 namespace DcSupplyFsm
@@ -29,11 +29,11 @@ namespace DcSupplyFsm
         #endif
 
             // Подготовка индикации
-        Oled->showLine4Text("   Источник  ");
-        Oled->showLine3Power( Tools->getVoltageMax(), Tools->getCurrentMax() ); // example: " 12.3В  3.3А "
-        Oled->showLine2Text(" P-корр.С-старт ");        // Активны две кнопки: P-сменить настройки, и C-старт
-        Oled->showLine1Time(0);                         // уточнить
-        Oled->showLine1Ah(0.0);                         // уточнить
+        // Oled->showLine4Text("   Источник  ");
+        // Oled->showLine3Power( Tools->getVoltageMax(), Tools->getCurrentMax() ); // example: " 12.3В  3.3А "
+        // Oled->showLine2Text(" P-корр.С-старт ");        // Активны две кнопки: P-сменить настройки, и C-старт
+        // Oled->showLine1Time(0);                         // уточнить
+        // Oled->showLine1Ah(0.0);                         // уточнить
         #ifdef V22
             Board->ledsOn();                                // Светодиод светится белым до старта - режим выбран
         #endif
@@ -67,7 +67,7 @@ namespace DcSupplyFsm
 
     MSelectUI::MSelectUI(MTools * Tools) : MState(Tools) 
     {
-        Oled->showLine4Text("  Выбор U&I  ");
+//        Oled->showLine4Text("  Выбор U&I  ");
                                                     //  line3 - без изменения
         //Oled->showLine2Text(" UP/DN, В-выбор ");    // Подсказка: UP/DN - листать список, В - выбрать
         Tools->showUpDn();                          // Подсказка: UP/DN - листать список, В - выбрать"
@@ -94,14 +94,14 @@ namespace DcSupplyFsm
                 break;
             default:;
         }
-        Oled->showLine3Power( Tools->getVoltageMax(), Tools->getCurrentMax() );
+//        Oled->showLine3Power( Tools->getVoltageMax(), Tools->getCurrentMax() );
         return this;
     };
 
     MSetCurrentMax::MSetCurrentMax(MTools * Tools) : MState(Tools)
     {
-        Oled->showLine4Text(" Ток не более");
-        Oled->showLine3MaxI( Tools->getCurrentMax() );
+//        Oled->showLine4Text(" Ток не более");
+//        Oled->showLine3MaxI( Tools->getCurrentMax() );
         Tools->showUpDn();                          // " UP/DN, В-выбор "
     } 
     MState * MSetCurrentMax::fsm()
@@ -127,14 +127,14 @@ namespace DcSupplyFsm
                 break;
             default:;
         }
-        Oled->showLine3MaxI( Tools->getCurrentMax() );
+//        Oled->showLine3MaxI( Tools->getCurrentMax() );
         return this;
     };
 
     MSetVoltage::MSetVoltage(MTools * Tools) : MState(Tools)
     {
-        Oled->showLine4Text("  Напряжение ");
-        Oled->showLine3MaxU( Tools->getVoltageMax() );
+//        Oled->showLine4Text("  Напряжение ");
+//        Oled->showLine3MaxU( Tools->getVoltageMax() );
         Tools->showUpDn();                          // " UP/DN, В-выбор "
     }     
     MState * MSetVoltage::fsm()
@@ -160,7 +160,7 @@ namespace DcSupplyFsm
                 break;
             default:;
         }
-        Oled->showLine3MaxU( Tools->getVoltageMax() );
+//        Oled->showLine3MaxU( Tools->getVoltageMax() );
         return this;
     };
 
@@ -176,11 +176,11 @@ namespace DcSupplyFsm
             Board->ledsOff(); Board->ledGOn();                          // Зеленый светодиод - процесс заряда запущен
         #endif
         // Задаются отображения на экране дисплея построчно (4-я строка - верхняя)
-        Oled->showLine4RealVoltage();
-        Oled->showLine3RealCurrent();
-        Oled->showLine2Text("   Запитано...  ");                    // 
-        Oled->showLine1Time( Tools->getChargeTimeCounter() );
-        Oled->showLine1Ah( Tools->getAhCharge() );
+        // Oled->showLine4RealVoltage();
+        // Oled->showLine3RealCurrent();
+        // Oled->showLine2Text("   Запитано...  ");                    // 
+        // Oled->showLine1Time( Tools->getChargeTimeCounter() );
+        // Oled->showLine1Ah( Tools->getAhCharge() );
 
         Tools->setSetPoint( Tools->getVoltageMax() );
 
@@ -226,31 +226,31 @@ namespace DcSupplyFsm
 
             case MKeyboard::B_CLICK :
                 Tools->saveFloat( "s-power", "voltMax", Tools->getVoltageMax() );
-                Oled->showLine3RealCurrent();
+//                Oled->showLine3RealCurrent();
                 break;
 
             case MKeyboard::UP_CLICK :
                 Tools->incVoltageMax( 0.1f, false );
-                Oled->showLine3MaxU( Tools->getVoltageMax() );
+//                Oled->showLine3MaxU( Tools->getVoltageMax() );
                 Tools->liveU();
                 break;  //return new MExecution(Tools);
 
             case MKeyboard::DN_CLICK:
                 Tools->decVoltageMax( 0.1f, false );
                 Tools->liveU();   
-                Oled->showLine3MaxU( Tools->getVoltageMax() );
+//                Oled->showLine3MaxU( Tools->getVoltageMax() );
                 break;  //                return new MExecution(Tools);
 
             case MKeyboard::UP_AUTO_CLICK:
                 Tools->incVoltageMax( 0.1f, false );
                 Tools->liveU();   
-                Oled->showLine3MaxU( Tools->getVoltageMax() );
+//                Oled->showLine3MaxU( Tools->getVoltageMax() );
                 break;  //                return new MExecution(Tools);
 
             case MKeyboard::DN_AUTO_CLICK:
                 Tools->decVoltageMax( 0.1f, false );
                 Tools->liveU();   
-                Oled->showLine3MaxU( Tools->getVoltageMax() );
+//                Oled->showLine3MaxU( Tools->getVoltageMax() );
                 break;  //                return new MExecution(Tools);
             default:;
         }

@@ -8,7 +8,7 @@
 
 #include "mtools.h"
 #include "board/mboard.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 #include "mstate.h"
 
 namespace PulseGenFsm
@@ -29,11 +29,11 @@ namespace PulseGenFsm
         #endif
 
               // Подготовка индикации
-          Oled->showLine4Text("   Источник  ");
-          Oled->showLine3Power( Tools->getVoltageMax(), Tools->getCurrentMax() ); // example: " 12.3В  3.3А "
-          Oled->showLine2Text(" P-корр.С-старт ");        // Активны две кнопки: P-сменить настройки, и C-старт
-          Oled->showLine1Time(0);                         // уточнить
-          Oled->showLine1Ah(0.0);                         // уточнить
+          // Oled->showLine4Text("   Источник  ");
+          // Oled->showLine3Power( Tools->getVoltageMax(), Tools->getCurrentMax() ); // example: " 12.3В  3.3А "
+          // Oled->showLine2Text(" P-корр.С-старт ");        // Активны две кнопки: P-сменить настройки, и C-старт
+          // Oled->showLine1Time(0);                         // уточнить
+          // Oled->showLine1Ah(0.0);                         // уточнить
     Tools->shutdownDC();
           #ifdef V22
             Board->ledsOn();                                // Светодиод светится белым до старта - режим выбран
@@ -50,7 +50,7 @@ namespace PulseGenFsm
     {
       public:     
         MSelectUI(MTools * Tools) : MState(Tools) {
-          Oled->showLine4Text("  Выбор U&I  ");
+//          Oled->showLine4Text("  Выбор U&I  ");
           Tools->showUpDn();                          // Подсказка: UP/DN - листать список, В - выбрать"
         }   
         virtual MState * fsm() override;
@@ -70,8 +70,8 @@ namespace PulseGenFsm
     {
       public:   
         MSetVoltage(MTools * Tools) : MState(Tools) {
-          Oled->showLine4Text("  Напряжение ");
-          Oled->showLine3MaxU( Tools->getVoltageMax() );
+//          Oled->showLine4Text("  Напряжение ");
+//          Oled->showLine3MaxU( Tools->getVoltageMax() );
           Tools->showUpDn();                        // " UP/DN, В-выбор "
         }     
         virtual MState * fsm() override;
@@ -84,8 +84,8 @@ namespace PulseGenFsm
     {
         public:   
             MSetDurationOn(MTools * Tools) : MState(Tools) {
-                Oled->showLine4Text("   Импульс   ");
-                Oled->showLine3Sec( Tools->getDurationOn() );
+//                Oled->showLine4Text("   Импульс   ");
+//                Oled->showLine3Sec( Tools->getDurationOn() );
                 Tools->showUpDn();                      // " UP/DN, В-выбор "
             }     
             virtual MState * fsm() override;
@@ -98,8 +98,8 @@ namespace PulseGenFsm
     {
         public:   
             MSetDurationOff(MTools * Tools) : MState(Tools) {
-                Oled->showLine4Text("    Пауза    ");
-                Oled->showLine3Sec( Tools->getDurationOff() );
+//                Oled->showLine4Text("    Пауза    ");
+//                Oled->showLine3Sec( Tools->getDurationOff() );
                 Tools->showUpDn();                      // " UP/DN, В-выбор "
             }     
             virtual MState * fsm() override;
@@ -120,8 +120,8 @@ namespace PulseGenFsm
           Board->powOn();   
 
           // Задание отображения на экране дисплея построчно (4-я строка - верхняя)
-          Oled->showLine4RealVoltage();
-          Oled->showLine3RealCurrent();
+//          Oled->showLine4RealVoltage();
+//          Oled->showLine3RealCurrent();
 
           // Настройка ПИД-регулятора
           Tools->initPid( outputMin, outputMax, k_p, k_i, k_d, bangMin, bangMax, timeStep );
@@ -152,7 +152,7 @@ namespace PulseGenFsm
             Board->ledsOff(); Board->ledGOn();                  // Зеленый светодиод - импульс
           #endif
           // Задание отображения на экране дисплея построчно (4-я строка - верхняя)
-          Oled->showLine2Text(" Импульс...     ");        // " Время:  Заряд: "
+//          Oled->showLine2Text(" Импульс...     ");        // " Время:  Заряд: "
 
           Tools->setSetPoint( Tools->getVoltageMax() );
           Tools->saveIntegral( Tools->getVoltageMax() * 10.0f );  //10.0f );
@@ -177,11 +177,11 @@ namespace PulseGenFsm
             Board->ledsOff(); Board->ledGOn();  Board->ledROn();                // Желтый светодиод - пауза
           #endif
           // Задание отображения на экране дисплея построчно (4-я строка - верхняя)
-          Oled->showLine4RealVoltage();
-          Oled->showLine3RealCurrent();
-          Oled->showLine2Text("       ...Пауза ");        // " Время:  Заряд: "
-          Oled->showLine1Time( Tools->getChargeTimeCounter() );
-          Oled->showLine1Ah( Tools->getAhCharge() );
+          // Oled->showLine4RealVoltage();
+          // Oled->showLine3RealCurrent();
+          // Oled->showLine2Text("       ...Пауза ");        // " Время:  Заряд: "
+          // Oled->showLine1Time( Tools->getChargeTimeCounter() );
+          // Oled->showLine1Ah( Tools->getAhCharge() );
         }       
         virtual MState * fsm() override;
       private:

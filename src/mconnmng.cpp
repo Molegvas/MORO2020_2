@@ -6,13 +6,14 @@
 #include "mconnmng.h"
 #include "mtools.h"
 #include "board/mboard.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 #include "connect/connectfsm.h"
 #include "Arduino.h"
 
 
 MConnect::MConnect(MTools * tools) :
-  Tools(tools), Board(tools->Board), Oled(tools->Oled)
+  //Tools(tools), Board(tools->Board), Oled(tools->Oled)
+    Tools(tools), Board(tools->Board), Tft(tools->Tft)
 {
     State = new ConnectFsm::MInit(Tools);
 }

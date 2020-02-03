@@ -5,7 +5,7 @@
 #include "mtools.h"
 #include "board/mboard.h"
 #include "board/moverseer.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 
 
 namespace StorageFsm
@@ -19,12 +19,12 @@ namespace StorageFsm
             Tools->setCurrentDis( Tools->readNvsFloat("storage", "currDis",  1.0f) );
 
             // Индикация
-            Oled->showLine4Text("    Разряд   ");
-            Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );              // example: "  12В  55Ач  "
-            Oled->showLine2Text(" P-корр.С-старт ");        // Активны две кнопки: P-сменить настройки, и C-старт
-            Oled->showLine1Time(0);                         // уточнить
-            //Oled->showLine1Ah(0.0);                         // уточнить
-            Oled->showLine1Celsius( Board->Overseer->getCelsius() );
+            // Oled->showLine4Text("    Разряд   ");
+            // Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );              // example: "  12В  55Ач  "
+            // Oled->showLine2Text(" P-корр.С-старт ");        // Активны две кнопки: P-сменить настройки, и C-старт
+            // Oled->showLine1Time(0);                         // уточнить
+            // //Oled->showLine1Ah(0.0);                         // уточнить
+            // Oled->showLine1Celsius( Board->Overseer->getCelsius() );
             #ifdef V22
                 Board->ledsOn();                                // Светодиод светится белым до старта заряда - режим выбран
             #endif
@@ -37,8 +37,8 @@ namespace StorageFsm
      public:     
         MSetCurrentDis(MTools * Tools) : MState(Tools) {
             // Индикация
-            Oled->showLine4Text("  Imax разр. ");
-            Oled->showLine3MaxI( Tools->getCurrentDis() );
+//            Oled->showLine4Text("  Imax разр. ");
+//            Oled->showLine3MaxI( Tools->getCurrentDis() );
             Tools->showUpDn(); // " UP/DN, В-выбор "
         }   
         virtual MState * fsm() override;
@@ -49,8 +49,8 @@ namespace StorageFsm
      public:   
         MSetVoltageMin(MTools * Tools) : MState(Tools) {
             // Индикация
-            Oled->showLine4Text("  Vmin разр. ");
-            Oled->showLine3MaxU( Tools->getVoltageMin() );
+//            Oled->showLine4Text("  Vmin разр. ");
+//            Oled->showLine3MaxU( Tools->getVoltageMin() );
             Tools->showUpDn(); // " UP/DN, В-выбор "
         }     
         virtual MState * fsm() override;
@@ -71,12 +71,12 @@ namespace StorageFsm
                 Board->ledsGreen();                  // Зеленый светодиод - процесс разряда запущен
             #endif
             // Задание отображения на экране дисплея построчно (4-я строка - верхняя)
-            Oled->showLine4RealVoltage();
-            Oled->showLine3RealCurrent();
-            Oled->showLine2Text(" Идёт разряд... ");            // 
-            Oled->showLine1Time( Tools->getChargeTimeCounter() );
-            //Oled->showLine1Ah( Tools->getAhCharge() );
-            Oled->showLine1Celsius( Board->Overseer->getCelsius() );
+            // Oled->showLine4RealVoltage();
+            // Oled->showLine3RealCurrent();
+            // Oled->showLine2Text(" Идёт разряд... ");            // 
+            // Oled->showLine1Time( Tools->getChargeTimeCounter() );
+            // //Oled->showLine1Ah( Tools->getAhCharge() );
+            // Oled->showLine1Celsius( Board->Overseer->getCelsius() );
 
 
     //      Tools->setSetPoint( Tools->getVoltageMax() );

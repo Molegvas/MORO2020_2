@@ -7,7 +7,7 @@ date:     Февраль 2020
 
 #include "board/mboard.h"
 #include "board/moverseer.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 #include "mtools.h"
 #include "mdispatcher.h"
 #include "mconnmng.h"
@@ -16,7 +16,8 @@ date:     Февраль 2020
 #include <Arduino.h>
 
 static MBoard * Board = 0;
-static MOled * Oled = 0;
+//static MOled * Oled = 0;
+  static MTft * Tft = 0;
 static MTools * Tools = 0;
 static MMeasure * Measure = 0;
 static MDispatcher * Dispatcher = 0;
@@ -33,12 +34,16 @@ void setup() {
   Serial.begin(115200);
   delay(10);
 
-  Oled  = new MOled();
-  Board = new MBoard(Oled);
-  Tools = new MTools(Board, Oled);
+  //Oled  = new MOled();
+    Tft   = new MTft();
+  //Board = new MBoard(Oled);
+    Board = new MBoard(Tft);
+  //Tools = new MTools(Board, Oled);
+    Tools = new MTools(Board, Tft);
   Measure = new MMeasure(Tools);
   Dispatcher = new MDispatcher(Tools);
   Connect = new MConnect(Tools);
+
 
   xTaskCreatePinnedToCore ( connectTask, "Connect", 10000, NULL, 1, NULL, 1 );
   xTaskCreatePinnedToCore ( mainTask,    "Main",    10000, NULL, 2, NULL, 1 );
@@ -63,14 +68,15 @@ void connectTask( void * parameter ) {
 void displayTask( void * parameter ) {
   while(true)
   {
-    //unsigned long start = millis();
-    Oled->runDisplay( Board->getVoltage(), 
+    unsigned long start = millis();
+    //Oled->runDisplay( Board->getVoltage(), 
+    Tft->runDisplay( Board->getVoltage(), 
                       Board->getCurrent(), 
                       Board->Overseer->getCelsius(),
                       Tools->getChargeTimeCounter(),
                       Tools->getAhCharge(), 
                       Tools->getAP() );
-    //Serial.print("Display: Core "); Serial.print(xPortGetCoreID()); Serial.print(" Time = "); Serial.print(millis() - start); Serial.println(" mS");
+    Serial.print("Display: Core "); Serial.print(xPortGetCoreID()); Serial.print(" Time = "); Serial.print(millis() - start); Serial.println(" mS");
     // Core 1, Time = 47...53 mS
     vTaskDelay( 250 / portTICK_PERIOD_MS );
   }

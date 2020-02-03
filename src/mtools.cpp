@@ -6,15 +6,17 @@
 #include "mtools.h"
 #include "board/mboard.h"
 #include "measure/mkeyboard.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 #include <Preferences.h>
 #include "AutoPID.h"            // 201905 double ---> float
 #include "Arduino.h"
 
 
-MTools::MTools(MBoard * board, MOled * oled) : 
+//MTools::MTools(MBoard * board, MOled * oled) : 
+  MTools::MTools(MBoard * board, MTft  * tft) : 
     Board(board),
-    Oled(oled),
+    //Oled(oled),
+      Tft(tft),
     Keyboard(new MKeyboard),
     qPreferences(new Preferences) {}
 
@@ -173,50 +175,53 @@ void MTools::saveInt(   const char * name, const char * key, const int   ivalue 
 void MTools::saveFloat( const char * name, const char * key, const float fvalue ) { writeNvsFloat( name, key, fvalue ); }
 
 
-void MTools::showUpDn() { Oled->showLine2Text(" UP/DN, В-выбор "); }
+void MTools::showUpDn() 
+{ 
+//    Oled->showLine2Text(" UP/DN, В-выбор "); 
+}
 
 void MTools::activateSelBat()
 {
-    Oled->showLine4Text("   Батарея   ");
-    Oled->showLine3Akb( voltageNom, capacity );          // example: "  12В  55Ач  "
+//    Oled->showLine4Text("   Батарея   ");
+//    Oled->showLine3Akb( voltageNom, capacity );          // example: "  12В  55Ач  "
     showUpDn(); // " UP/DN, В-выбор "
 }
 
 
 void MTools::activateSetCapacity()
 {
-    Oled->showLine4Text("   Ёмкость   ");
-    Oled->showLine3Capacity( capacity );
+//    Oled->showLine4Text("   Ёмкость   ");
+//    Oled->showLine3Capacity( capacity );
     showUpDn(); // " UP/DN, В-выбор "
 }
 
 void MTools::activateSetCurrMax( bool charger )
 {
-    if( charger ) Oled->showLine4Text(" Ток заряда  ");
-    else          Oled->showLine4Text(" Ток не более");
-    Oled->showLine3MaxI( currentMax );
+//    if( charger ) Oled->showLine4Text(" Ток заряда  ");
+//    else          Oled->showLine4Text(" Ток не более");
+//    Oled->showLine3MaxI( currentMax );
     showUpDn(); // " UP/DN, В-выбор "
 }
 
 void MTools::activateSetVoltMax( bool charger )
 {
-    if( charger ) Oled->showLine4Text(" Заряжать до ");
-    else          Oled->showLine4Text("  Напряжение ");
-    Oled->showLine3MaxU( voltageMax );
+//    if( charger ) Oled->showLine4Text(" Заряжать до ");
+//    else          Oled->showLine4Text("  Напряжение ");
+//    Oled->showLine3MaxU( voltageMax );
     showUpDn(); // " UP/DN, В-выбор "
 }
 
 void MTools::activateSetCurrentPre()
 {
-Oled->showLine4Text(" Предзаряд до");
-    Oled->showLine3MaxI( currentPre );
+//    Oled->showLine4Text(" Предзаряд до");
+//    Oled->showLine3MaxI( currentPre );
     showUpDn(); // " UP/DN, В-выбор "
 }
 
 void MTools::activateSetVoltagePre()
 {
-Oled->showLine4Text(" Предзаряд до");
-    Oled->showLine3MaxU( voltagePre );
+//    Oled->showLine4Text(" Предзаряд до");
+//    Oled->showLine3MaxU( voltagePre );
     showUpDn(); // " UP/DN, В-выбор "
 }
 
@@ -227,43 +232,43 @@ Oled->showLine4Text(" Предзаряд до");
 
 void MTools::activateSetDurationOn()
 {
-    Oled->showLine4Text("   Заряд     ");
-    Oled->showLine3Sec( durationOn );
+//    Oled->showLine4Text("   Заряд     ");
+//    Oled->showLine3Sec( durationOn );
     showUpDn(); // " UP/DN, В-выбор "
 }
 
 void MTools::activateSetDurationOff()
 {
-    Oled->showLine4Text("Разряд(Пауза)");
-    Oled->showLine3Sec( durationOff );
+//    Oled->showLine4Text("Разряд(Пауза)");
+//    Oled->showLine3Sec( durationOff );
     showUpDn(); // " UP/DN, В-выбор "
 }
 
 void MTools::activateSetNumCycl()
 {
-    Oled->showLine4Text("    Циклы    ");
-    Oled->showLine3Num( numCycles );
+//    Oled->showLine4Text("    Циклы    ");
+//    Oled->showLine3Num( numCycles );
     showUpDn(); // " UP/DN, В-выбор "
 }
 
 void MTools::activateSetCurrDis()
 {
-    Oled->showLine4Text(" Ток разряда ");
-    Oled->showLine3MaxI( currentDis );
+//    Oled->showLine4Text(" Ток разряда ");
+//    Oled->showLine3MaxI( currentDis );
     showUpDn(); // " UP/DN, В-выбор "
 }
 
 void MTools::activateSetVoltDis()
 {
-    Oled->showLine4Text(" Разряжать до");
-    Oled->showLine3MaxU( voltageDis );
+//    Oled->showLine4Text(" Разряжать до");
+//    Oled->showLine3MaxU( voltageDis );
     showUpDn(); // " UP/DN, В-выбор "
 }
 
 void MTools::activateSetPause()
 {
-    Oled->showLine4Text("    Пауза    ");
-    Oled->showLine3Delay( pause );
+//    Oled->showLine4Text("    Пауза    ");
+//    Oled->showLine3Delay( pause );
     showUpDn(); // " UP/DN, В-выбор "
 }
 
@@ -271,11 +276,11 @@ void MTools::activateExit(const char * s)
 {
     // отключения - все в shutdownCharge()
 
-    Oled->showLine4RealVoltage();
-    Oled->showLine3RealCurrent();
-    Oled->showLine2Text( s ); 
+    // Oled->showLine4RealVoltage();
+    // Oled->showLine3RealCurrent();
+    // Oled->showLine2Text( s ); 
     
-    Oled->showLine1Heap(ESP.getFreeHeap());
+    // Oled->showLine1Heap(ESP.getFreeHeap());
     #ifdef V22
         Board->ledsOff(); 
     #endif     
@@ -492,24 +497,24 @@ void MTools::incCurrentOffset( float delta, bool way )
     Board->currentOffset = incfValue( Board->currentOffset, curr_offset_l, curr_offset_h, delta, way );
     //Oled->showLine3MaxI( Board->currentOffset );
     //Oled->showLine4RealVoltage();
-    Oled->showLine3RealCurrent();
+//    Oled->showLine3RealCurrent();
 }
 void MTools::decCurrentOffset( float delta, bool way )
 {
     Board->currentOffset = decfValue( Board->currentOffset, curr_offset_l, curr_offset_h, delta, way );
     //Oled->showLine3MaxI( Board->currentOffset );
-    Oled->showLine3RealCurrent();
+//    Oled->showLine3RealCurrent();
 }
 
 void MTools::incVoltageOffset( float delta, bool way )
 {
     Board->voltageOffset = incfValue( Board->voltageOffset, volt_offset_l, volt_offset_h, delta, way );
-    Oled->showLine4RealVoltage();
+//    Oled->showLine4RealVoltage();
 }
 void MTools::decVoltageOffset( float delta, bool way )
 {
     Board->voltageOffset = decfValue( Board->voltageOffset, volt_offset_l, volt_offset_h, delta, way );
-    Oled->showLine4RealVoltage();
+//    Oled->showLine4RealVoltage();
 }
 
 
@@ -520,7 +525,7 @@ void MTools::incBattery()
     else { akbInd--; } 
     voltageNom  = akb[akbInd][0];
     capacity = akb[akbInd][1];
-    Oled->showLine3Akb( voltageNom, capacity );
+//    Oled->showLine3Akb( voltageNom, capacity );
 }
 
 void MTools::decBattery()
@@ -529,18 +534,18 @@ void MTools::decBattery()
     else { akbInd++; } 
     voltageNom  = akb[akbInd][0];
     capacity = akb[akbInd][1];
-    Oled->showLine3Akb( voltageNom, capacity );
+//    Oled->showLine3Akb( voltageNom, capacity );
 }
 
 void MTools::incCapacity( float delta, bool way )
 {
     capacity = incfValue( capacity, capacity_l, capacity_h, delta, way );
-    Oled->showLine3Capacity( capacity ); 
+//    Oled->showLine3Capacity( capacity ); 
 }
 void MTools::decCapacity( float delta, bool way )
 {
     capacity = decfValue( capacity, capacity_l, capacity_h, delta, way );
-    Oled->showLine3Capacity( capacity ); 
+//    Oled->showLine3Capacity( capacity ); 
 }
 
 void MTools::incCurrentMax( float delta, bool way )
@@ -557,12 +562,12 @@ void MTools::decCurrentMax( float delta, bool way )
 void MTools::incCurrentMin( float delta, bool way )
 {
     currentMin = incfValue( currentMin, curr_max_l, curr_max_h, delta, way );   // пределы уточнить
-    Oled->showLine3MaxI( currentMin );
+//    Oled->showLine3MaxI( currentMin );
 }
 void MTools::decCurrentMin( float delta, bool way )
 {
     currentMin = decfValue( currentMin, curr_max_l, curr_max_h, delta, way );   // пределы уточнить
-    Oled->showLine3MaxI( currentMin );
+//    Oled->showLine3MaxI( currentMin );
 }
 
 // void MTools::incCurrentDis( float delta, bool way )
@@ -582,78 +587,78 @@ void MTools::decCurrentMin( float delta, bool way )
 void MTools::incVoltageMax( float delta, bool way )
 {
     voltageMax = incfValue( voltageMax, volt_end_l, volt_end_h, delta, way );
-    Oled->showLine3MaxU( voltageMax );
+//    Oled->showLine3MaxU( voltageMax );
 }
 void MTools::decVoltageMax( float delta, bool way )
 {
     voltageMax = decfValue( voltageMax, volt_end_l, volt_end_h, delta, way );
-    Oled->showLine3MaxU(voltageMax);
+//    Oled->showLine3MaxU(voltageMax);
 }
 
 void MTools::incVoltageMin( float delta, bool way )
 {
     voltageMin = incfValue( voltageMin, volt_end_l, volt_end_h, delta, way );   // пределы уточнить
-    Oled->showLine3MaxU( voltageMin );
+//    Oled->showLine3MaxU( voltageMin );
 }
 void MTools::decVoltageMin( float delta, bool way )
 {
     voltageMin = decfValue( voltageMin, volt_end_l, volt_end_h, delta, way );   // пределы уточнить
-    Oled->showLine3MaxU(voltageMin);
+//    Oled->showLine3MaxU(voltageMin);
 }
 
 void MTools::incDurationOn( bool way )
 {
     durationOn = incfValue ( durationOn, duration_on_l, duration_on_h, 0.5, way );
-    Oled->showLine3Sec(durationOn); 
+//    Oled->showLine3Sec(durationOn); 
 }
 void MTools::decDurationOn( bool way )
 {
     durationOn = decfValue ( durationOn, duration_on_l, duration_on_h, 0.5, way );
-    Oled->showLine3Sec(durationOn); 
+//    Oled->showLine3Sec(durationOn); 
 }
 
 void MTools::incDurationOff( bool way)
 {
     durationOff = incfValue ( durationOff, duration_off_l, duration_off_h, 0.5, way );
-    Oled->showLine3Sec(durationOff); 
+//    Oled->showLine3Sec(durationOff); 
 }
 void MTools::decDurationOff( bool way )
 {
     durationOff = decfValue ( durationOff, duration_off_l, duration_off_h, 0.5, way );
-    Oled->showLine3Sec(durationOff); 
+//    Oled->showLine3Sec(durationOff); 
 }
 
 void MTools::incPostpone( int delta )
 {
     postpone = inciValue( postpone, postpone_l, postpone_h, delta );
-    Oled->showLine3Delay( postpone );
+//    Oled->showLine3Delay( postpone );
 }
 void MTools::decPostpone( int delta )
 {
     postpone = deciValue( postpone, postpone_l, postpone_h, delta );
-    Oled->showLine3Delay( postpone );
+//    Oled->showLine3Delay( postpone );
 }
 
 void MTools::incVoltagePre( float delta, bool way )
 {
     voltagePre = incfValue( voltagePre, volt_pre_l, volt_pre_h, delta, way );
-    Oled->showLine3MaxU( voltagePre );
+//    Oled->showLine3MaxU( voltagePre );
 }
 void MTools::decVoltagePre( float delta, bool way )
 {
     voltagePre = decfValue( voltagePre, volt_pre_l, volt_pre_h, delta, way );
-    Oled->showLine3MaxU( voltagePre );
+//    Oled->showLine3MaxU( voltagePre );
 }
 
 void MTools::incCurrentPre( float delta, bool way )
 {
     currentPre = incfValue( currentPre, curr_pre_l, curr_pre_h, delta, way );
-    Oled->showLine3MaxI( currentPre );
+//    Oled->showLine3MaxI( currentPre );
 }
 void MTools::decCurrentPre( float delta, bool way )
 {
     currentPre = decfValue( currentPre, curr_pre_l, curr_pre_h, delta, way );
-    Oled->showLine3MaxI( currentPre );
+//    Oled->showLine3MaxI( currentPre );
 }
 
 
@@ -661,56 +666,56 @@ void MTools::decCurrentPre( float delta, bool way )
 void MTools::incVoltagePow( float delta, bool way )
 {
     voltageMax = incfValue( voltageMax, volt_l, volt_h, delta, way );
-    Oled->showLine3MaxU( voltageMax );
+//    Oled->showLine3MaxU( voltageMax );
 }
 void MTools::decVoltagePow( float delta, bool way )
 {
     voltageMax = decfValue( voltageMax, volt_l, volt_h, delta, way );
-    Oled->showLine3MaxU(voltageMax);
+//    Oled->showLine3MaxU(voltageMax);
 }
 
 void MTools::incCycles()
 {
     numCycles = inciValue ( numCycles, num_cycl_l, num_cycl_h, 1 );
-    Oled->showLine3Num(numCycles); 
+//    Oled->showLine3Num(numCycles); 
 }
 void MTools::decCycles()
 {
     numCycles = deciValue ( numCycles, num_cycl_l, num_cycl_h, 1 );
-    Oled->showLine3Num(numCycles); 
+//    Oled->showLine3Num(numCycles); 
 }
 
 void MTools::incCurrentDis( float delta, bool way )
 {
     currentDis = incfValue( currentDis, curr_dis_l, curr_dis_h, delta, way );
-    Oled->showLine3MaxI( currentDis );
+//    Oled->showLine3MaxI( currentDis );
 }
 void MTools::decCurrentDis( float delta, bool way )
 {
     currentDis = decfValue( currentDis, curr_dis_l, curr_dis_h, delta, way );
-    Oled->showLine3MaxI( currentDis );
+//    Oled->showLine3MaxI( currentDis );
 }
 
 void MTools::incVoltageDis( float delta, bool way )
 {
     voltageDis = incfValue( voltageDis, volt_min_l, volt_min_h, delta, way );
-    Oled->showLine3MaxU( voltageDis );
+//    Oled->showLine3MaxU( voltageDis );
 }
 void MTools::decVoltageDis( float delta, bool way )
 {
     voltageDis = decfValue( voltageDis, volt_min_l, volt_min_h, delta, way );
-    Oled->showLine3MaxU(voltageDis);
+//    Oled->showLine3MaxU(voltageDis);
 }
 
 void MTools::incPause()
 {
     pause = inciValue( pause, pause_l, pause_h, 1 ); 
-    Oled->showLine3Delay( pause ); 
+//    Oled->showLine3Delay( pause ); 
 }
 void MTools::decPause()
 {
     pause = deciValue( pause, pause_l, pause_h, 1 ); 
-    Oled->showLine3Delay( pause ); 
+//    Oled->showLine3Delay( pause ); 
 }
 
 int MTools::incNum( int v, int h, int d )
@@ -761,9 +766,9 @@ void MTools::setTimeCounter( int ivalue ) { timeCounter = ivalue; }
 void MTools::activateSelectUI()
 {
     // Нажата кнопка Р - предлагается выбрать параметры из табличных
-    Oled->showLine4Text("  Выбор U&I  ");
+//    Oled->showLine4Text("  Выбор U&I  ");
                                 //  line3 - без изменения
-    Oled->showLine2Text(" UP/DN, В-выбор ");    // Подсказка: UP/DN - листать список, В - выбрать
+//    Oled->showLine2Text(" UP/DN, В-выбор ");    // Подсказка: UP/DN - листать список, В - выбрать
     
     #ifdef DEBUG_POWER
         Serial.println("Power: Select U&I");
@@ -832,11 +837,11 @@ void MTools::activatePowerPh1( float volt, float amp )
     #endif
 
     // Задание отображения на экране дисплея построчно (4-я строка - верхняя)
-    Oled->showLine4RealVoltage();
-    Oled->showLine3RealCurrent();
-    Oled->showLine2Text("   Запитано...  ");        // " Время:  Заряд: "
-    Oled->showLine1Time( chargeTimeCounter );
-    Oled->showLine1Ah( ahCharge );
+    // Oled->showLine4RealVoltage();
+    // Oled->showLine3RealCurrent();
+    // Oled->showLine2Text("   Запитано...  ");        // " Время:  Заряд: "
+    // Oled->showLine1Time( chargeTimeCounter );
+    // Oled->showLine1Ah( ahCharge );
 
     // Simple power supply started
     #ifdef DEBUG_SIMPLE_POWER
@@ -870,11 +875,11 @@ void MTools::printPid() {
 
 void MTools::activateChargeStart()
 {
-    Oled->showLine4Text("   Зарядное  ");
-    Oled->showLine3Akb( voltageNom, capacity );              // example: "  12В  55Ач  "
-    Oled->showLine2Text(" P-корр.С-старт ");        // Активны две кнопки: P-сменить настройки, и C-старт
-    Oled->showLine1Time(0);                         // уточнить
-    Oled->showLine1Ah(0.0);                         // уточнить
+    // Oled->showLine4Text("   Зарядное  ");
+    // Oled->showLine3Akb( voltageNom, capacity );              // example: "  12В  55Ач  "
+    // Oled->showLine2Text(" P-корр.С-старт ");        // Активны две кнопки: P-сменить настройки, и C-старт
+    // Oled->showLine1Time(0);                         // уточнить
+    // Oled->showLine1Ah(0.0);                         // уточнить
     #ifdef V22
         Board->ledsOn();                                // Светодиод светится белым до старта заряда - режим выбран
     #endif
@@ -896,9 +901,9 @@ void MTools::powShutdown()
         Board->ledsOff();
         Board->ledROn();
     #endif
-    Oled->showLine2Text(" Время: Отдано: ");
-    // Oled->showLine1Time( chargeTimeCounter );
-    // Oled->showLine1Ah( ahCharge );
+    // Oled->showLine2Text(" Время: Отдано: ");
+    // // Oled->showLine1Time( chargeTimeCounter );
+    // // Oled->showLine1Ah( ahCharge );
 }
 
 
@@ -931,7 +936,7 @@ void MTools::activatePrecharge( float volt, float amp, bool impuls )
         activateCharge( volt, amp );
         cycle = durationOn * 2;
 
-        Oled->showLine2Text(" Имп. предзаряд ");
+//        Oled->showLine2Text(" Имп. предзаряд ");
 
     }
     else 
@@ -964,11 +969,11 @@ output = 0.0;
             Board->ledsOff(); Board->ledGOn();
         #endif
     // Задание отображения на экране дисплея построчно (4-я строка - верхняя)
-        Oled->showLine4RealVoltage();
-        Oled->showLine3RealCurrent();
-        Oled->showLine2Text(" Пост. предзаряд");        // " Время:  Заряд: "
-        Oled->showLine1Time( chargeTimeCounter );
-        Oled->showLine1Ah( ahCharge );
+        // Oled->showLine4RealVoltage();
+        // Oled->showLine3RealCurrent();
+        // Oled->showLine2Text(" Пост. предзаряд");        // " Время:  Заряд: "
+        // Oled->showLine1Time( chargeTimeCounter );
+        // Oled->showLine1Ah( ahCharge );
     }
 }
 
@@ -978,7 +983,7 @@ output = 0.0;
 void MTools::activateChargePh1( float volt, float amp, bool recharge )
 {   
     activateCharge( volt, amp );
-    Oled->showLine2Text(" Заряжается...  ");        // " Время:  Заряд: "
+//    Oled->showLine2Text(" Заряжается...  ");        // " Время:  Заряд: "
 
     if( recharge )                  // Будет исполняться chRunPh2()
     {
@@ -1029,9 +1034,9 @@ void MTools::activatePostpone( float volt, float amp )
     Board->setVoltageVolt( voltageNom * 1.234 + 0.6 );  // с некоторым запасом на погрешность задания
     Board->setCurrentAmp( 0.0 );                        // Ток в начале будет ограничен
 
-    Oled->showLine4RealVoltage();
-    Oled->showLine3RealCurrent();
-    Oled->showLine2Text(" До старта...   ");
+    // Oled->showLine4RealVoltage();
+    // Oled->showLine3RealCurrent();
+    // Oled->showLine2Text(" До старта...   ");
 }
 
 void MTools::activatePreliminaryCharge()
@@ -1051,11 +1056,11 @@ void MTools::activatePreliminaryCharge()
         Board->ledsOff(); Board->ledGOn();
     #endif
     // Задание отображения на экране дисплея построчно (4-я строка - верхняя)
-    Oled->showLine4RealVoltage();
-    Oled->showLine3RealCurrent();
-    Oled->showLine2Text(" Заряжается...  ");        // " Время:  Заряд: "
-    Oled->showLine1Time( chargeTimeCounter );
-    Oled->showLine1Ah( ahCharge );
+    // Oled->showLine4RealVoltage();
+    // Oled->showLine3RealCurrent();
+    // Oled->showLine2Text(" Заряжается...  ");        // " Время:  Заряд: "
+    // Oled->showLine1Time( chargeTimeCounter );
+    // Oled->showLine1Ah( ahCharge );
 
     setPoint = 0.2;
     Board->setCurrentAmp( setPoint );
@@ -1118,11 +1123,11 @@ void MTools::activateImpuls( float volt, float amp, float delta ) //************
         Board->ledsOff(); Board->ledGOn();
     #endif
     // Задание отображения на экране дисплея построчно (4-я строка - верхняя)
-    Oled->showLine4RealVoltage();
-    Oled->showLine3RealCurrent();
-    Oled->showLine2Text("   Импульс...   ");        // " Время:  Заряд: "   ПОДОБРАТЬ
-    Oled->showLine1Time( chargeTimeCounter );
-    Oled->showLine1Ah( ahCharge );
+    // Oled->showLine4RealVoltage();
+    // Oled->showLine3RealCurrent();
+    // Oled->showLine2Text("   Импульс...   ");        // " Время:  Заряд: "   ПОДОБРАТЬ
+    // Oled->showLine1Time( chargeTimeCounter );
+    // Oled->showLine1Ah( ahCharge );
 
     cycle = durationOn * 2 ;
 
@@ -1234,10 +1239,10 @@ void MTools::activateImpulsCharge( float volt, float amp, float delta )
     Pid.setOutputRange( setPoint * 0.7, setPoint * 1.1 );
 
     // Настроить индикацию при импульсе заряда
-    Oled->showLine3Avr( currentAvr );           // За предыдущий импульс              TEST  
+//    Oled->showLine3Avr( currentAvr );           // За предыдущий импульс              TEST  
 
 //    Oled->showLine3RealCurrent();
-    Oled->showLine2Text(" Время:  Заряд: ");
+//    Oled->showLine2Text(" Время:  Заряд: ");
 
     initCurrentAvr();                               // Очистка накопителя среднего
 
@@ -1426,8 +1431,8 @@ void MTools::activateImpulsDischarge2( float amp )
                 Serial.print("    Discharge duration, s = "); Serial.println( durationOff );
             #endif
 
-    Oled->showLine3RealCurrent();              //Oled->showLine3MaxI( -disI );
-    Oled->showLine2Text(" Время: Разряд: ");
+//    Oled->showLine3RealCurrent();              //Oled->showLine3MaxI( -disI );
+//    Oled->showLine2Text(" Время: Разряд: ");
 
     cycle = (int)( durationOff * 10.0 ); //    cycle = (int)( durationOff * 2.0 );
 
@@ -1467,10 +1472,10 @@ initCurrentAvr();
     //Board->setCurrentAmp( output );
         //Board->setCurrentAmp( currentOld );
     // Настроить индикацию при импульсе заряда
-    Oled->showLine3Avr( currentAvr );           // За предыдущий импульс              TEST  
+//    Oled->showLine3Avr( currentAvr );           // За предыдущий импульс              TEST  
 
     //Oled->showLine3RealCurrent();
-    Oled->showLine2Text(" Время:  Заряд: ");
+//    Oled->showLine2Text(" Время:  Заряд: ");
 
     cycle = (int)( durationOn * 10.0 );  //    cycle = (int)( durationOn * 2.0 );
 
@@ -1665,7 +1670,7 @@ void MTools::shutdownCharge()
     #ifdef V22
         Board->ledROn();
     #endif
-    Oled->showLine2Text(" Время:  Заряд: ");
+//    Oled->showLine2Text(" Время:  Заряд: ");
 }
 
 
@@ -1701,11 +1706,11 @@ output = 0.0;
         Board->ledsOff(); Board->ledGOn();
     #endif
     // Задание отображения на экране дисплея построчно (4-я строка - верхняя)
-    Oled->showLine4RealVoltage();
-    Oled->showLine3RealCurrent();
-//    Oled->showLine2Text(" Заряжается...  ");        // " Время:  Заряд: "
-    Oled->showLine1Time( chargeTimeCounter );
-    Oled->showLine1Ah( ahCharge );
+//     Oled->showLine4RealVoltage();
+//     Oled->showLine3RealCurrent();
+// //    Oled->showLine2Text(" Заряжается...  ");        // " Время:  Заряд: "
+//     Oled->showLine1Time( chargeTimeCounter );
+//     Oled->showLine1Ah( ahCharge );
 
 }
 
@@ -1758,7 +1763,7 @@ void MTools::activatePause()
         Board->ledROn();
         Board->ledGOn();
     #endif
-    Oled->showLine2Text(" Пауза:  Заряд: ");
+//    Oled->showLine2Text(" Пауза:  Заряд: ");
 }
 
 bool MTools::pauseCalculations()
@@ -1791,7 +1796,7 @@ void MTools::activateDischarge()
         Board->ledROn();
         Board->ledGOn();
     #endif
-    Oled->showLine2Text(" Время: Разряд: ");
+//    Oled->showLine2Text(" Время: Разряд: ");
 }
 
 

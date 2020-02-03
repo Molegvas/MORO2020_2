@@ -4,7 +4,7 @@
 #include "mstate.h"
 #include "mtools.h"
 #include "board/mboard.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 
 namespace ExChargerFsm
 {
@@ -26,11 +26,11 @@ namespace ExChargerFsm
             Tools->setDurationOff( Tools->readNvsFloat("e-charge", "duratOff", 2.5f ) );
 
             // Индикация при старте
-            Oled->showLine4Text("   Заряжать  ");
-            Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );       // example: "  12В  55Ач  "
-            Oled->showLine2Text(" P-корр.С-старт ");        // Активны две кнопки: P-сменить настройки, и C-старт
-            Oled->showLine1Time( 0 );                         // уточнить
-            Oled->showLine1Ah( 0.0f );                         // уточнить
+            // Oled->showLine4Text("   Заряжать  ");
+            // Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );       // example: "  12В  55Ач  "
+            // Oled->showLine2Text(" P-корр.С-старт ");        // Активны две кнопки: P-сменить настройки, и C-старт
+            // Oled->showLine1Time( 0 );                         // уточнить
+            // Oled->showLine1Ah( 0.0f );                         // уточнить
             #ifdef V22
                 Board->ledsOn();                                // Светодиод светится белым до старта заряда - режим выбран
             #endif
@@ -43,9 +43,9 @@ namespace ExChargerFsm
         public:
             MSetFactory(MTools * Tools) : MState(Tools) {
                 // Индикация
-                Oled->showLine4Text("   Factory   ");
-                Oled->showLine3Text("     Y/NO    ");
-                Oled->showLine2Text("  B-yes,  C-no  ");
+                // Oled->showLine4Text("   Factory   ");
+                // Oled->showLine3Text("     Y/NO    ");
+                // Oled->showLine2Text("  B-yes,  C-no  ");
             }
         virtual MState * fsm() override;
     };
@@ -55,8 +55,8 @@ namespace ExChargerFsm
         public:
             MSetCurrentPre(MTools * Tools) : MState(Tools) {
                 // Индикация
-                Oled->showLine4Text(" Предзаряд до");
-                Oled->showLine3MaxI( Tools->getCurrentPre() );
+                // Oled->showLine4Text(" Предзаряд до");
+                // Oled->showLine3MaxI( Tools->getCurrentPre() );
                 Tools->showUpDn();         // " UP/DN, В-выбор "
             }     
         virtual MState * fsm() override;
@@ -66,8 +66,8 @@ namespace ExChargerFsm
     {
         public:   
             MSetVoltagePre(MTools * Tools) : MState(Tools) {
-                Oled->showLine4Text(" Предзаряд до");
-                Oled->showLine3MaxU( Tools->getVoltagePre() );
+                // Oled->showLine4Text(" Предзаряд до");
+                // Oled->showLine3MaxU( Tools->getVoltagePre() );
                 Tools->showUpDn();      // " UP/DN, В-выбор "
             }     
         virtual MState * fsm() override;
@@ -77,8 +77,8 @@ namespace ExChargerFsm
     {
         public:   
             MSetCurrentMax(MTools * Tools) : MState(Tools) {
-                Oled->showLine4Text(" Ток заряда  ");
-                Oled->showLine3MaxI( Tools->getCurrentMax() );
+                // Oled->showLine4Text(" Ток заряда  ");
+                // Oled->showLine3MaxI( Tools->getCurrentMax() );
                 Tools->showUpDn();      // " UP/DN, В-выбор "
             }     
         virtual MState * fsm() override;
@@ -88,8 +88,8 @@ namespace ExChargerFsm
     {
         public:   
             MSetVoltageMax(MTools * Tools) : MState(Tools) {
-                Oled->showLine4Text(" Заряжать до ");
-                Oled->showLine3MaxU( Tools->getVoltageMax() );
+                // Oled->showLine4Text(" Заряжать до ");
+                // Oled->showLine3MaxU( Tools->getVoltageMax() );
                 Tools->showUpDn();      // " UP/DN, В-выбор "
             }     
         virtual MState * fsm() override;
@@ -99,8 +99,8 @@ namespace ExChargerFsm
     {
         public:   
             MSetDurationOn(MTools * Tools) : MState(Tools) {
-                Oled->showLine4Text("   Заряд     ");
-                Oled->showLine3Sec( Tools->getDurationOn() );
+                // Oled->showLine4Text("   Заряд     ");
+                // Oled->showLine3Sec( Tools->getDurationOn() );
                 Tools->showUpDn();      // " UP/DN, В-выбор "
             }     
         virtual MState * fsm() override;
@@ -110,8 +110,8 @@ namespace ExChargerFsm
     {
         public:   
             MSetDurationOff(MTools * Tools) : MState(Tools) {
-                Oled->showLine4Text("Разряд(Пауза)");
-                Oled->showLine3Sec( Tools->getDurationOff() );
+                // Oled->showLine4Text("Разряд(Пауза)");
+                // Oled->showLine3Sec( Tools->getDurationOff() );
                 Tools->showUpDn();      // " UP/DN, В-выбор "
             }     
         virtual MState * fsm() override;
@@ -126,9 +126,9 @@ namespace ExChargerFsm
                 Tools->postpone = Tools->readNvsInt( "qulon", "postp", 0 );
                 
                 // Индикация
-                Oled->showLine4RealVoltage();
-                Oled->showLine3RealCurrent();
-                Oled->showLine2Text(" До старта...   ");
+                // Oled->showLine4RealVoltage();
+                // Oled->showLine3RealCurrent();
+                // Oled->showLine2Text(" До старта...   ");
 
                 // Инициализация счетчика времени до старта
                 Tools->setTimeCounter( Tools->postpone * 36000 );                // Отложенный старт ( * 0.1s )
@@ -152,11 +152,11 @@ namespace ExChargerFsm
                     Board->ledsOff();   Board->ledGOn();        // Зеленый светодиод - процесс заряда запущен
                 #endif
                 // Индикация построчно (4-я строка - верхняя)
-                Oled->showLine4RealVoltage();
-                Oled->showLine3RealCurrent();
-                Oled->showLine2Text("  Предзаряд...  ");
-                Oled->showLine1Time( Tools->getChargeTimeCounter() );
-                Oled->showLine1Ah( Tools->getAhCharge() );
+                // Oled->showLine4RealVoltage();
+                // Oled->showLine3RealCurrent();
+                // Oled->showLine2Text("  Предзаряд...  ");
+                // Oled->showLine1Time( Tools->getChargeTimeCounter() );
+                // Oled->showLine1Ah( Tools->getAhCharge() );
 
                 // Настройка ПИД-регулятора
                 Tools->initPid( outputMin, outputMax, k_p, k_i, k_d, bangMin, bangMax, timeStep );
@@ -199,11 +199,11 @@ namespace ExChargerFsm
 
                 // Индикация величины тока при импульсе заряда: среднее или текущее
                 #ifdef AVR_CURRENT
-                    Oled->showLine3Avr( Tools->getCurrentAvr() );               // Среднее за предыдущий импульс
+//                    Oled->showLine3Avr( Tools->getCurrentAvr() );               // Среднее за предыдущий импульс
                 #elif
                     Oled->showLine3RealCurrent();
                 #endif
-                Oled->showLine2Text(" Время:  Заряд: ");
+//                Oled->showLine2Text(" Время:  Заряд: ");
             }     
         virtual MState * fsm() override;
 
@@ -221,8 +221,8 @@ namespace ExChargerFsm
                 Tools->initPulse( -Tools->getCurrentAvr() / 10.0f );    // Ток отрицательный – инициируется разряд заданным током
 
                 // Индикация при импульсе разряда
-                Oled->showLine3RealCurrent();
-                Oled->showLine2Text(" Время: Разряд: ");
+//                Oled->showLine3RealCurrent();
+//                Oled->showLine2Text(" Время: Разряд: ");
             }     
         virtual MState * fsm() override;
     };

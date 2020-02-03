@@ -5,7 +5,7 @@
 
 #include "mtools.h"
 #include "board/mboard.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 #include "modes/optionsfsm.h"
 #include "measure/mkeyboard.h"
 #include <Arduino.h>
@@ -22,8 +22,8 @@ namespace OptionFsm
         #endif
         // Индикация
         #ifdef OLED_1_3
-            Oled->showLine4Text("333Батарея   ");
-            Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );          // example: "  12В  55Ач  "
+//            Oled->showLine4Text("333Батарея   ");
+//            Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );          // example: "  12В  55Ач  "
             Tools->showUpDn();                  // " UP/DN, В-выбор "
         #endif
         #ifdef V22
@@ -51,8 +51,8 @@ namespace OptionFsm
     {
         // Индикация
         #ifdef OLED_1_3
-            Oled->showLine4Text("   Батарея   ");
-            Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );          // example: "  12В  55Ач  "
+//            Oled->showLine4Text("   Батарея   ");
+//            Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );          // example: "  12В  55Ач  "
             Tools->showUpDn();                  // " UP/DN, В-выбор "
         #endif
     }
@@ -97,8 +97,8 @@ namespace OptionFsm
     MSetPostpone::MSetPostpone(MTools * Tools) : MState(Tools) 
     {
         Tools->postpone = Tools->readNvsInt("qulon", "postp",  0 );
-        Oled->showLine4Text(" Отложить на ");
-        Oled->showLine3Delay( Tools->postpone );
+//        Oled->showLine4Text(" Отложить на ");
+//        Oled->showLine3Delay( Tools->postpone );
         Tools->showUpDn();                      // " UP/DN, В-выбор "
     }
     MState * MSetPostpone::fsm()
@@ -128,8 +128,8 @@ namespace OptionFsm
 
     MSetCurrentOffset::MSetCurrentOffset( MTools * Tools ) : MState(Tools) 
     {
-        Oled->showLine4Text("    корр I   ");       //Oled->showLine4RealVoltage();
-        Oled->showLine3RealCurrent();
+//        Oled->showLine4Text("    корр I   ");       //Oled->showLine4RealVoltage();
+//        Oled->showLine3RealCurrent();
         Tools->showUpDn(); // " UP/DN, В-выбор "
     }
     MState * MSetCurrentOffset::fsm()
@@ -159,8 +159,8 @@ namespace OptionFsm
 
     MSetVoltageOffset::MSetVoltageOffset( MTools * Tools ) : MState(Tools)
     {
-        Oled->showLine4RealVoltage();
-        Oled->showLine3Text("  V offset   ");   
+//        Oled->showLine4RealVoltage();
+//        Oled->showLine3Text("  V offset   ");   
         //  Oled->showLine3RealVoltage(); // в цветной!
         Tools->showUpDn();
     }
@@ -219,11 +219,11 @@ namespace OptionFsm
     {
 //        if(Keyboard->getKey(MKeyboard::C_CLICK)) 
 //        {
-            Oled->showLine4RealVoltage();
-            Oled->showLine3RealCurrent();
-            Oled->showLine2Text("    Настройки   "); 
+    //        Oled->showLine4RealVoltage();
+    //        Oled->showLine3RealCurrent();
+    //        Oled->showLine2Text("    Настройки   "); 
             
-            Oled->showLine1Heap(ESP.getFreeHeap());
+    //        Oled->showLine1Heap(ESP.getFreeHeap());
             #ifdef V22
                 Board->ledsOff();      
             #endif

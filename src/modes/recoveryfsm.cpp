@@ -11,7 +11,7 @@
 #include "mtools.h"
 #include "board/mboard.h"
 #include "measure/mkeyboard.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 #include "mstate.h"
 #include <Arduino.h>
 
@@ -141,7 +141,7 @@ namespace RecoveryFsm
             default:;
         }
         #ifdef OLED_1_3
-            Oled->showLine3MaxI( Tools->getCurrentMax() );
+//            Oled->showLine3MaxI( Tools->getCurrentMax() );
         #endif
 
         return this;
@@ -236,7 +236,7 @@ namespace RecoveryFsm
         //if( Board->getVoltage() >= Tools->getVoltageMax() / 2.0f )    // 
         if( Board->getVoltage() >= 12.5 )                           // TEST 
         {
-                 Oled->showLine2Text(" Заряжается...  ");        // " Время:  Заряд: "
+//                 Oled->showLine2Text(" Заряжается...  ");        // " Время:  Заряд: "
 
             return new MPhase1(Tools);
         }

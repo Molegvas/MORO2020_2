@@ -3,7 +3,8 @@
 
 class MTools;
 class MBoard;
-class MOled;
+//class MOled;
+  class MTft;
 class MKeyboard;
 
 class MState{
@@ -17,7 +18,8 @@ class MState{
    protected:
     MTools    * Tools    = nullptr;
     MBoard    * Board    = nullptr;
-    MOled     * Oled     = nullptr;
+    //MOled     * Oled     = nullptr;
+      MTft      * Tft      = nullptr;
     MKeyboard * Keyboard = nullptr;
 };
 

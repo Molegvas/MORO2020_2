@@ -142,7 +142,7 @@ namespace ExChargerFsm
             default:;
         }
         #ifdef OLED_1_3
-            Oled->showLine3MaxI( Tools->getCurrentMax() );
+//            Oled->showLine3MaxI( Tools->getCurrentMax() );
         #endif
     
         return this;

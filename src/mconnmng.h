@@ -8,12 +8,13 @@
 
 class MTools;
 class MBoard;
-class MOled;
+//class MOled;
+  class MTft;
 
 class MState;
 
-class MConnect {
-
+class MConnect 
+{
     public:
         MConnect(MTools * tools);
 
@@ -23,11 +24,11 @@ class MConnect {
     private:
         MTools * Tools;
         MBoard * Board;
-        MOled * Oled;
+        //MOled * Oled;
+          MTft  * Tft;
 
         MState * State = 0;
 
-        //int mode;
 };
 
 #endif  // !_MCONNMNG_H_

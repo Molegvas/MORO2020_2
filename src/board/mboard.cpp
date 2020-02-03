@@ -6,18 +6,15 @@
 
 #include "board/mboard.h"
 #include "board/mpins.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 #include "board/moverseer.h"
 #include <AutoPID.h>  // 201905 double ---> float
 #include <Arduino.h>
 
-//using namespace std;
-
-MBoard::MBoard(MOled * oled) : Oled(oled)
+//MBoard::MBoard(MOled * oled) : Oled(oled)
+  MBoard::MBoard(MTft  * tft)  : Tft(tft)
 {
 	  initPorts();
-	  //initKeys();
-    //initCool();
     Overseer = new MOverseer(this);
 }
 #ifdef V22

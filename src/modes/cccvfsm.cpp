@@ -12,7 +12,7 @@
 #include "mtools.h"
 #include "board/mboard.h"
 #include "measure/mkeyboard.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 #include <Arduino.h>
 
 namespace CcCvFsm
@@ -30,11 +30,11 @@ namespace CcCvFsm
 
         // Индикация
         #ifdef OLED_1_3
-            Oled->showLine4Text("   Зарядное  ");
-            Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );              // example: "  12В  55Ач  "
-            Oled->showLine2Text(" P-корр.С-старт ");        // Подсказка: активны две кнопки: P-сменить настройки, и C-старт
-            Oled->showLine1Time(0);                         // уточнить
-            Oled->showLine1Ah(0.0);                         // уточнить
+            // Oled->showLine4Text("   Зарядное  ");
+            // Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );              // example: "  12В  55Ач  "
+            // Oled->showLine2Text(" P-корр.С-старт ");        // Подсказка: активны две кнопки: P-сменить настройки, и C-старт
+            // Oled->showLine1Time(0);                         // уточнить
+            // Oled->showLine1Ah(0.0);                         // уточнить
         #endif
 
         #ifdef V22
@@ -76,9 +76,9 @@ namespace CcCvFsm
     {
         // Индикация
         #ifdef OLED_1_3
-            Oled->showLine4Text("   Factory   ");
-            Oled->showLine3Text("     Y/NO    ");
-            Oled->showLine2Text("  B-yes,  C-no  ");
+            // Oled->showLine4Text("   Factory   ");
+            // Oled->showLine3Text("     Y/NO    ");
+            // Oled->showLine2Text("  B-yes,  C-no  ");
         #endif
 
         #ifdef TFT_1_44
@@ -114,9 +114,9 @@ namespace CcCvFsm
     {
         // Индикация
         #ifdef OLED_1_3
-            Oled->showLine4Text(" Imax заряда ");
-            Oled->showLine3MaxI( Tools->getCurrentMax() );
-            Tools->showUpDn(); // " UP/DN, В-выбор "
+            // Oled->showLine4Text(" Imax заряда ");
+            // Oled->showLine3MaxI( Tools->getCurrentMax() );
+            // Tools->showUpDn(); // " UP/DN, В-выбор "
         #endif
     }
     MState * MSetCurrentMax::fsm()
@@ -146,7 +146,7 @@ namespace CcCvFsm
             default:;
         }
         #ifdef OLED_1_3
-            Oled->showLine3MaxI( Tools->getCurrentMax() );
+//            Oled->showLine3MaxI( Tools->getCurrentMax() );
         #endif
         return this;
     };
@@ -155,8 +155,8 @@ namespace CcCvFsm
     MSetVoltageMax::MSetVoltageMax(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4Text(" Vmax заряда ");
-        Oled->showLine3MaxU( Tools->getVoltageMax() );
+//        Oled->showLine4Text(" Vmax заряда ");
+//        Oled->showLine3MaxU( Tools->getVoltageMax() );
         Tools->showUpDn(); // " UP/DN, В-выбор "
     }
     MState * MSetVoltageMax::fsm()
@@ -186,7 +186,7 @@ namespace CcCvFsm
             default:;
         }
         #ifdef OLED_1_3
-            Oled->showLine3MaxU( Tools->getVoltageMax() );
+//            Oled->showLine3MaxU( Tools->getVoltageMax() );
         #endif
 
         return this;
@@ -196,8 +196,8 @@ namespace CcCvFsm
     MSetCurrentMin::MSetCurrentMin(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4Text(" Imin заряда ");
-        Oled->showLine3MaxI( Tools->getCurrentMin() );
+//        Oled->showLine4Text(" Imin заряда ");
+//        Oled->showLine3MaxI( Tools->getCurrentMin() );
         Tools->showUpDn(); // " UP/DN, В-выбор "
     }   
     MState * MSetCurrentMin::fsm()
@@ -227,7 +227,7 @@ namespace CcCvFsm
             default:;
         }
         #ifdef OLED_1_3
-            Oled->showLine3MaxI( Tools->getCurrentMin() );
+//            Oled->showLine3MaxI( Tools->getCurrentMin() );
         #endif
 
         return this;
@@ -237,8 +237,8 @@ namespace CcCvFsm
     MSetVoltageMin::MSetVoltageMin(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4Text(" Vmin заряда ");
-        Oled->showLine3MaxU( Tools->getVoltageMin() );
+//        Oled->showLine4Text(" Vmin заряда ");
+//        Oled->showLine3MaxU( Tools->getVoltageMin() );
         Tools->showUpDn(); // " UP/DN, В-выбор "
     }   
     MState * MSetVoltageMin::fsm()
@@ -268,7 +268,7 @@ namespace CcCvFsm
             default:;
         }
         #ifdef OLED_1_3
-            Oled->showLine3MaxU( Tools->getVoltageMin() );
+//            Oled->showLine3MaxU( Tools->getVoltageMin() );
         #endif
 
         return this;
@@ -282,9 +282,9 @@ namespace CcCvFsm
         Tools->postpone = Tools->readNvsInt( "qulon", "postp", 0 );
                 
         // Индикация
-        Oled->showLine4RealVoltage();
-        Oled->showLine3RealCurrent();
-        Oled->showLine2Text(" До старта...   ");
+//        Oled->showLine4RealVoltage();
+//        Oled->showLine3RealCurrent();
+//        Oled->showLine2Text(" До старта...   ");
 
         // Инициализация счетчика времени до старта
         Tools->setTimeCounter( Tools->postpone * 36000 );                // Отложенный старт ( * 0.1s )
@@ -331,11 +331,11 @@ namespace CcCvFsm
             Board->ledsOff();   Board->ledGOn();        // Зеленый светодиод - процесс заряда запущен
         #endif
         // Индикация построчно (4-я строка - верхняя)
-        Oled->showLine4RealVoltage();
-        Oled->showLine3RealCurrent();
-        Oled->showLine2Text("  I up & const  ");
-        Oled->showLine1Time( Tools->getChargeTimeCounter() );
-        Oled->showLine1Ah( Tools->getAhCharge() );
+        // Oled->showLine4RealVoltage();
+        // Oled->showLine3RealCurrent();
+        // Oled->showLine2Text("  I up & const  ");
+        // Oled->showLine1Time( Tools->getChargeTimeCounter() );
+        // Oled->showLine1Ah( Tools->getAhCharge() );
                 
         // Настройка ПИД-регулятора
         Tools->initPid( MPidConstants::outputMin,
@@ -375,7 +375,7 @@ namespace CcCvFsm
         // Порог регулирования по напряжению
         Tools->setSetPoint( Tools->getVoltageMax() );
         // Индикация
-        Oled->showLine2Text("  const Vmax... ");
+//        Oled->showLine2Text("  const Vmax... ");
         #ifdef V22
             Board->ledROn();                // Желтый светодиод (R & G) - процесс поддержания максимального напряжения
         #endif
@@ -403,7 +403,7 @@ namespace CcCvFsm
         Tools->setSetPoint( Tools->getVoltageMin() );
                 
         // Индикация
-        Oled->showLine2Text("  const Vmin... ");
+//        Oled->showLine2Text("  const Vmin... ");
     }     
     MState * MKeepVmin::fsm()
     {

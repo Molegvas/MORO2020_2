@@ -3,7 +3,8 @@
 
 class MTools;
 class MBoard;
-class MOled;
+//class MOled;
+  class MTft;
 class MState;
 
 class MDispatcher
@@ -49,7 +50,8 @@ class MDispatcher
   private:
     MTools * Tools;
     MBoard * Board;
-    MOled * Oled;
+    //MOled * Oled;
+      MTft  * Tft;
 
     MState * State = 0;
 

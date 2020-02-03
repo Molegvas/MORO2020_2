@@ -16,7 +16,7 @@
 #include "mtools.h"
 #include "board/mboard.h"
 #include "measure/mkeyboard.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 #include "board/moverseer.h"
 #include <Arduino.h>
 
@@ -43,11 +43,11 @@ namespace DeviceFsm
     {
         // Индикация
         #ifdef OLED_1_3
-            Oled->showLine4Text(" PWM Voltage ");
-            Oled->showLine3Text(" C_LONG-CLEAR");
-            Oled->showLine2Text(" P-след,B-выбор ");        // Подсказка: активны две кнопки: P-следующий, и B-выбор
-            Oled->showLine1Heap( ESP.getFreeHeap() );
-            Oled->showLine1Celsius( Board->Overseer->getCelsius() );
+            // Oled->showLine4Text(" PWM Voltage ");
+            // Oled->showLine3Text(" C_LONG-CLEAR");
+            // Oled->showLine2Text(" P-след,B-выбор ");        // Подсказка: активны две кнопки: P-следующий, и B-выбор
+            // Oled->showLine1Heap( ESP.getFreeHeap() );
+            // Oled->showLine1Celsius( Board->Overseer->getCelsius() );
         #endif
     }
     MState * MStart::fsm()
@@ -77,8 +77,8 @@ namespace DeviceFsm
     MSetVoltagePwmDelta::MSetVoltagePwmDelta(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4Text("  Vpwm delta ");
-        Oled->showLine3Num( voltageDeltaPwm );
+//        Oled->showLine4Text("  Vpwm delta ");
+//        Oled->showLine3Num( voltageDeltaPwm );
         Tools->showUpDn();                          // Подсказка " UP/DN, В-выбор "
 
         // Выключение преобразователя и коммутатора, обнуление задающих величин PWM.
@@ -113,7 +113,7 @@ namespace DeviceFsm
             default :;
         }
         #ifdef OLED_1_3
-            Oled->showLine3Num( voltageDeltaPwm );
+//            Oled->showLine3Num( voltageDeltaPwm );
         #endif
         return this;
     };
@@ -122,8 +122,8 @@ namespace DeviceFsm
     MSetVoltagePwmMin::MSetVoltagePwmMin(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4Text("   Vpwm min  ");
-        Oled->showLine3Num( voltagePwmMin );
+//        Oled->showLine4Text("   Vpwm min  ");
+//        Oled->showLine3Num( voltagePwmMin );
         Tools->showUpDn(); // " UP/DN, В-выбор "
     }
     MState * MSetVoltagePwmMin::fsm()
@@ -155,7 +155,7 @@ namespace DeviceFsm
             default :;
         }
         #ifdef OLED_1_3
-            Oled->showLine3Num( voltagePwmMin );
+//            Oled->showLine3Num( voltagePwmMin );
         #endif
         return this;
     };
@@ -164,8 +164,8 @@ namespace DeviceFsm
     MSetVoltagePwmMax::MSetVoltagePwmMax(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4Text("   Vpwm max  ");
-        Oled->showLine3Num( voltagePwmMax );
+//        Oled->showLine4Text("   Vpwm max  ");
+//        Oled->showLine3Num( voltagePwmMax );
         Tools->showUpDn();                      // " UP/DN, В-выбор "
     }
     MState * MSetVoltagePwmMax::fsm()
@@ -197,7 +197,7 @@ namespace DeviceFsm
             default :;
         }
         #ifdef OLED_1_3
-            Oled->showLine3Num( voltagePwmMax );
+//            Oled->showLine3Num( voltagePwmMax );
         #endif
         return this;
     };
@@ -206,8 +206,8 @@ namespace DeviceFsm
     MVoltagePwmExe::MVoltagePwmExe(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4RealVoltage();           // Показывать напряжение на клеммах (как есть)
-        Oled->showLine3Num( voltagePwm );
+//        Oled->showLine4RealVoltage();           // Показывать напряжение на клеммах (как есть)
+//        Oled->showLine3Num( voltagePwm );
         Tools->showUpDn();                      // Подсказка " UP/DN,В-повтор "
         Board->powOn();     Board->swOn();      // Включение преобразователя и коммутатора.
         Board->setCurrentPwm( 100 );            // Иначе не даст напряжения
@@ -251,8 +251,8 @@ namespace DeviceFsm
             default :;
         }
         #ifdef OLED_1_3
-            Oled->showLine4RealVoltage();
-            Oled->showLine3Num( voltagePwm );
+//            Oled->showLine4RealVoltage();
+//            Oled->showLine3Num( voltagePwm );
         #endif
         return this;
     };
@@ -265,8 +265,8 @@ namespace DeviceFsm
         currentDeltaPwm     = Tools->readNvsInt("dc", "id_pwm",     MDcConsts::iPwm_h / 16);
 
         // Индикация
-        Oled->showLine4Text("  Ipwm delta ");
-        Oled->showLine3Num( currentDeltaPwm );
+//        Oled->showLine4Text("  Ipwm delta ");
+//        Oled->showLine3Num( currentDeltaPwm );
         Tools->showUpDn();
         // Выключение преобразователя и коммутатора.
         Tools->shutdownDC();
@@ -300,7 +300,7 @@ namespace DeviceFsm
             default :;
         }
         #ifdef OLED_1_3
-            Oled->showLine3Num( currentDeltaPwm );
+//            Oled->showLine3Num( currentDeltaPwm );
         #endif
         return this;
     };
@@ -309,8 +309,8 @@ namespace DeviceFsm
     MSetCurrentPwmMin::MSetCurrentPwmMin(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4Text("   Ipwm min  ");
-        Oled->showLine3Num( currentPwmMin );
+//        Oled->showLine4Text("   Ipwm min  ");
+//        Oled->showLine3Num( currentPwmMin );
         Tools->showUpDn();
     }
     MState * MSetCurrentPwmMin::fsm()
@@ -341,7 +341,7 @@ namespace DeviceFsm
             default :;
         }
         #ifdef OLED_1_3
-            Oled->showLine3Num( currentPwmMin );
+//            Oled->showLine3Num( currentPwmMin );
         #endif
         return this;
     };
@@ -350,8 +350,8 @@ namespace DeviceFsm
     MSetCurrentPwmMax::MSetCurrentPwmMax(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4Text("   Ipwm max  ");
-        Oled->showLine3Num( currentPwmMax );
+//        Oled->showLine4Text("   Ipwm max  ");
+//        Oled->showLine3Num( currentPwmMax );
         Tools->showUpDn(); // " UP/DN, В-выбор "
     }
     MState * MSetCurrentPwmMax::fsm()
@@ -383,7 +383,7 @@ namespace DeviceFsm
             default:;
         }
         #ifdef OLED_1_3
-            Oled->showLine3Num( currentPwmMax );
+//            Oled->showLine3Num( currentPwmMax );
         #endif
 
         return this;
@@ -393,8 +393,8 @@ namespace DeviceFsm
     MCurrentPwmExe::MCurrentPwmExe(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4RealCurrent();       //  4Text("   Ipwm exe  ");
-        Oled->showLine3Num( currentPwm );
+//        Oled->showLine4RealCurrent();       //  4Text("   Ipwm exe  ");
+//        Oled->showLine3Num( currentPwm );
         Tools->showUpDn(); // " UP/DN,В-повтор "
         Board->powOn();     Board->swOn();          // Включение преобразователя и коммутатора.
         Board->setVoltagePwm( 512 );    //1024 );                // Иначе не даст тока
@@ -425,8 +425,8 @@ namespace DeviceFsm
             default:;
         }
         #ifdef OLED_1_3
-            Oled->showLine4RealCurrent();
-            Oled->showLine3Num( currentPwm );
+//            Oled->showLine4RealCurrent();
+//            Oled->showLine3Num( currentPwm );
         #endif
 
         return this;
@@ -440,8 +440,8 @@ namespace DeviceFsm
         dischargeDeltaPwm   = Tools->readNvsInt("dc", "rd_pwm",     MDcConsts::rPwm_h / 16);
 
         // Индикация
-        Oled->showLine4Text("  Rpwm delta ");
-        Oled->showLine3Num( dischargeDeltaPwm );
+//        Oled->showLine4Text("  Rpwm delta ");
+//        Oled->showLine3Num( dischargeDeltaPwm );
         Tools->showUpDn(); // " UP/DN, В-выбор "
 
         //Board->powOff();     Board->swOff();          // Выключение преобразователя и коммутатора.
@@ -476,7 +476,7 @@ namespace DeviceFsm
             default:;
         }
         #ifdef OLED_1_3
-            Oled->showLine3Num( dischargeDeltaPwm );
+//            Oled->showLine3Num( dischargeDeltaPwm );
         #endif
 
         return this;
@@ -486,8 +486,8 @@ namespace DeviceFsm
     MSetDischargePwmMin::MSetDischargePwmMin(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4Text("   Rpwm min  ");
-        Oled->showLine3Num( dischargePwmMin );
+//        Oled->showLine4Text("   Rpwm min  ");
+//        Oled->showLine3Num( dischargePwmMin );
         Tools->showUpDn(); // " UP/DN, В-выбор "
     }
     MState * MSetDischargePwmMin::fsm()
@@ -518,7 +518,7 @@ namespace DeviceFsm
             default:;
         }
         #ifdef OLED_1_3
-            Oled->showLine3Num( dischargePwmMin );
+//            Oled->showLine3Num( dischargePwmMin );
         #endif
 
         return this;
@@ -528,8 +528,8 @@ namespace DeviceFsm
     MSetDischargePwmMax::MSetDischargePwmMax(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4Text("   Rpwm max  ");
-        Oled->showLine3Num( dischargePwmMax );
+//        Oled->showLine4Text("   Rpwm max  ");
+//        Oled->showLine3Num( dischargePwmMax );
         Tools->showUpDn(); // " UP/DN, В-выбор "
     }
     MState * MSetDischargePwmMax::fsm()
@@ -561,7 +561,7 @@ namespace DeviceFsm
             default:;
         }
         #ifdef OLED_1_3
-            Oled->showLine3Num( currentPwmMax );
+//            Oled->showLine3Num( currentPwmMax );
         #endif
 
         return this;
@@ -571,8 +571,8 @@ namespace DeviceFsm
     MDischargePwmExe::MDischargePwmExe(MTools * Tools) : MState(Tools)
     {
         // Индикация
-        Oled->showLine4RealCurrent();       //  4Text("   Ipwm exe  ");
-        Oled->showLine3Num( dischargePwm );
+//        Oled->showLine4RealCurrent();       //  4Text("   Ipwm exe  ");
+//        Oled->showLine3Num( dischargePwm );
         Tools->showUpDn(); // " UP/DN,В-повтор "
         Board->powOn();     Board->swOn();          // Включение преобразователя и коммутатора.
         Board->setVoltagePwm( 20 );                 // Иначе не даст тока
@@ -603,8 +603,8 @@ namespace DeviceFsm
             default:;
         }
         #ifdef OLED_1_3
-            Oled->showLine4RealCurrent();
-            Oled->showLine3Num( dischargePwm );
+//            Oled->showLine4RealCurrent();
+//            Oled->showLine3Num( dischargePwm );
         #endif
 
         return this;
@@ -621,8 +621,8 @@ namespace DeviceFsm
     MStop::MStop(MTools * Tools) : MState(Tools)
     {
         Tools->shutdownDC();                 
-        Oled->showLine4RealVoltage();
-        Oled->showLine3RealCurrent();
+//        Oled->showLine4RealVoltage();
+//        Oled->showLine3RealCurrent();
 
     }    
     MState * MStop::fsm()

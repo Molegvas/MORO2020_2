@@ -3,7 +3,7 @@
 
 #include "mtools.h"                 // Методы для реализации пользовательских алгоритмов.
 #include "board/mboard.h"           // Ресурсы платы управления и методы их использования.  
-#include "display/moled.h"          // Ресурсы OLED дисплея и методы отбражения
+#include "display/mtft.h"          // Ресурсы OLED дисплея и методы отбражения
 #include "mstate.h"                 // Методы управления конечным автоматом
 
 // Переименуйте поле имен для вашего режима.
@@ -24,11 +24,11 @@ namespace TemplateFsm
                 // Отсчет строк идет снизу. Строки 1 и 2 по 16 знакомест,
                 // строки 3 и 4 – по 13, но шрифт крупнее.
                 // Никакого контроля за размером строк нет, будьте аккуратны. 
-                Oled->showLine4Text(" Мой пример. ");
-                Oled->showLine3Text("  LED  WHITE ");
-                Oled->showLine2Text(" P-YELL. B-BLUE ");        // Подсказка какие кнопки активны: P и B
-                Oled->showLine1Time( 0 );                       // Зададим отображать время и отданный заряд и не будем
-                Oled->showLine1Ah( 0.0f );                      // трогать на следующих шагах вплоть до выхода из режима.
+                // Oled->showLine4Text(" Мой пример. ");
+                // Oled->showLine3Text("  LED  WHITE ");
+                // Oled->showLine2Text(" P-YELL. B-BLUE ");        // Подсказка какие кнопки активны: P и B
+                // Oled->showLine1Time( 0 );                       // Зададим отображать время и отданный заряд и не будем
+                // Oled->showLine1Ah( 0.0f );                      // трогать на следующих шагах вплоть до выхода из режима.
                 #ifdef V22
                     Board->ledsOn();                                // Светодиод светится белым как индикатор входа в режим
                 #endif
@@ -44,8 +44,8 @@ namespace TemplateFsm
                     Board->ledsOff();    Board->ledROn();   Board->ledGOn();
                 #endif
                 // Индикация
-                Oled->showLine3Text("  LED YELLOW ");
-                Oled->showLine2Text(" UP-RED  DN-GRN ");        // Подсказка какие кнопки активны: UP и DN
+//                Oled->showLine3Text("  LED YELLOW ");
+//                Oled->showLine2Text(" UP-RED  DN-GRN ");        // Подсказка какие кнопки активны: UP и DN
             }   
         virtual MState * fsm() override;
     };
@@ -58,8 +58,8 @@ namespace TemplateFsm
                     Board->ledsOff();    Board->ledROn();
                 #endif
                 // Индикация
-                Oled->showLine3Text("  LED  RED   ");
-                Oled->showLine2Text(" LONG B-BLUE BL ");        // Подсказка какие кнопки активны: LONG B
+//                Oled->showLine3Text("  LED  RED   ");
+//                Oled->showLine2Text(" LONG B-BLUE BL ");        // Подсказка какие кнопки активны: LONG B
             }     
         virtual MState * fsm() override;
     };
@@ -68,8 +68,8 @@ namespace TemplateFsm
     {
         public:   
             MGreen(MTools * Tools) : MState(Tools) {
-                Oled->showLine3Text("  BLINK GRN  ");
-                Oled->showLine2Text(" LONG B-R  B-Y  ");        // Подсказка какие кнопки активны: LONG B и B
+//                Oled->showLine3Text("  BLINK GRN  ");
+//                Oled->showLine2Text(" LONG B-R  B-Y  ");        // Подсказка какие кнопки активны: LONG B и B
                 cnt = duration;
             }     
         virtual MState * fsm() override;
@@ -87,8 +87,8 @@ namespace TemplateFsm
             #ifdef V22
                 Board->ledsOff();    Board->ledBOn();
             #endif
-                Oled->showLine3Text("  LED  BLUE  ");
-                Oled->showLine2Text("  LONG B-Start  ");        // Подсказка какие кнопки активны: UP и DN
+//                Oled->showLine3Text("  LED  BLUE  ");
+//                Oled->showLine2Text("  LONG B-Start  ");        // Подсказка какие кнопки активны: UP и DN
             }     
         virtual MState * fsm() override;
     };

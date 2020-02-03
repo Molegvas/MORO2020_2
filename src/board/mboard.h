@@ -2,19 +2,20 @@
 #define _MBOARD_H_
 
 /*
- * Вариант Q921v502
+ * Вариант v43 TFT
  */
 
-//#include "esp32-hal.h"
 #include "stdint.h"
 
-class MOled;
+//class MOled;
+  class MTft;
 class MOverseer;
 
 class MBoard
 {
   public:
-    MOled     * Oled     = nullptr;   // external
+    //MOled     * Oled     = nullptr;   // external
+      MTft      * Tft      = nullptr;   // external
     MOverseer * Overseer = nullptr;   // local
 
         // PWM channels
@@ -24,7 +25,8 @@ class MBoard
     static constexpr uint8_t  ch_fan       = 3;  // 
 
   public:
-    MBoard(MOled * oled);
+    //MBoard(MOled * oled);
+      MBoard(MTft  * tft);
 
     void initPorts();
     #ifdef V22

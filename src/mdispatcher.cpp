@@ -2,7 +2,7 @@
 #include "mtools.h"
 #include "board/mboard.h"
 #include "measure/mkeyboard.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 
 #include "modes/optionsfsm.h"
 #ifdef TEMPLATE_ENABLE
@@ -34,7 +34,8 @@
 
 
 MDispatcher::MDispatcher(MTools * tools) :
-  Tools(tools), Board(tools->Board), Oled(tools->Oled)
+  //Tools(tools), Board(tools->Board), Oled(tools->Oled)
+    Tools(tools), Board(tools->Board), Tft(tools->Tft)
 {
     mode = Tools->readNvsInt  ("qulon", "mode", 0);                 // Индекс массива
     showMode( mode );
@@ -201,5 +202,6 @@ void MDispatcher::showMode(int mode)
 
     default:          s = "  error         "; break;
   }
-  Oled->showLine2Text(s);
+//  Oled->showLine2Text(s);
+
 }

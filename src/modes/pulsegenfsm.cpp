@@ -10,7 +10,7 @@
 #include "mtools.h"
 #include "board/mboard.h"
 #include "measure/mkeyboard.h"
-#include "display/moled.h"
+#include "display/mtft.h"
 #include "mstate.h"
 #include <Arduino.h>
 
@@ -63,13 +63,13 @@ namespace PulseGenFsm
 
         if( Keyboard->getKey(MKeyboard::UP_CLICK)) {
             Tools->setCurrentMax( Tools->incFloatValue( Tools->getCurrentMax(), curr_l, curr_h, 0.10f ) );
-            Oled->showLine3MaxI(Tools->getCurrentMax());
+//            Oled->showLine3MaxI(Tools->getCurrentMax());
             return this;
         }
 
         if( Keyboard->getKey(MKeyboard::DN_CLICK)) {
             Tools->setCurrentMax( Tools->decFloatValue( Tools->getCurrentMax(), curr_l, curr_h, 0.10f ) );
-            Oled->showLine3MaxI(Tools->getCurrentMax()); 
+//            Oled->showLine3MaxI(Tools->getCurrentMax()); 
             return this;
         }
 
@@ -87,13 +87,13 @@ namespace PulseGenFsm
 
         if( Keyboard->getKey(MKeyboard::UP_CLICK)) {
             Tools->setVoltageMax( Tools->incFloatValue( Tools->getVoltageMax(), volt_l, volt_h, 0.10f ) );
-            Oled->showLine3MaxU(Tools->getVoltageMax());
+//            Oled->showLine3MaxU(Tools->getVoltageMax());
             return this;
         }
 
         if( Keyboard->getKey(MKeyboard::DN_CLICK)) {
             Tools->setVoltageMax( Tools->decFloatValue( Tools->getVoltageMax(), volt_l, volt_h, 0.10f ) );
-            Oled->showLine3MaxU(Tools->getVoltageMax()); 
+//            Oled->showLine3MaxU(Tools->getVoltageMax()); 
             return this;
         }
 
@@ -112,13 +112,13 @@ namespace PulseGenFsm
 
         if( Keyboard->getKey(MKeyboard::UP_CLICK)) {
             Tools->setDurationOn( Tools->incFloatValue( Tools->getDurationOn(), pulse_l, pulse_h, 0.5f ) );
-            Oled->showLine3Sec(Tools->getDurationOn());
+//            Oled->showLine3Sec(Tools->getDurationOn());
             return this;
         }
 
         if( Keyboard->getKey(MKeyboard::DN_CLICK)) {
             Tools->setDurationOn( Tools->decFloatValue( Tools->getDurationOn(), pulse_l, pulse_h, 0.5f ) );
-            Oled->showLine3Sec(Tools->getDurationOn()); 
+//            Oled->showLine3Sec(Tools->getDurationOn()); 
             return this;
         }
 
@@ -137,13 +137,13 @@ namespace PulseGenFsm
 
         if( Keyboard->getKey(MKeyboard::UP_CLICK)) {
             Tools->setDurationOff( Tools->incFloatValue( Tools->getDurationOff(), pause_l, pause_h, 0.5f ) );
-            Oled->showLine3Sec(Tools->getDurationOff());
+ //           Oled->showLine3Sec(Tools->getDurationOff());
             return this;
         }
 
         if( Keyboard->getKey(MKeyboard::DN_CLICK)) {
             Tools->setDurationOff( Tools->decFloatValue( Tools->getDurationOff(), pause_l, pause_h, 0.5f ) );
-            Oled->showLine3Sec(Tools->getDurationOff()); 
+//            Oled->showLine3Sec(Tools->getDurationOff()); 
             return this;
         }
 
@@ -170,32 +170,32 @@ namespace PulseGenFsm
         // Регулировка напряжения "на лету" по 100 или 500 мв
         if( Keyboard->getKey(MKeyboard::UP_CLICK)) {
             Tools->setVoltageMax( Tools->incFloatValue( Tools->getVoltageMax(), volt_l, volt_h, 0.10f ) );
-            Oled->showLine3MaxU(Tools->getVoltageMax());
+//            Oled->showLine3MaxU(Tools->getVoltageMax());
             return this;
         }
 
         if( Keyboard->getKey(MKeyboard::DN_CLICK)) {
             Tools->setVoltageMax( Tools->decFloatValue( Tools->getVoltageMax(), volt_l, volt_h, 0.10f ) );
-            Oled->showLine3MaxU(Tools->getVoltageMax()); 
+//            Oled->showLine3MaxU(Tools->getVoltageMax()); 
             return this;
         }
 
         if( Keyboard->getKey(MKeyboard::UP_LONG_CLICK)) {
             Tools->setVoltageMax( Tools->incFloatValue( Tools->getVoltageMax(), volt_l, volt_h, 0.50f ) );
-            Oled->showLine3MaxU(Tools->getVoltageMax());
+//            Oled->showLine3MaxU(Tools->getVoltageMax());
             return this;
         }
 
         if( Keyboard->getKey(MKeyboard::DN_LONG_CLICK)) {
             Tools->setVoltageMax( Tools->decFloatValue( Tools->getVoltageMax(), volt_l, volt_h, 0.50f ) );
-            Oled->showLine3MaxU(Tools->getVoltageMax()); 
+//            Oled->showLine3MaxU(Tools->getVoltageMax()); 
             return this;
         }
 
         if(Keyboard->getKey(MKeyboard::B_CLICK))
         { 
             Tools->saveFloat( "e-power", "voltMax", Tools->getVoltageMax() );
-            Oled->showLine3RealCurrent();
+//            Oled->showLine3RealCurrent();
         }   
 
         if(Keyboard->getKey(MKeyboard::C_CLICK)) return new MExit(Tools); 
@@ -221,7 +221,7 @@ namespace PulseGenFsm
         if(Keyboard->getKey(MKeyboard::B_CLICK))
         { 
             Tools->saveFloat( "e-power", "voltMax", Tools->getVoltageMax() );
-            Oled->showLine3RealCurrent();
+//            Oled->showLine3RealCurrent();
         }   
 
 
