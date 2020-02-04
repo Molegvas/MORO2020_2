@@ -3,8 +3,7 @@
 
 class MTools;
 class MBoard;
-//class MOled;
-  class MDisplay;
+class MDisplay;
 class MKeyboard;
 
 class MState
@@ -19,9 +18,8 @@ class MState
    protected:
     MTools    * Tools    = nullptr;
     MBoard    * Board    = nullptr;
-    //MOled     * Oled     = nullptr;
-      MDisplay * Display   = nullptr;
+    MDisplay  * Display  = nullptr;
     MKeyboard * Keyboard = nullptr;
 };
 
-#endif //_MSTATE_H_
+#endif // !_MSTATE_H_

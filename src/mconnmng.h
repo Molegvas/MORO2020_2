@@ -8,9 +8,7 @@
 
 class MTools;
 class MBoard;
-//class MOled;
-  class MDisplay;
-
+class MDisplay;
 class MState;
 
 class MConnect 
@@ -24,11 +22,8 @@ class MConnect
     private:
         MTools * Tools;
         MBoard * Board;
-        //MOled * Oled;
-          MDisplay * Display;
-
+        MDisplay * Display;
         MState * State = 0;
-
 };
 
 #endif  // !_MCONNMNG_H_

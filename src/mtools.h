@@ -4,22 +4,19 @@
 #define DEBUG_CHARGE
 
 class MBoard;
-//class MOled;
-  class MDisplay;
+class MDisplay;
 class MKeyboard;
 class Preferences;
 
 class MTools
 {
   public:
-    //MTools(MBoard * board, MOled * oled);
-      MTools(MBoard * board, MDisplay  * tft);
+    MTools(MBoard * board, MDisplay * display);
     ~MTools();
    
     //pointers are public - easier to access
     MBoard      * Board        = nullptr; // external
-    //MOled       * Oled         = nullptr; // external
-      MDisplay  * Display      = nullptr; // external
+    MDisplay    * Display      = nullptr; // external
     MKeyboard   * Keyboard     = nullptr; // local
     Preferences * qPreferences = nullptr; // local
 

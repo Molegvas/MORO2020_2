@@ -11,8 +11,7 @@
 #include <AutoPID.h>  // 201905 double ---> float
 #include <Arduino.h>
 
-//MBoard::MBoard(MOled * oled) : Oled(oled)
-  MBoard::MBoard(MDisplay  * display)  : Display(display)
+MBoard::MBoard(MDisplay * display) : Display(display)
 {
 	  initPorts();
     Overseer = new MOverseer(this);

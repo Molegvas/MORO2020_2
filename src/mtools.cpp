@@ -12,11 +12,9 @@
 #include "Arduino.h"
 
 
-//MTools::MTools(MBoard * board, MOled * oled) : 
-  MTools::MTools(MBoard * board, MDisplay  * display) : 
+MTools::MTools(MBoard * board, MDisplay * display) : 
     Board(board),
-    //Oled(oled),
-      Display(display),
+    Display(display),
     Keyboard(new MKeyboard),
     qPreferences(new Preferences) {}
 
@@ -1859,6 +1857,5 @@ float MTools::readSteinhart( const int adc )
   steinhart = 1.0f / steinhart;                         // Invert
   steinhart -= 273.15f;
   if ( steinhart == -273.15f ) steinhart = 120.0f;
-//  return steinhart;         //( steinhart > 120.0f ) ? 120.0f : steinhart;
-    return ( steinhart > 120.0f ) ? 120.0f : steinhart;
+  return ( steinhart > 120.0f ) ? 120.0f : steinhart;
 }
