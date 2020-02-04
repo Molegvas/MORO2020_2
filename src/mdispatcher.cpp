@@ -2,7 +2,7 @@
 #include "mtools.h"
 #include "board/mboard.h"
 #include "measure/mkeyboard.h"
-#include "display/mtft.h"
+#include "display/mdisplay.h"
 
 #include "modes/optionsfsm.h"
 #ifdef TEMPLATE_ENABLE

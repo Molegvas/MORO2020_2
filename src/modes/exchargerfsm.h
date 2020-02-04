@@ -4,7 +4,7 @@
 #include "mstate.h"
 #include "mtools.h"
 #include "board/mboard.h"
-#include "display/mtft.h"
+#include "display/mdisplay.h"
 
 namespace ExChargerFsm
 {

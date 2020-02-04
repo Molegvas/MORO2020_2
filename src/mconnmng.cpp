@@ -6,7 +6,7 @@
 #include "mconnmng.h"
 #include "mtools.h"
 #include "board/mboard.h"
-#include "display/mtft.h"
+#include "display/mdisplay.h"
 #include "connect/connectfsm.h"
 #include "Arduino.h"
 

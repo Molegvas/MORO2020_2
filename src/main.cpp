@@ -7,7 +7,7 @@ date:     Февраль 2020
 
 #include "board/mboard.h"
 #include "board/moverseer.h"
-#include "display/mtft.h"
+#include "display/mdisplay.h"
 #include "mtools.h"
 #include "mdispatcher.h"
 #include "mconnmng.h"

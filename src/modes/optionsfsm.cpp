@@ -5,7 +5,7 @@
 
 #include "mtools.h"
 #include "board/mboard.h"
-#include "display/mtft.h"
+#include "display/mdisplay.h"
 #include "modes/optionsfsm.h"
 #include "measure/mkeyboard.h"
 #include <Arduino.h>
