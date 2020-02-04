@@ -12,7 +12,7 @@
 #include <Arduino.h>
 
 //MBoard::MBoard(MOled * oled) : Oled(oled)
-  MBoard::MBoard(MTft  * tft)  : Tft(tft)
+  MBoard::MBoard(MDisplay  * display)  : Display(display)
 {
 	  initPorts();
     Overseer = new MOverseer(this);

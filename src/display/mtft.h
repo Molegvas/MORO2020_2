@@ -4,11 +4,11 @@
 //class U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI;
 class Adafruit_ST7735;      //U8G2_SSD1309_128X64_NONAME2_F_4W_SW_SPI;
 
-class MTft
+class MDisplay
 {
   public:
-    MTft();
-    ~MTft();
+    MDisplay();
+    ~MDisplay();
 
     void resetLCD();
     void runDisplay(float u, float i, float celsius, int time, float ah, bool ap);

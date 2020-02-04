@@ -4,10 +4,11 @@
 class MTools;
 class MBoard;
 //class MOled;
-  class MTft;
+  class MDisplay;
 class MKeyboard;
 
-class MState{
+class MState
+{
   public:
     MState(MTools * Tools);
 
@@ -19,7 +20,7 @@ class MState{
     MTools    * Tools    = nullptr;
     MBoard    * Board    = nullptr;
     //MOled     * Oled     = nullptr;
-      MTft      * Tft      = nullptr;
+      MDisplay * Display   = nullptr;
     MKeyboard * Keyboard = nullptr;
 };
 

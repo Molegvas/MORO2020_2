@@ -5,7 +5,7 @@
 
 class MBoard;
 //class MOled;
-  class MTft;
+  class MDisplay;
 class MKeyboard;
 class Preferences;
 
@@ -13,13 +13,13 @@ class MTools
 {
   public:
     //MTools(MBoard * board, MOled * oled);
-      MTools(MBoard * board, MTft  * tft);
+      MTools(MBoard * board, MDisplay  * tft);
     ~MTools();
    
     //pointers are public - easier to access
     MBoard      * Board        = nullptr; // external
     //MOled       * Oled         = nullptr; // external
-      MTft        * Tft          = nullptr; // external
+      MDisplay  * Display      = nullptr; // external
     MKeyboard   * Keyboard     = nullptr; // local
     Preferences * qPreferences = nullptr; // local
 

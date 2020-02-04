@@ -9,7 +9,7 @@
 class MTools;
 class MBoard;
 //class MOled;
-  class MTft;
+  class MDisplay;
 
 class MState;
 
@@ -25,7 +25,7 @@ class MConnect
         MTools * Tools;
         MBoard * Board;
         //MOled * Oled;
-          MTft  * Tft;
+          MDisplay * Display;
 
         MState * State = 0;
 

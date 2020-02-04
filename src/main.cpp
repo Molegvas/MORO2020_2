@@ -17,7 +17,7 @@ date:     Февраль 2020
 
 static MBoard * Board = 0;
 //static MOled * Oled = 0;
-  static MTft * Tft = 0;
+  static MDisplay * Display = 0;
 static MTools * Tools = 0;
 static MMeasure * Measure = 0;
 static MDispatcher * Dispatcher = 0;
@@ -30,16 +30,17 @@ void coolTask    ( void * parameter );
 void mainTask    ( void * parameter );
 void measureTask ( void * parameter );
 
-void setup() {
-  Serial.begin(115200);
-  delay(10);
+void setup()
+{
+//  Serial.begin(115200);
+//  delay(10);
 
   //Oled  = new MOled();
-    Tft   = new MTft();
+    Display   = new MDisplay();
   //Board = new MBoard(Oled);
-    Board = new MBoard(Tft);
+    Board = new MBoard(Display);
   //Tools = new MTools(Board, Oled);
-    Tools = new MTools(Board, Tft);
+    Tools = new MTools(Board, Display);
   Measure = new MMeasure(Tools);
   Dispatcher = new MDispatcher(Tools);
   Connect = new MConnect(Tools);
@@ -54,7 +55,8 @@ void setup() {
 
 void loop() {}
 
-void connectTask( void * parameter ) {
+void connectTask( void * parameter )
+{
   while(true) {
   //unsigned long start = millis();
     Connect->run(); 
@@ -65,12 +67,13 @@ void connectTask( void * parameter ) {
   vTaskDelete( NULL );
 }
 
-void displayTask( void * parameter ) {
+void displayTask( void * parameter )
+{
   while(true)
   {
     unsigned long start = millis();
     //Oled->runDisplay( Board->getVoltage(), 
-    Tft->runDisplay( Board->getVoltage(), 
+    Display->runDisplay( Board->getVoltage(), 
                       Board->getCurrent(), 
                       Board->Overseer->getCelsius(),
                       Tools->getChargeTimeCounter(),
@@ -83,7 +86,8 @@ void displayTask( void * parameter ) {
   vTaskDelete( NULL );
 }
 
-void coolTask( void * parameter ) {
+void coolTask( void * parameter )
+{
   while (true)
   {
     //unsigned long start = millis();
@@ -97,7 +101,8 @@ void coolTask( void * parameter ) {
 
 // 1. Задача обслуживает выбор режима работы.
 // 2. Управляет конечным автоматом выбранного режима вплоть да выхода из режима.
-void mainTask ( void * parameter ) { 
+void mainTask ( void * parameter )
+{ 
   while (true)
   {
     // Выдерживается период запуска для вычисления амперчасов
@@ -111,7 +116,8 @@ void mainTask ( void * parameter ) {
   vTaskDelete( NULL );
 }
 
-void measureTask( void * parameter ) {
+void measureTask( void * parameter )
+{
   while (true)
   {
     //unsigned long start = micros();

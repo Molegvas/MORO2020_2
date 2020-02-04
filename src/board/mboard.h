@@ -8,14 +8,14 @@
 #include "stdint.h"
 
 //class MOled;
-  class MTft;
+  class MDisplay;
 class MOverseer;
 
 class MBoard
 {
   public:
     //MOled     * Oled     = nullptr;   // external
-      MTft      * Tft      = nullptr;   // external
+      MDisplay * Display   = nullptr;   // external
     MOverseer * Overseer = nullptr;   // local
 
         // PWM channels
@@ -26,7 +26,7 @@ class MBoard
 
   public:
     //MBoard(MOled * oled);
-      MBoard(MTft  * tft);
+      MBoard(MDisplay  * display);
 
     void initPorts();
     #ifdef V22

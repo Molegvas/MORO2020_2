@@ -5,5 +5,5 @@ MState::MState(MTools * Tools) :
   Tools(Tools),
   Board(Tools->Board),
   //Oled(Tools->Oled),
-    Tft(Tools->Tft),
+    Display(Tools->Display),
   Keyboard(Tools->Keyboard) {}

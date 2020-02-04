@@ -13,7 +13,7 @@
 
 MConnect::MConnect(MTools * tools) :
   //Tools(tools), Board(tools->Board), Oled(tools->Oled)
-    Tools(tools), Board(tools->Board), Tft(tools->Tft)
+    Tools(tools), Board(tools->Board), Display(tools->Display)
 {
     State = new ConnectFsm::MInit(Tools);
 }

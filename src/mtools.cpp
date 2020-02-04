@@ -13,10 +13,10 @@
 
 
 //MTools::MTools(MBoard * board, MOled * oled) : 
-  MTools::MTools(MBoard * board, MTft  * tft) : 
+  MTools::MTools(MBoard * board, MDisplay  * display) : 
     Board(board),
     //Oled(oled),
-      Tft(tft),
+      Display(display),
     Keyboard(new MKeyboard),
     qPreferences(new Preferences) {}
 

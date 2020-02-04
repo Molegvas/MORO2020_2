@@ -11,10 +11,10 @@
 #include <SPI.h>
 #include <Arduino.h>
 
-  //SPIClass hspi(HSPI);
+  SPIClass hspi(HSPI);
 
 
-MTft::MTft()        //MOled::MOled()
+MDisplay::MDisplay()        //MOled::MOled()
 {
     // The complete list is available here: https://github.com/olikraus/u8g2/wiki/u8g2setupcpp
 
@@ -25,7 +25,7 @@ MTft::MTft()        //MOled::MOled()
     //                                                              MPins::res_pin);  // 
 
 
-  SPIClass hspi(HSPI);
+  //SPIClass hspi(HSPI);
   st7735 = new Adafruit_ST7735 (&hspi, MPins::cs_pin, MPins::dc_pin, MPins::res_pin);
 
 
@@ -34,13 +34,13 @@ MTft::MTft()        //MOled::MOled()
     resetLCD();
 }
 
-MTft::~MTft()      //MOled::~MOled()
+MDisplay::~MDisplay()      //MOled::~MOled()
 {
     //delete U8g2;
     delete st7735;
 }
 
-void MTft::resetLCD()
+void MDisplay::resetLCD()
 {
      st7735->cp437(true);
 
@@ -59,7 +59,7 @@ void MTft::resetLCD()
 
 }
 
-void MTft::runDisplay(float u, float i, float celsius, int time, float ah, bool ap)
+void MDisplay::runDisplay(float u, float i, float celsius, int time, float ah, bool ap)
 {
   // st7735->setTextWrap(false);
   // st7735->fillScreen(ST77XX_BLACK);
