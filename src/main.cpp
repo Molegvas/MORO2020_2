@@ -1,7 +1,7 @@
 /*
 project:  MORO2020_2 
 pcb:      v43 
-display:  TFT 1.8"
+display:  TFT 1.8"  
 date:     Февраль 2020
 */
 
