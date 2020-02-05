@@ -8,6 +8,7 @@
             "includePath": [
                 "e:/GitHub/MORO2020_2/include",
                 "e:/GitHub/MORO2020_2/src",
+                "e:/GitHub/MORO2020_2/lib/BUTTON/src",
                 "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/libraries/Preferences/src",
                 "e:/GitHub/MORO2020_2/lib/AutoConnect_ID2678/src",
                 "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/libraries/EEPROM/src",
@@ -24,7 +25,6 @@
                 "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                 "e:/GitHub/MORO2020_2/lib/Adafruit-GFX",
                 "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src",
-                "e:/GitHub/MORO2020_2/lib/BUTTON/src",
                 "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/config",
                 "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/app_trace",
                 "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/app_update",
@@ -122,6 +122,7 @@
                 "path": [
                     "e:/GitHub/MORO2020_2/include",
                     "e:/GitHub/MORO2020_2/src",
+                    "e:/GitHub/MORO2020_2/lib/BUTTON/src",
                     "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/libraries/Preferences/src",
                     "e:/GitHub/MORO2020_2/lib/AutoConnect_ID2678/src",
                     "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/libraries/EEPROM/src",
@@ -138,7 +139,6 @@
                     "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                     "e:/GitHub/MORO2020_2/lib/Adafruit-GFX",
                     "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src",
-                    "e:/GitHub/MORO2020_2/lib/BUTTON/src",
                     "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/config",
                     "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/app_trace",
                     "C:/Users/OLMORO/.platformio/packages/framework-arduinoespressif32/tools/sdk/include/app_update",
