@@ -70,14 +70,21 @@ void displayTask( void * parameter )
 {
   while(true)
   {
-    unsigned long start = millis();
+    //unsigned long start = millis();
+
+static long cnt = 0;
+static long cntTime = 0;
+cnt++;
+cntTime = cnt / 4;
+
     Display->runDisplay( Board->getVoltage(), 
                          Board->getCurrent(), 
                          Board->Overseer->getCelsius(),
-                         Tools->getChargeTimeCounter(),
-                         Tools->getAhCharge(), 
+            cntTime,  //             Tools->getChargeTimeCounter(),
+                         Tools->getAhCharge(),
+                         Tools->getFulfill(), 
                          Tools->getAP() );
-    Serial.print("Display: Core "); Serial.print(xPortGetCoreID()); Serial.print(" Time = "); Serial.print(millis() - start); Serial.println(" mS");
+    //Serial.print("Display: Core "); Serial.print(xPortGetCoreID()); Serial.print(" Time = "); Serial.print(millis() - start); Serial.println(" mS");
     // Core 1, Time = 24 mS (TFT 1.8", HSPI hard)
     vTaskDelay( 250 / portTICK_PERIOD_MS );
   }

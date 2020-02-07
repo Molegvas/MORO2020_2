@@ -4,6 +4,8 @@
 #include "measure/mkeyboard.h"
 #include "display/mdisplay.h"
 
+#include <string>
+
 #include "modes/optionsfsm.h"
 #ifdef TEMPLATE_ENABLE
   #include "modes/templatefsm.h"
@@ -36,17 +38,14 @@
 MDispatcher::MDispatcher(MTools * tools) :
 Tools(tools), Board(tools->Board), Display(tools->Display)
 {
+    Display->displayLabel("  OLMORO  *  BALSAT  ");
+
+    latrus = Tools->readNvsBool("qulon", "local", true );
     mode = Tools->readNvsInt  ("qulon", "mode", 0);                 // Индекс массива
-    showMode( mode );
-    #ifdef V22
-      Board->ledsOff();                                               // при выборе режима
-    #endif
+    textMode( mode );
     Tools->powInd = Tools->readNvsInt  ("qulon", "powInd", 3);      // 3 - дефолтный индекс массива
-
-    Tools->akbInd     = Tools->readNvsInt  ("qulon", "akbInd", 3);                  // Индекс массива с набором батарей
-//    Tools->voltageNom = Tools->readNvsFloat("qulon", "akbU",   Tools->akb[3][0]);   // Начальный выбор 12 вольт
+    Tools->akbInd = Tools->readNvsInt  ("qulon", "akbInd", 3);                  // Индекс массива с набором батарей
     Tools->setVoltageNom( Tools->readNvsFloat("qulon", "akbU",   Tools->akb[3][0]) );   // Начальный выбор 12 вольт
-
     Tools->setCapacity( Tools->readNvsFloat("qulon", "akbAh",  Tools->akb[3][1]) );   //                 55 Ач
 
     // Калибровки измерителей
@@ -58,7 +57,7 @@ Tools(tools), Board(tools->Board), Display(tools->Display)
 
 void MDispatcher::run()
 {
-  //  // Выдерживается период запуска для вычисления амперчасов
+  // Выдерживается период запуска для вычисления амперчасов
   if (State)
   {
     // rabotaem so state mashinoj
@@ -76,14 +75,14 @@ void MDispatcher::run()
     { 
       if (mode == (int)SERVICE) mode = OPTIONS;
       else mode++;
-      showMode( mode );
+      textMode( mode );
     }
 
     if (Tools->Keyboard->getKey(MKeyboard::DN_CLICK))
     { 
       if (mode == (int)OPTIONS) mode = SERVICE;
       else mode--;
-      showMode( mode );
+      textMode( mode );
     }
 
     if (Tools->Keyboard->getKey(MKeyboard::B_CLICK))
@@ -156,21 +155,26 @@ void MDispatcher::run()
       }
     } // !B_CLICK
   }
+
 }
 
-void MDispatcher::showMode(int mode)
+void MDispatcher::textMode(int mode)
 {
-  String s;
+  //String s;
+  char s[ Display->getMaxString() ] = { 0 };
+
   switch(mode)
   {
-    case OPTIONS:     s = "    Настройки   "; break;
+    //case OPTIONS:     s = "    Настройки   "; break;
+    case OPTIONS:     sprintf( s, "    OPTIONS   "); break;
 
   #ifdef TEMPLATE_ENABLE
     case TEMPLATE:    s = "   Пример FSM   "; break;
   #endif
 
   #ifdef DC_SUPPLY_ENABLE
-    case DCSUPPLY:    s = "  DC источник   "; break;
+    //case DCSUPPLY:    s = "  DC источник   "; break;
+    case DCSUPPLY:    sprintf( s, "  DC DCSUPPLY   "); break;
   #endif
 
   #ifdef PULSE_GEN_ENABLE
@@ -178,7 +182,8 @@ void MDispatcher::showMode(int mode)
   #endif
 
   #ifdef CCCV_CHARGE_ENABLE
-    case CCCV_CHARGE: s = "  CC/CV  заряд  "; break;
+    //case CCCV_CHARGE: s = "  CC/CV  заряд  "; break;
+    case CCCV_CHARGE: sprintf( s, "  CC/CV CHARGE  "); break;
   #endif
 
   #ifdef PULSE_CHARGE_ENABLE           
@@ -194,13 +199,17 @@ void MDispatcher::showMode(int mode)
   #endif
 
   #ifdef DEVICE_ENABLE
-    case DEVICE:      s = "  Регулировки   "; break;
+    //case DEVICE:      s = "  Регулировки   "; break;
+    case DEVICE:      sprintf( s, "  DEVICE   "); break;
   #endif 
 
-    case SERVICE:     s = "   Сервис АКБ   "; break;
+    //case SERVICE:     s = "   Сервис АКБ   "; break;
+    case SERVICE:     sprintf( s, "   SERVICE    "); break;
 
-    default:          s = "  error         "; break;
+    //default:          s = "  error         "; break;
+    default:          sprintf( s, "  ERROR         "); break;
   }
-//  Oled->showLine2Text(s);
-
+  
+  Display->displayMode( s );
+  Display->displayHelp( "01020304050607080910A" );
 }

@@ -34,7 +34,15 @@ MTools::~MTools()
 
 // Доступ к переменным MTools private
 
+    // Локализация
+bool MTools::getLocalization() const { return localization; }
+void MTools::setLocalization( bool _localization ) { localization = _localization; }
+
+
+
 bool  MTools::getAP() { return false; }
+
+
 
 float MTools::getVoltageNom() const { return voltageNom; }
 void  MTools::setVoltageNom(float _voltageNom) { voltageNom = _voltageNom; }
@@ -112,6 +120,8 @@ void MTools::zeroAhCounter() { timeCounter = 0; ahCharge = 0.0; }      // Обн
 int   MTools::getChargeTimeCounter() { return chargeTimeCounter; }
 float MTools::getAhCharge()    { return ahCharge; }
 
+int   MTools::getFulfill() { return fulfill; }
+
 void MTools::chargeCalculations()
 {
     timeCounter++;
@@ -129,6 +139,15 @@ void MTools::chargeCalculations()
 
 //Preferences qPreferences;
 
+
+int MTools::readNvsBool(const char * name, const char * key, const bool defaultValue )
+{
+    qPreferences->begin(name, true);                    // RW-mode (second parameter has to be false).
+    bool val = qPreferences->getBool(key, defaultValue);
+    qPreferences->end();                                // Close the Preferences
+    return val;  
+}
+
 int MTools::readNvsInt(const char * name, const char * key, const int defaultValue )
 {
     qPreferences->begin(name, true);                    // RW-mode (second parameter has to be false).
@@ -143,6 +162,14 @@ float MTools::readNvsFloat(const char * name, const char * key, const float defa
     float val = qPreferences->getFloat(key, defaultValue);
     qPreferences->end();
     return val;
+}
+
+void MTools::writeNvsBool(const char * name, const char * key, const bool bValue )
+{
+    qPreferences->begin(name, false);
+    qPreferences->putBool(key, bValue);
+//    Serial.println( qPreferences.getInt( key, iValue ));      // test
+    qPreferences->end();
 }
 
 void MTools::writeNvsInt(const char * name, const char * key, const int iValue )

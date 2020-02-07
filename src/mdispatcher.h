@@ -1,6 +1,7 @@
 #ifndef _DISPATCHER_H_
 #define _DISPATCHER_H_
 
+
 class MTools;
 class MBoard;
 class MDisplay;
@@ -28,13 +29,13 @@ class MDispatcher
       PULSECHARGE,            // режим импульсного заряда
     #endif
     #ifdef RECOVERY_ENABLE
-      RECOVERY,   // режим восстановления
+      RECOVERY,               // режим восстановления
     #endif
     #ifdef STORAGE_ENABLE
       STORAGE,                // режим хранения
     #endif
     #ifdef DEVICE_ENABLE
-      DEVICE,                // режим заводских регулировок
+      DEVICE,                 // режим заводских регулировок
     #endif
       SERVICE                 // режим Сервис АКБ
     };
@@ -44,15 +45,15 @@ class MDispatcher
 
     void run();
     void delegateWork();
-    void showMode(int mode);
+    void textMode(int mode);
 
   private:
     MTools * Tools;
     MBoard * Board;
     MDisplay * Display;
-
     MState * State = 0;
 
+    bool latrus;
     int mode;
 };
 

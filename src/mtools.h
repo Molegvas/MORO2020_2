@@ -20,6 +20,10 @@ class MTools
     MKeyboard   * Keyboard     = nullptr; // local
     Preferences * qPreferences = nullptr; // local
 
+    // Локализация
+    bool getLocalization() const;
+    void setLocalization(bool);
+
     // Номинальное напряжение батареи, В
     float getVoltageNom() const;
     void  setVoltageNom(float);
@@ -134,9 +138,11 @@ class MTools
     void  zeroAhCounter();      // Обнуление счетчика ампер-часов заряда
 
 
+    int   readNvsBool  (const char * name, const char * key, const bool  defaultValue );
     int   readNvsInt   (const char * name, const char * key, const int   defaultValue );
     float readNvsFloat (const char * name, const char * key, const float defaultValue );
 
+    void  writeNvsBool (const char * name, const char * key, const bool bValue );
     void  writeNvsInt  (const char * name, const char * key, const int iValue );
     void  writeNvsFloat(const char * name, const char * key, const float fValue );
 
@@ -309,7 +315,7 @@ class MTools
 
     int   getChargeTimeCounter();       // common?
     float getAhCharge();                // common?
-
+    int   getFulfill();
 
     void activateChargeStart();    
 
@@ -395,6 +401,7 @@ class MTools
 private:
 
 // Переменные будут здесь
+    bool  localization = true ;     // LAT
     float voltageNom  = 12.0f;   // Номинальное напряжение батареи, В
   //float capacityNom = 55.0f;   // Номинальная емкость батареи, А    nu
     float capacity    = 50.f;    // Заданная емкость батареи, А-ч
@@ -490,6 +497,7 @@ private:
     float temp = 0.0f;
     const int number_of_batteries = 7;
     float ahCharge = 0.0f;
+    int   fulfill  = 75;            // TEST 
     int   timeCounter = 0;
     int   chargeTimeCounter = 0;
 
