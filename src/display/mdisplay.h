@@ -17,15 +17,19 @@ class MDisplay
 
     void displayVoltage( float voltage );
     void displayCurrent( float current );
-    void displayMode( char *s );
-    void displayHelp( char *s );      
+    void displayMode();    //( char *s );
+    void displayHelp();    //( char *s );      
     void displayFulfill( int percent );
     void displayUpTime( unsigned long upSeconds );
     void displayAmpHours( float ah );
     void displayCelsius( float celsius );
-    void displayLabel( char *s );
+    void displayLabel();   //( char *s );
 
     int  getMaxString();
+    void getTextMode( char *s );
+    void getTextHelp( char *s );
+    void getTextLabel( char *s );
+
 
   private:
     Adafruit_ST7735 * ST7735 = nullptr;
@@ -130,13 +134,19 @@ class MDisplay
     // the string being displayed on the ST7735 (initially empty)
     char oldVoltageString[ MaxString ]  = { 0 };
     char oldCurrentString[ MaxString ]  = { 0 };
+
+    char newModeString[ MaxString ]     = { 0 };
     char oldModeString[ MaxString ]     = { 0 };
+
+    char newHelpString[ MaxString ]     = { 0 };
     char oldHelpString[ MaxString ]     = { 0 };
 
     int  oldPercent                     =   0; 
     char oldTimeString[ MaxString ]     = { 0 };
     char oldAmpHoursString[ MaxString ] = { 0 };
     char oldCelsiusString[ MaxString ]  = { 0 };
+
+    char newLabelString[ MaxString ]    = { 0 };
     char oldLabelString[ MaxString ]    = { 0 };
 
 };

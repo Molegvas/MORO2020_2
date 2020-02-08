@@ -38,7 +38,9 @@
 MDispatcher::MDispatcher(MTools * tools) :
 Tools(tools), Board(tools->Board), Display(tools->Display)
 {
-    Display->displayLabel("  OLMORO  *  BALSAT  ");
+    char sLabel[ Display->getMaxString() ] = { 0 };
+    strcpy( sLabel, "  OLMORO  *  BALSAT  " );
+    Display->getTextLabel( sLabel );
 
     latrus = Tools->readNvsBool("qulon", "local", true );
     mode = Tools->readNvsInt  ("qulon", "mode", 0);                 // Индекс массива
@@ -118,7 +120,7 @@ void MDispatcher::run()
       #endif
 
       #ifdef CCCV_CHARGE_ENABLE
-        case CCCV_CHARGE:
+        case CCCVCHARGE:
           State = new CcCvFsm::MStart(Tools);
           break;
       #endif
@@ -161,12 +163,16 @@ void MDispatcher::run()
 void MDispatcher::textMode(int mode)
 {
   //String s;
-  char s[ Display->getMaxString() ] = { 0 };
+  char sMode[ Display->getMaxString() ] = { 0 };
+  char sHelp[ Display->getMaxString() ] = { 0 };
 
   switch(mode)
   {
+    // Подсказка для всех режимов
+    sprintf( sHelp, "01020304050607080910G" );
+
     //case OPTIONS:     s = "    Настройки   "; break;
-    case OPTIONS:     sprintf( s, "    OPTIONS   "); break;
+    case OPTIONS:     sprintf( sMode, "    OPTIONS   "); break;
 
   #ifdef TEMPLATE_ENABLE
     case TEMPLATE:    s = "   Пример FSM   "; break;
@@ -174,7 +180,7 @@ void MDispatcher::textMode(int mode)
 
   #ifdef DC_SUPPLY_ENABLE
     //case DCSUPPLY:    s = "  DC источник   "; break;
-    case DCSUPPLY:    sprintf( s, "  DC DCSUPPLY   "); break;
+    case DCSUPPLY:    sprintf( sMode, "  DC DCSUPPLY   "); break;
   #endif
 
   #ifdef PULSE_GEN_ENABLE
@@ -183,7 +189,7 @@ void MDispatcher::textMode(int mode)
 
   #ifdef CCCV_CHARGE_ENABLE
     //case CCCV_CHARGE: s = "  CC/CV  заряд  "; break;
-    case CCCV_CHARGE: sprintf( s, "  CC/CV CHARGE  "); break;
+    case CCCVCHARGE: sprintf( sMode, "  CC/CV CHARGE  "); break;
   #endif
 
   #ifdef PULSE_CHARGE_ENABLE           
@@ -200,16 +206,18 @@ void MDispatcher::textMode(int mode)
 
   #ifdef DEVICE_ENABLE
     //case DEVICE:      s = "  Регулировки   "; break;
-    case DEVICE:      sprintf( s, "  DEVICE   "); break;
+    case DEVICE:      sprintf( sMode, "  DEVICE   "); break;
   #endif 
 
     //case SERVICE:     s = "   Сервис АКБ   "; break;
-    case SERVICE:     sprintf( s, "   SERVICE    "); break;
+    case SERVICE:     sprintf( sMode, "   SERVICE    "); break;
 
     //default:          s = "  error         "; break;
-    default:          sprintf( s, "  ERROR         "); break;
+    default:          sprintf( sMode, "  ERROR         "); break;
+
   }
   
-  Display->displayMode( s );
-  Display->displayHelp( "01020304050607080910A" );
+  Display->getTextMode( sMode );
+  Display->getTextHelp( sHelp );
+  Serial.println( sMode);
 }

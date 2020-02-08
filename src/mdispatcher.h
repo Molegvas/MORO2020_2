@@ -23,7 +23,7 @@ class MDispatcher
       PULSEGEN,               // режим источника импульсного тока
     #endif
     #ifdef CCCV_CHARGE_ENABLE
-      CCCV_CHARGE,            // режим заряда "постоянный ток / постоянное напряжение"
+      CCCVCHARGE,             // режим заряда "постоянный ток / постоянное напряжение"
     #endif
     #ifdef PULSE_CHARGE_ENABLE           
       PULSECHARGE,            // режим импульсного заряда

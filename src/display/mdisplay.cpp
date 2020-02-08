@@ -50,10 +50,13 @@ void MDisplay::runDisplay(float u, float i, float celsius, int time, float ah, i
 {
     displayVoltage( u );
     displayCurrent( i );
+    displayMode();
+    displayHelp();      
     displayFulfill( percent );
     displayUpTime( time );
     displayAmpHours( ah );
     displayCelsius( celsius );
+    displayLabel();
 
   //ST7735->setCursor(0, 80);
   //ST7735->println(utf8rus( (char *) " Настройки "));
@@ -96,11 +99,11 @@ void MDisplay::displayCurrent( float current )
     }
 }
 
-void MDisplay::displayMode( char *s )
+void MDisplay::displayMode()   //( char *s )
 {
-    char newModeString[ MDisplay::MaxString ] = { 0 };
+    //char newModeString[ MDisplay::MaxString ] = { 0 };
 
-    strcpy( newModeString, s );                         // 
+    //strcpy( newModeString, s );                         // 
     if (strcmp( newModeString, oldModeString) != 0) 
     {
         ST7735->setTextSize( MMode::textSize );
@@ -114,11 +117,11 @@ void MDisplay::displayMode( char *s )
     }
 }
 
-void MDisplay::displayHelp( char *s )     
+void MDisplay::displayHelp()   //( char *s )     
 {
-    char newHelpString[ MDisplay::MaxString ] = { 0 };
+    //char newHelpString[ MDisplay::MaxString ] = { 0 };
 
-    strcpy( newHelpString, s );
+    //strcpy( newHelpString, s );
     if (strcmp( newHelpString, oldHelpString) != 0) 
     {
         ST7735->setTextSize( MHelp::textSize );
@@ -239,11 +242,11 @@ void MDisplay::displayCelsius( float celsius )
     }
 }
 
-void MDisplay::displayLabel( char *s )
+void MDisplay::displayLabel()  //( char *s )
 {
-    char newLabelString[ MDisplay::MaxString ] = { 0 };
+    //char newLabelString[ MDisplay::MaxString ] = { 0 };
 
-    strcpy( newLabelString, s );
+    //strcpy( newLabelString, s );
     if (strcmp( newLabelString, oldLabelString) != 0) 
     {
         ST7735->setTextSize( MLabel::textSize );
@@ -260,4 +263,19 @@ void MDisplay::displayLabel( char *s )
 int MDisplay::getMaxString()
 {
     return MaxString;
+}
+
+void MDisplay::getTextMode( char *s )
+{
+    strcpy( newModeString, s );
+}
+
+void MDisplay::getTextHelp( char *s )
+{
+    strcpy( newHelpString, s );
+}
+
+void MDisplay::getTextLabel( char *s )
+{
+    strcpy( newLabelString, s );
 }
