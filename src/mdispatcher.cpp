@@ -169,10 +169,13 @@ void MDispatcher::textMode(int mode)
   switch(mode)
   {
     // Подсказка для всех режимов
-    sprintf( sHelp, "01020304050607080910G" );
+  //  sprintf( sHelp, "01020304050607080910G" );
 
     //case OPTIONS:     s = "    Настройки   "; break;
-    case OPTIONS:     sprintf( sMode, "    OPTIONS   "); break;
+    case OPTIONS:
+      sprintf( sMode, "OPTIONS: BATT.SELECT," );
+      sprintf( sHelp, "CALIBRATION,TIMER ETC" );
+    break;
 
   #ifdef TEMPLATE_ENABLE
     case TEMPLATE:    s = "   Пример FSM   "; break;
@@ -180,7 +183,10 @@ void MDispatcher::textMode(int mode)
 
   #ifdef DC_SUPPLY_ENABLE
     //case DCSUPPLY:    s = "  DC источник   "; break;
-    case DCSUPPLY:    sprintf( sMode, "  DC DCSUPPLY   "); break;
+    case DCSUPPLY:
+      sprintf( sMode, "     DC DCSUPPLY:    " );
+      sprintf( sHelp, " SIMPLE POWER SUPPLY " );
+    break;
   #endif
 
   #ifdef PULSE_GEN_ENABLE
@@ -189,7 +195,10 @@ void MDispatcher::textMode(int mode)
 
   #ifdef CCCV_CHARGE_ENABLE
     //case CCCV_CHARGE: s = "  CC/CV  заряд  "; break;
-    case CCCVCHARGE: sprintf( sMode, "  CC/CV CHARGE  "); break;
+    case CCCVCHARGE:
+      sprintf( sMode, "    CC/CV CHARGE     " );
+      sprintf( sHelp, " U/D-OTHER  B-SELECT " );
+    break;
   #endif
 
   #ifdef PULSE_CHARGE_ENABLE           
@@ -206,14 +215,23 @@ void MDispatcher::textMode(int mode)
 
   #ifdef DEVICE_ENABLE
     //case DEVICE:      s = "  Регулировки   "; break;
-    case DEVICE:      sprintf( sMode, "  DEVICE   "); break;
+    case DEVICE:
+      sprintf( sMode, "  DEVICE:            " );
+      sprintf( sHelp, " THE DEVELOPER TOOLS " );
+    break;
   #endif 
 
     //case SERVICE:     s = "   Сервис АКБ   "; break;
-    case SERVICE:     sprintf( sMode, "   SERVICE    "); break;
+    case SERVICE:
+      sprintf( sMode, "  BATTERY SERVICE:   " );
+      sprintf( sHelp, " ADJUSTING THE DEVICE" );
+    break;
 
     //default:          s = "  error         "; break;
-    default:          sprintf( sMode, "  ERROR         "); break;
+    default:
+      sprintf( sMode, "  ERROR:             ");
+      sprintf( sHelp, "  UNIDENTIFIED MODE  " );
+    break;
 
   }
   

@@ -260,8 +260,10 @@ void MDisplay::displayLabel()  //( char *s )
     }
 }
 
-int MDisplay::getMaxString()
+//int MDisplay::getMaxString()
+size_t MDisplay::getMaxString()
 {
+//    return ( int ) MaxString;
     return MaxString;
 }
 

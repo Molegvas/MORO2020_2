@@ -25,7 +25,7 @@ class MDisplay
     void displayCelsius( float celsius );
     void displayLabel();   //( char *s );
 
-    int  getMaxString();
+    size_t  getMaxString();
     void getTextMode( char *s );
     void getTextHelp( char *s );
     void getTextLabel( char *s );

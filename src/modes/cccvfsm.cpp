@@ -15,8 +15,14 @@
 #include "display/mdisplay.h"
 #include <Arduino.h>
 
+#include <string>
+
+
 namespace CcCvFsm
 {
+    
+
+
     // Состояние "Старт", инициализация выбранного режима работы (Заряд CCCV).
     MStart::MStart(MTools * Tools) : MState(Tools)
     {
@@ -37,16 +43,9 @@ namespace CcCvFsm
             // Oled->showLine1Ah(0.0);                         // уточнить
         #endif
 
-        #ifdef V22
-            Board->ledsOn();                                // Светодиод светится белым до старта заряда - режим выбран
-        #endif
+        Display->getTextMode( (char*) "   CC/CV SELECTED    " );
+        Display->getTextHelp( (char*) "  P-DEFINE  C-START  " );
 
-        #ifdef TFT_1_44
-            // no leds
-        #endif
-        #ifdef TFT_1_8
-            // no leds
-        #endif
     }
     MState * MStart::fsm()
     {
@@ -430,11 +429,18 @@ namespace CcCvFsm
     MStop::MStop(MTools * Tools) : MState(Tools)
     {
         Tools->shutdownCharge();            // Включение красного светодиода здесь
+        Display->getTextMode( (char*) "   CC/CV CHARGE OFF  " );
+        Display->getTextHelp( (char*) " C-EXIT TO SELECTION " );
     }    
     MState * MStop::fsm()
     {
-        if(Keyboard->getKey(MKeyboard::C_CLICK)) { Tools->activateExit("  CC/CV  заряд  "); return nullptr; }   // Возврат к выбору режима
-
+        if(Keyboard->getKey(MKeyboard::C_CLICK))
+        { 
+            //Tools->activateExit("  CC/CV  заряд  ");
+            Display->getTextMode( (char*) "    CC/CV CHARGE     " );
+            Display->getTextHelp( (char*) " U/D-OTHER  B-SELECT " );
+            return nullptr;                             // Возврат к выбору режима
+        }
         return this;
     };
 };
