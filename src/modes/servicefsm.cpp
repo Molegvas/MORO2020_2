@@ -264,8 +264,8 @@ namespace ServiceFsm
 
         // Здесь будет проверка напряжения - setpoint по напряжению
         //float setpoint = Tools->getVoltageMax() * 0.96f;      // Для второй фазы
-        //if( Board->getVoltage() >= setpoint )           // 96% = 14.2В
-        if( Board->getVoltage() >= Tools->getVoltageMax() )      // или voltageMax * 0.96 ?
+        //if( Board->getRealVoltage() >= setpoint )           // 96% = 14.2В
+        if( Board->getRealVoltage() >= Tools->getVoltageMax() )      // или voltageMax * 0.96 ?
         {
             if( Tools->getNumCycles() == Tools->getCycle() )                     // Последний цикл?
             {
@@ -308,7 +308,7 @@ namespace ServiceFsm
 
         if (Keyboard->getKey(MKeyboard::C_CLICK)) { Tools->shutdownCharge(); return new MExit(Tools); }    
 
-        if( Board->getVoltage() <= Tools->getVoltageDis() )
+        if( Board->getRealVoltage() <= Tools->getVoltageDis() )
         {
             Tools->clrTimeCounter();
 

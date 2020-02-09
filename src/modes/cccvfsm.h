@@ -37,12 +37,12 @@ namespace CcCvFsm
             virtual MState * fsm() override;
     };
 
-    class MSetFactory : public MState
-    {
-        public:
-            MSetFactory(MTools * Tools);
-            virtual MState * fsm() override;
-    };
+    // class MSetFactory : public MState
+    // {
+    //     public:
+    //         MSetFactory(MTools * Tools);
+    //         virtual MState * fsm() override;
+    // };
 
     class MSetCurrentMax : public MState
     {

@@ -232,7 +232,7 @@ namespace PulseGenFsm
         }
     //Serial.println(-cycles);
 
-//Serial.println( Board->getVoltage() );
+//Serial.println( Board->getRealVoltage() );
 
         return this;
     };

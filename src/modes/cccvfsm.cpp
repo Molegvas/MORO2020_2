@@ -20,9 +20,6 @@
 
 namespace CcCvFsm
 {
-    
-
-
     // Состояние "Старт", инициализация выбранного режима работы (Заряд CCCV).
     MStart::MStart(MTools * Tools) : MState(Tools)
     {
@@ -42,13 +39,14 @@ namespace CcCvFsm
             // Oled->showLine1Time(0);                         // уточнить
             // Oled->showLine1Ah(0.0);                         // уточнить
         #endif
-
         Display->getTextMode( (char*) "   CC/CV SELECTED    " );
         Display->getTextHelp( (char*) "  P-DEFINE  C-START  " );
-
     }
     MState * MStart::fsm()
     {
+        Display->voltage( Board->getRealVoltage(), 2 );
+        Display->current( Board->getRealCurrent(), 1 );
+
         switch ( Keyboard->getKey() )    //Здесь так можно
         {
             case MKeyboard::C_CLICK :
@@ -63,50 +61,50 @@ namespace CcCvFsm
                 Tools->setCurrentMin( MChConsts::currentMinFactor * Tools->getCapacity() );
                 return new MPostpone(Tools);
             case MKeyboard::P_CLICK :
-                return new MSetFactory(Tools);      // Выбрано уточнение настроек заряда.
+                return new MSetCurrentMax(Tools);      // Выбрано уточнение настроек заряда.
             default:;
         }
 
         return this;
     };
 
-    // Выбор заводских параметров или пользовательских ("профиль")
-    MSetFactory::MSetFactory(MTools * Tools) : MState(Tools)
-    {
-        // Индикация
-        #ifdef OLED_1_3
-            // Oled->showLine4Text("   Factory   ");
-            // Oled->showLine3Text("     Y/NO    ");
-            // Oled->showLine2Text("  B-yes,  C-no  ");
-        #endif
+    // // Выбор заводских параметров или пользовательских ("профиль")
+    // MSetFactory::MSetFactory(MTools * Tools) : MState(Tools)
+    // {
+    //     // Индикация
+    //     #ifdef OLED_1_3
+    //         // Oled->showLine4Text("   Factory   ");
+    //         // Oled->showLine3Text("     Y/NO    ");
+    //         // Oled->showLine2Text("  B-yes,  C-no  ");
+    //     #endif
 
-        #ifdef TFT_1_44
-            // no leds
-        #endif
-        #ifdef TFT_1_8
-            // no leds
-        #endif
-    }
-    MState * MSetFactory::fsm()
-    {
-        switch ( Keyboard->getKey() )
-        {
-            case MKeyboard::C_CLICK :
-                return new MSetCurrentMax(Tools);           // Отказ в восстановлении заводских параметров.
-            case MKeyboard::B_CLICK :
-                Tools->clearAllKeys("cccv");                // Очистка в энергонезависимой памяти.
+    //     #ifdef TFT_1_44
+    //         // no leds
+    //     #endif
+    //     #ifdef TFT_1_8
+    //         // no leds
+    //     #endif
+    // }
+    // MState * MSetFactory::fsm()
+    // {
+    //     switch ( Keyboard->getKey() )
+    //     {
+    //         case MKeyboard::C_CLICK :
+    //             return new MSetCurrentMax(Tools);           // Отказ в восстановлении заводских параметров.
+    //         case MKeyboard::B_CLICK :
+    //             Tools->clearAllKeys("cccv");                // Очистка в энергонезависимой памяти.
 
-                // Восстановление параметров заряда (после очистки – дефолтными значениями).
-                Tools->setVoltageMax( Tools->readNvsFloat("cccv", "voltMax", MChConsts::voltageMaxFactor * Tools->getVoltageNom()) );
-                Tools->setVoltageMin( Tools->readNvsFloat("cccv", "voltMin", MChConsts::voltageMinFactor * Tools->getVoltageNom()) );
-                Tools->setCurrentMax( Tools->readNvsFloat("cccv", "currMax", MChConsts::currentMaxFactor * Tools->getCapacity()) );
-                Tools->setCurrentMin( Tools->readNvsFloat("cccv", "currMin", MChConsts::currentMinFactor * Tools->getCapacity()) );
-                return new MSetCurrentMax(Tools);
-            default:;
-        }
+    //             // Восстановление параметров заряда (после очистки – дефолтными значениями).
+    //             Tools->setVoltageMax( Tools->readNvsFloat("cccv", "voltMax", MChConsts::voltageMaxFactor * Tools->getVoltageNom()) );
+    //             Tools->setVoltageMin( Tools->readNvsFloat("cccv", "voltMin", MChConsts::voltageMinFactor * Tools->getVoltageNom()) );
+    //             Tools->setCurrentMax( Tools->readNvsFloat("cccv", "currMax", MChConsts::currentMaxFactor * Tools->getCapacity()) );
+    //             Tools->setCurrentMin( Tools->readNvsFloat("cccv", "currMin", MChConsts::currentMinFactor * Tools->getCapacity()) );
+    //             return new MSetCurrentMax(Tools);
+    //         default:;
+    //     }
 
-        return this;
-    };
+    //     return this;
+    // };
 
     // Коррекция максимального тока заряда.
     MSetCurrentMax::MSetCurrentMax(MTools * Tools) : MState(Tools)
@@ -358,12 +356,12 @@ namespace CcCvFsm
         if(Keyboard->getKey(MKeyboard::C_CLICK)) { return new MStop(Tools); }    
 
         // Проверка напряжения и переход на поддержание напряжения.
-        if( Board->getVoltage() >= Tools->getVoltageMax() ) { return new MKeepVmax(Tools); }
+        if( Board->getRealVoltage() >= Tools->getVoltageMax() ) { return new MKeepVmax(Tools); }
 
         // Коррекция источника тока по измерению (установщик откалиброван с некоторым завышением)
-        if( Board->getCurrent() > Tools->getCurrentMax() ) { Tools->adjustIntegral( -0.250f ); } // -0.025A
+        if( Board->getRealCurrent() > Tools->getCurrentMax() ) { Tools->adjustIntegral( -0.250f ); } // -0.025A
 
-        Tools->runPid( Board->getVoltage() );                                           // Подъём и поддержание тока.
+        Tools->runPid( Board->getRealVoltage() );                                           // Подъём и поддержание тока.
         return this;
     };
 
@@ -385,12 +383,12 @@ namespace CcCvFsm
 
         if (Keyboard->getKey(MKeyboard::C_CLICK)) { return new MStop(Tools); }                // Окончание процесса оператором.
 
-        if( Board->getCurrent() <= Tools->getCurrentMin() ) { return new MKeepVmin(Tools); } // Ожидание спада тока ниже C/20 ампер.
+        if( Board->getRealCurrent() <= Tools->getCurrentMin() ) { return new MKeepVmin(Tools); } // Ожидание спада тока ниже C/20 ампер.
 
         // Коррекция
-        if( Board->getCurrent() > Tools->getCurrentMax() ) { Tools->adjustIntegral( -0.250f ); } // -0.025A
+        if( Board->getRealCurrent() > Tools->getCurrentMax() ) { Tools->adjustIntegral( -0.250f ); } // -0.025A
 
-        Tools->runPid( Board->getVoltage() );                                           // Поддержание максимального напряжения.
+        Tools->runPid( Board->getRealVoltage() );                                           // Поддержание максимального напряжения.
         return this;
     };
 
@@ -417,11 +415,11 @@ namespace CcCvFsm
         if( Tools->getChargeTimeCounter() >= ( Tools->charge_time_out_limit * 36000 ) ) { return new MStop(Tools); }
 
         // Необходимая коррекция против выброса тока
-        if( Board->getCurrent() > Tools->getCurrentMax() ) { Tools->adjustIntegral( -0.250f ); }        // -0.025A
+        if( Board->getRealCurrent() > Tools->getCurrentMax() ) { Tools->adjustIntegral( -0.250f ); }        // -0.025A
         #ifdef V22
             Board->blinkYellow();           // Желтый светодиод мигает - процесс поддержания минимального напряжения
         #endif
-        Tools->runPid( Board->getVoltage() );           // Регулировка по напряжению
+        Tools->runPid( Board->getRealVoltage() );           // Регулировка по напряжению
         return this;
     };
 

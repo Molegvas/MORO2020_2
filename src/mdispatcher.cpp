@@ -59,6 +59,10 @@ Tools(tools), Board(tools->Board), Display(tools->Display)
 
 void MDispatcher::run()
 {
+  // 
+  Display->voltage( Board->getRealVoltage(), 2 );
+  Display->current( Board->getRealCurrent(), 1 );
+
   // Выдерживается период запуска для вычисления амперчасов
   if (State)
   {

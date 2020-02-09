@@ -23,8 +23,8 @@ namespace ConnectFsm
 // Running
     MState * MExe::fsm()
     {
-        runFSBrowser( Board->getVoltage(), 
-              Board->getCurrent(), 
+        runFSBrowser( Board->getRealVoltage(), 
+              Board->getRealCurrent(), 
               Board->Overseer->getCelsius(), 
               Tools->getAhCharge(), 
               Board->Overseer->getFanPwm() );

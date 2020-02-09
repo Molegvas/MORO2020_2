@@ -214,8 +214,8 @@ void MBoard::calcCurrent( int ivalue ) {
 void MBoard::setVoltage(float _voltage) { voltage = _voltage; }
 void MBoard::setCurrent(float _current) { current = _current; }
 
-float MBoard::getVoltage() { return voltage; }
-float MBoard::getCurrent() { return current; }
+float MBoard::getRealVoltage() { return voltage; }
+float MBoard::getRealCurrent() { return current; }
 
 void  MBoard::setOffsetU(float u) { offsetU = u; }
 float MBoard::getOffsetU() { return offsetU; }

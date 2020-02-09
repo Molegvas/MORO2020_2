@@ -46,10 +46,11 @@ void MDisplay::initLCD()
     ST7735->setFont();
 }
 
-void MDisplay::runDisplay(float u, float i, float celsius, int time, float ah, int percent, bool ap)
+//void MDisplay::runDisplay(float u, float i, float celsius, int time, float ah, int percent, bool ap)
+void MDisplay::runDisplay( float celsius, int time, float ah, int percent, bool ap)
 {
-    displayVoltage( u );
-    displayCurrent( i );
+    displayVoltage();       //( u );
+    displayCurrent();           //( i );
     displayMode();
     displayHelp();      
     displayFulfill( percent );
@@ -62,12 +63,19 @@ void MDisplay::runDisplay(float u, float i, float celsius, int time, float ah, i
   //ST7735->println(utf8rus( (char *) " Настройки "));
 }
 
-// Пока без центровки в строке
-void MDisplay::displayVoltage( float voltage )
+void MDisplay::voltage( float voltage, int n )
 {
-    char newVoltageString[ MDisplay::MaxString ] = { 0 };
+    if( n == 2 ) sprintf( newVoltageString, "%2.2fv", voltage );
+    else         sprintf( newVoltageString, "%2.1fv", voltage );
 
-    sprintf( newVoltageString, "%2.2fv", voltage );
+}
+
+// Пока без центровки в строке
+void MDisplay::displayVoltage()
+{
+//    char newVoltageString[ MDisplay::MaxString ] = { 0 };
+
+//    sprintf( newVoltageString, "%2.2fv", voltage );
     if (strcmp( newVoltageString, oldVoltageString) != 0) 
     {
         ST7735->setTextSize( MVoltage::textSize );
@@ -81,11 +89,17 @@ void MDisplay::displayVoltage( float voltage )
     }
 }
 
-void MDisplay::displayCurrent( float current )
+void MDisplay::current( float current, int n )
 {
-    char newCurrentString[ MDisplay::MaxString ] = { 0 };
+    if( n == 2 ) sprintf( newCurrentString, "%2.2fA", current );
+    else         sprintf( newCurrentString, "%2.1fA", current );
+}
 
-    sprintf( newCurrentString, "%2.1fA", current );
+void MDisplay::displayCurrent()
+{
+//    char newCurrentString[ MDisplay::MaxString ] = { 0 };
+
+//    sprintf( newCurrentString, "%2.1fA", current );
     if (strcmp( newCurrentString, oldCurrentString) != 0) 
     {
         ST7735->setTextSize( MCurrent::textSize );
@@ -223,6 +237,12 @@ void MDisplay::displayAmpHours( float ah )
         strcpy( oldAmpHoursString, newAmpHoursString );
     }
 }
+
+// void MDisplay::celsius()
+// {
+//     float celsius = Board->Overseer->getCelsius(),
+//     sprintf( newCelsiusString, "%3.1f C", celsius );
+// }
 
 void MDisplay::displayCelsius( float celsius )
 {

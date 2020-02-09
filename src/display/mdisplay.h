@@ -13,19 +13,27 @@ class MDisplay
     ~MDisplay();
 
     void initLCD();
-    void runDisplay(float u, float i, float celsius, int time, float ah, int percent, bool ap);
+    //void runDisplay(float u, float i, float celsius, int time, float ah, int percent, bool ap);
+    void runDisplay( float celsius, int time, float ah, int percent, bool ap);
 
-    void displayVoltage( float voltage );
-    void displayCurrent( float current );
+    void voltage( float voltage, int n );
+    void displayVoltage();
+
+    void current( float current, int n );
+    void displayCurrent();
+
     void displayMode();    //( char *s );
     void displayHelp();    //( char *s );      
     void displayFulfill( int percent );
     void displayUpTime( unsigned long upSeconds );
     void displayAmpHours( float ah );
+
+    //void celsius();
     void displayCelsius( float celsius );
     void displayLabel();   //( char *s );
 
     size_t  getMaxString();
+
     void getTextMode( char *s );
     void getTextHelp( char *s );
     void getTextLabel( char *s );
@@ -132,7 +140,11 @@ class MDisplay
     static constexpr size_t MaxString = 22;   // Max 21 + 1 for TextSize 1 
 
     // the string being displayed on the ST7735 (initially empty)
+
+    char newVoltageString[ MaxString ]  = { 0 };
     char oldVoltageString[ MaxString ]  = { 0 };
+
+    char newCurrentString[ MaxString ]  = { 0 };
     char oldCurrentString[ MaxString ]  = { 0 };
 
     char newModeString[ MaxString ]     = { 0 };
@@ -142,8 +154,12 @@ class MDisplay
     char oldHelpString[ MaxString ]     = { 0 };
 
     int  oldPercent                     =   0; 
+
     char oldTimeString[ MaxString ]     = { 0 };
+
     char oldAmpHoursString[ MaxString ] = { 0 };
+
+    //char newCelsiusString[ MaxString ]  = { 0 };
     char oldCelsiusString[ MaxString ]  = { 0 };
 
     char newLabelString[ MaxString ]    = { 0 };

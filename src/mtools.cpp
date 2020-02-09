@@ -126,7 +126,7 @@ void MTools::chargeCalculations()
 {
     timeCounter++;
     chargeTimeCounter = ((int)timeCounter / 10);
-    ahCharge += Board->getCurrent() / 36000.0;     //    ((float)( 1000 / simpleChargerPeriod ) * 3600.0);
+    ahCharge += Board->getRealCurrent() / 36000.0;     //    ((float)( 1000 / simpleChargerPeriod ) * 3600.0);
 }
 
 // void MTools::disChargeCalculations() {
@@ -465,14 +465,14 @@ Serial.println("-----#- Pause");
 
 // Управление регулятором и накопление отсчетов тока 
 void  MTools::runPulse() {
-    //collectAvr += Board->getCurrent();  
+    //collectAvr += Board->getRealCurrent();  
     //count++;
         // Накопление отсчетов тока
-        addCollectAvr( Board->getCurrent() );
+        addCollectAvr( Board->getRealCurrent() );
     cycle--;
 
     //... runPidVoltage()
-    input = Board->getVoltage();                    // Текущее значение
+    input = Board->getRealVoltage();                    // Текущее значение
     #ifdef DEBUG_PID
         printPid();
     #endif
@@ -837,7 +837,7 @@ void MTools::activatePowerPh1( float volt, float amp )
 {
 // Pid
     setPoint = volt;
-    input = Board->getVoltage();            // перестраховка?
+    input = Board->getRealVoltage();            // перестраховка?
   Pid.reset();  
   Pid.setIntegral( (volt - 0.3) * 10.0 );
     Pid.setOutputRange(0.0, volt + 0.6);                        //( 0.6, setPoint + 0.5 );        // уточнить
@@ -878,7 +878,7 @@ void MTools::activatePowerPh1( float volt, float amp )
 }
 
 void MTools::runPidVoltage() {
-    input = Board->getVoltage();                    // Текущее значение
+    input = Board->getRealVoltage();                    // Текущее значение
     #ifdef DEBUG_PID
         printPid();
     #endif
@@ -1200,7 +1200,7 @@ void MTools::runChargePh1()
 //  Board->powOn();
 //  Board->swOn();
 
- //   input = Board->getCurrent();                    // Текущее значение тока
+ //   input = Board->getRealCurrent();                    // Текущее значение тока
  //   Pid.run();                                      // Сравнение текущего тока с заданной величиной и вычисление порога ограничения
 
   //Board->setCurrentAmp( currentMax ); // для калибровки 
@@ -1209,7 +1209,7 @@ void MTools::runChargePh1()
     //Board->setCurrentAmp( setPoint );   //output );                 // Коррекция ограничителя тока
     //    Serial.println("************************");
 
-    input = Board->getVoltage();
+    input = Board->getRealVoltage();
     Pid.run();
     Board->setCurrentAmp( output );
 
@@ -1221,13 +1221,13 @@ void MTools::runChargePh1()
 // Предзаряд постоянным током
 void MTools::runPreliminaryCharge( float volt, float amp, float delta )
 {
-    if( Board->getVoltage() <= volt ) { setPoint += delta; }
+    if( Board->getRealVoltage() <= volt ) { setPoint += delta; }
 
     if( setPoint > amp ) setPoint = amp;
 
         //if( cycle == ( durationOn * 2.0 ) ) { input = setPoint; }
-        //else                                { input = Board->getCurrent(); }    // setPoint;   // !!!
-    input = Board->getCurrent();    
+        //else                                { input = Board->getRealCurrent(); }    // setPoint;   // !!!
+    input = Board->getRealCurrent();    
         Pid.run();
         Board->setCurrentAmp( output ); // ( setPoint );
 
@@ -1238,8 +1238,8 @@ void MTools::runPreliminaryCharge( float volt, float amp, float delta )
         Serial.print(setPoint);             Serial.print("    ");
         Serial.print(Pid.getIntegral());    Serial.print("    ");
         Serial.print(output);               Serial.print("    ");
-        Serial.print(Board->getVoltage());  Serial.print("    ");
-        Serial.println(Board->getCurrent());
+        Serial.print(Board->getRealVoltage());  Serial.print("    ");
+        Serial.println(Board->getRealCurrent());
     #endif
 
 }
@@ -1253,7 +1253,7 @@ void MTools::activateImpulsCharge( float volt, float amp, float delta )
 
     // Задать пределы регулирования для импульса
     Board->setVoltageVolt( volt * 1.2 );
-    if( Board->getVoltage() <= volt ) { setPoint += delta; }
+    if( Board->getRealVoltage() <= volt ) { setPoint += delta; }
     if( ( setPoint ) > amp ) setPoint = amp;
 
     // Настройка ПИД-регулятора
@@ -1367,9 +1367,9 @@ void MTools::activateImpulsCharge( float volt, float amp, float delta )
 //     else
 //     {
 //         // Накопление отсчетов тока
-//         addCollectAvr( Board->getCurrent() );
+//         addCollectAvr( Board->getRealCurrent() );
 
-//         input = Board->getVoltage();
+//         input = Board->getRealVoltage();
 //         Pid.run();
 //         Board->setCurrentAmp( output ); 
 //     }
@@ -1379,7 +1379,7 @@ void MTools::activateImpulsCharge( float volt, float amp, float delta )
 //     #endif
 
 //     // При превышении максимального напряжения импульс заряда завершить
-//     if( Board->getVoltage() >= voltageMax ) { cycle = 1; }
+//     if( Board->getRealVoltage() >= voltageMax ) { cycle = 1; }
 
 //     // Окончание импульса заряда
 //     if( cycle == 1 )
@@ -1475,7 +1475,7 @@ void MTools::activateImpulsCharge2( float volt, float amp )
 
 
 initCurrentAvr();
-    //if( Board->getVoltage() <= 14.2 ) { setPoint += delta; }
+    //if( Board->getRealVoltage() <= 14.2 ) { setPoint += delta; }
 
     //if( setPoint > amp ) setPoint = amp;
 
@@ -1511,15 +1511,15 @@ void MTools::runImpulsCharge2()
     // setPoint задана 14,2 или 14,8
 
     // Накопление отсчетов тока, исключая первый шаг, где ток нулевой
-    //if( cycle < ( (int)( durationOn * 2.0 ) ) )  { addCollectAvr( Board->getCurrent() ); }
-    if( cycle < ( (int)( durationOn * 10.0 ) ) )  { addCollectAvr( Board->getCurrent() ); }
+    //if( cycle < ( (int)( durationOn * 2.0 ) ) )  { addCollectAvr( Board->getRealCurrent() ); }
+    if( cycle < ( (int)( durationOn * 10.0 ) ) )  { addCollectAvr( Board->getRealCurrent() ); }
 
     #ifdef DEBUG_CHARGE
         printAll("@+ : ");
     #endif
 
 
-    input = Board->getVoltage();        // Текущее напряжение
+    input = Board->getRealVoltage();        // Текущее напряжение
     Pid.run();
     Board->setCurrentAmp( output );
 
@@ -1528,7 +1528,7 @@ void MTools::runImpulsCharge2()
     if( cycle == 1 ) 
     {
         //Serial.print("@+: Средний ток в импульсе = ");  Serial.println( getCurrentAverage() );
-        //currentOld = Board->getCurrent();  // Это может и не понадобится - ПИД должен справиться
+        //currentOld = Board->getRealCurrent();  // Это может и не понадобится - ПИД должен справиться
 
   //currentOld = getCurrentAverage();
         currentAvr = calcCurrentAvr();
@@ -1580,7 +1580,7 @@ void MTools::runImpulsDischarge2()
     // незадолго до окончания импульса (средний ток бы)
     if( cycle == 2 ) 
     { 
-        //setPoint = Board->getCurrent(); 
+        //setPoint = Board->getRealCurrent(); 
         //Pid.run();
 
     }
@@ -1603,7 +1603,7 @@ void MTools::runImpulsDischarge2()
 // Светодиодная индикация - жёлтый
 void MTools::activateChargePh2( float _setPoint )
 {
-    input = Board->getVoltage();                    // для первого шага - уточнить
+    input = Board->getRealVoltage();                    // для первого шага - уточнить
     setPoint = _setPoint;                           // это 14.2;
     Pid.setOutputRange( min_akb_i, output );
     float saveIntegral = Pid.getIntegral();         // Для восстановления после перезагрузки ПИД-регулятора
@@ -1626,8 +1626,8 @@ void MTools::activateChargePh2( float _setPoint )
         Serial.print("  integral  saved     = ");  Serial.println(saveIntegral);
         Serial.print("  integral  V         = ");  Serial.println(Pid.getIntegral());
         Serial.print("  output, A   ***     = ");  Serial.println(output);
-        Serial.print("  voltage, V          = ");  Serial.println(Board->getVoltage());
-        Serial.print("  current, A          = ");  Serial.println(Board->getCurrent());
+        Serial.print("  voltage, V          = ");  Serial.println(Board->getRealVoltage());
+        Serial.print("  current, A          = ");  Serial.println(Board->getRealCurrent());
     #endif
     cycle = durationOn * 2;
 }
@@ -1635,7 +1635,7 @@ void MTools::activateChargePh2( float _setPoint )
 // Работа ПИД-регулятора во второй фазе (подъём напряжения до 96% конечного)
 void MTools::runChargePh2()
 {
-    input = Board->getVoltage();                    // Текущее значение напряжения
+    input = Board->getRealVoltage();                    // Текущее значение напряжения
     Pid.run();                                      // Сравнение текущего напряжения с заданной величиной, вычисление уровня
     Board->setCurrentAmp( output );                 // ограничением тока 
     #ifdef DEBUG_CHARGE
@@ -1645,8 +1645,8 @@ void MTools::runChargePh2()
         Serial.print(setPoint);             Serial.print("    ");
         Serial.print(Pid.getIntegral());    Serial.print("    ");
         Serial.print(output);               Serial.print("    ");
-        Serial.print(Board->getVoltage());  Serial.print("    ");
-        Serial.println(Board->getCurrent());
+        Serial.print(Board->getRealVoltage());  Serial.print("    ");
+        Serial.println(Board->getRealCurrent());
     #endif
 }
 
@@ -1661,8 +1661,8 @@ void MTools::activateChargePh3()
         Serial.print("  input         = ");  Serial.println(input);
         Serial.print("  integral      = ");  Serial.println(Pid.getIntegral());
         Serial.print("  output        = ");  Serial.println(output);
-        Serial.print("  voltage, V    = ");  Serial.println(Board->getVoltage());
-        Serial.print("  current, A    = ");  Serial.println(Board->getCurrent());
+        Serial.print("  voltage, V    = ");  Serial.println(Board->getRealVoltage());
+        Serial.print("  current, A    = ");  Serial.println(Board->getRealCurrent());
     #endif
 }
 
@@ -1839,8 +1839,8 @@ void MTools::printAll( const char * s )
     Serial.print(setPoint);             Serial.print("    ");
     Serial.print(Pid.getIntegral());    Serial.print("    ");
     Serial.print(output);               Serial.print("    ");
-    Serial.print(Board->getVoltage());  Serial.print("    ");
-    Serial.print(Board->getCurrent());  Serial.print("    ");
+    Serial.print(Board->getRealVoltage());  Serial.print("    ");
+    Serial.print(Board->getRealCurrent());  Serial.print("    ");
     Serial.println(currentAvr);
 }
 

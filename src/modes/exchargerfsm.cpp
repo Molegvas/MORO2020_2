@@ -220,16 +220,16 @@ namespace ExChargerFsm
         if( Keyboard->getKey(MKeyboard::C_CLICK)) { return new MStop(Tools); }
 
         // Проверка окончания предзаряда, переход к импульсному заряду с набором тока
-        if( Board->getVoltage() >= Tools->getVoltagePre() ) 
+        if( Board->getRealVoltage() >= Tools->getVoltagePre() ) 
         {
             // Для первого импульса ток устанавливается на уровне достигнутого в предзаряде
-            Tools->setCurrentAvr( Board->getCurrent() );
+            Tools->setCurrentAvr( Board->getRealCurrent() );
             return new MPulseUp(Tools); 
         }
 
         // Коррекция источника тока по измерению (установщик откалиброван с некоторым завышением)
-        if( Board->getCurrent() > Tools->getCurrentPre() ) { Tools->adjustIntegral( -0.250f ); } // -0.025A
-        Tools->runPid( Board->getVoltage() );     // Подъём и поддержание тока.
+        if( Board->getRealCurrent() > Tools->getCurrentPre() ) { Tools->adjustIntegral( -0.250f ); } // -0.025A
+        Tools->runPid( Board->getRealVoltage() );     // Подъём и поддержание тока.
         return this;
     };
 
@@ -264,7 +264,7 @@ namespace ExChargerFsm
         Tools->runPulse();
     #else
         Board->setCurrentAmp( Tools->getCurrentAvr() );
-        Tools->addCollectAvr( Board->getCurrent() );
+        Tools->addCollectAvr( Board->getRealCurrent() );
         Tools->decCycle();
     #endif
         return this;
@@ -339,7 +339,7 @@ namespace ExChargerFsm
         if( Keyboard->getKey(MKeyboard::C_CLICK)) { return new MStop(Tools); }
 
             // Проверяются условия окончания заряда
-            //float curr = Tools->getCurrentAvr();       //Board->getCurrent();
+            //float curr = Tools->getCurrentAvr();       //Board->getRealCurrent();
 
             Serial.print(" Ток : "); Serial.println( Tools->getCurrentAvr() );
             if( Tools->getCurrentAvr() <= Tools->getCurrentMax() * 0.1f )            // другие проверки: || (         ) )
@@ -356,7 +356,7 @@ namespace ExChargerFsm
         {
 
             // Импульс заряда закончен по времени, активируется импульс разряда
-            Tools->activateImpulsDischarge2( Board->getCurrent() );     // Для последующего импульса заряда
+            Tools->activateImpulsDischarge2( Board->getRealCurrent() );     // Для последующего импульса заряда
             return new MImpulsDischarge2(Tools);
         }
 

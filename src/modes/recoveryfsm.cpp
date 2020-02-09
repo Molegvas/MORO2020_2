@@ -233,8 +233,8 @@ namespace RecoveryFsm
             return new MIdleCharge(Tools);
         }
 
-        //if( Board->getVoltage() >= Tools->getVoltageMax() / 2.0f )    // 
-        if( Board->getVoltage() >= 12.5 )                           // TEST 
+        //if( Board->getRealVoltage() >= Tools->getVoltageMax() / 2.0f )    // 
+        if( Board->getRealVoltage() >= 12.5 )                           // TEST 
         {
 //                 Oled->showLine2Text(" Заряжается...  ");        // " Время:  Заряд: "
 
@@ -280,7 +280,7 @@ namespace RecoveryFsm
 
         // Здесь будет проверка напряжения - setpoint по напряжению
         float setpoint = Tools->getVoltageMax() * 0.96f;      // Для второй фазы
-        if( Board->getVoltage() >= setpoint )           // 96% = 14.2В
+        if( Board->getRealVoltage() >= setpoint )           // 96% = 14.2В
         {
             Tools->activateChargePh2( setpoint );             // output соответствует фактическому значению тока 
             #ifdef DEBUG_CHARGE
@@ -302,7 +302,7 @@ namespace RecoveryFsm
         if (Keyboard->getKey(MKeyboard::C_CLICK)) { Tools->shutdownCharge();    return new MExit(Tools); }  
 
         float setpoint = Tools->getVoltageMax() * 0.96f;      // Для второй фазы
-        if( Board->getVoltage() >= setpoint )
+        if( Board->getRealVoltage() >= setpoint )
         {
             Tools->activateChargePh2( setpoint ); 
             return new MPhase2(Tools);
@@ -320,7 +320,7 @@ namespace RecoveryFsm
         Tools->chargeCalculations();
         if (Keyboard->getKey(MKeyboard::C_CLICK)) { Tools->shutdownCharge();    return new MExit(Tools); }    
 
-        if( Board->getCurrent() <= Tools->getCapacity() * 0.01f) //currentMax * 0.1 )
+        if( Board->getRealCurrent() <= Tools->getCapacity() * 0.01f) //currentMax * 0.1 )
         {
             Tools->activateChargePh3();
             #ifdef DEBUG_CHARGE
@@ -339,7 +339,7 @@ namespace RecoveryFsm
         Tools->chargeCalculations();
         if (Keyboard->getKey(MKeyboard::C_CLICK)) { Tools->shutdownCharge();    return new MExit(Tools); }    
 
-        if( ( Board->getVoltage() >= ( Tools->getVoltageMax() - 0.05f )) && ( Board->getCurrent() <= Tools->getCurrentMax() * 0.1f ) )
+        if( ( Board->getRealVoltage() >= ( Tools->getVoltageMax() - 0.05f )) && ( Board->getRealCurrent() <= Tools->getCurrentMax() * 0.1f ) )
         {
             #ifdef DEBUG_CHARGE
                 Serial.println( "Заряд закончен: по напряжению и току" );
@@ -349,7 +349,7 @@ namespace RecoveryFsm
         } 
 
         // Другие проверки окончания заряда
-        if( Board->getVoltage() > ( Tools->getVoltageMax() + 0.15f )) 
+        if( Board->getRealVoltage() > ( Tools->getVoltageMax() + 0.15f )) 
         {
             #ifdef DEBUG_CHARGE
                 Serial.println( "Заряд закончен по напряжению" );

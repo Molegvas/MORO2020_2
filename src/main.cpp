@@ -77,8 +77,8 @@ static long cntTime = 0;
 cnt++;
 cntTime = cnt / 4;
 
-    Display->runDisplay( Board->getVoltage(), 
-                         Board->getCurrent(), 
+    Display->runDisplay( //Board->getRealVoltage(), 
+                         //Board->getRealCurrent(), 
                          Board->Overseer->getCelsius(),
             cntTime,  //             Tools->getChargeTimeCounter(),
                          Tools->getAhCharge(),

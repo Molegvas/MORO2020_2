@@ -240,7 +240,7 @@ namespace DeviceFsm
                 voltagePwm = Tools->incNum( voltagePwm, voltagePwmMax, voltageDeltaPwm );
                 Board->setVoltagePwm( voltagePwm );
                 #ifdef PRINT_PWM
-                    Serial.print( Board->getVoltage() );    Serial.print( " " );   //***
+                    Serial.print( Board->getRealVoltage() );    Serial.print( " " );   //***
                     Serial.print( voltagePwm );             Serial.print( " " );                                         
                 #endif
                 break;

@@ -91,8 +91,8 @@ class MBoard
     void setVoltage(float);
     void setCurrent(float);
 
-    float getVoltage();
-    float getCurrent();
+    float getRealVoltage();
+    float getRealCurrent();
 
 //    void  setCelsius(float);
 //    float getCelsius();

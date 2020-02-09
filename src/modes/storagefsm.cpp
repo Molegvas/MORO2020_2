@@ -75,7 +75,7 @@ namespace StorageFsm
         if(Keyboard->getKey(MKeyboard::C_CLICK)) { return new MStop(Tools); } 
 
         // Проверка напряжения и переход на поддержание напряжения.
-        if( Board->getVoltage() <= Tools->getVoltageMin() ) { return new MStop(Tools); }
+        if( Board->getRealVoltage() <= Tools->getVoltageMin() ) { return new MStop(Tools); }
 
         // Do nothing
         return this;
