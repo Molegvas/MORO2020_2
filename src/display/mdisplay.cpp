@@ -47,15 +47,18 @@ void MDisplay::initLCD()
 }
 
 //void MDisplay::runDisplay(float u, float i, float celsius, int time, float ah, int percent, bool ap)
-void MDisplay::runDisplay( float celsius, int time, float ah, int percent, bool ap)
+void MDisplay::runDisplay( float celsius, bool ap)
 {
     displayVoltage();       //( u );
     displayCurrent();           //( i );
     displayMode();
     displayHelp();      
-    displayFulfill( percent );
-    displayUpTime( time );
-    displayAmpHours( ah );
+    displayFulfill();               //( percent );
+    //displayUpTime( time );
+    //displayAmpHours( ah );
+    displayDuration();
+    displayAmphours();
+
     displayCelsius( celsius );
     displayLabel();
 
@@ -149,9 +152,14 @@ void MDisplay::displayHelp()   //( char *s )
     }
 }
 
-void MDisplay::displayFulfill( int percent )
+void MDisplay::fulfill( int val )
 {
+    percent = val;
+}
 
+
+void MDisplay::displayFulfill()         //( int percent )
+{
     if ( percent != oldPercent ) 
     {
         int x = percent + MFilfull::minX;
@@ -168,7 +176,14 @@ void MDisplay::displayFulfill( int percent )
     }
 }
 
-void MDisplay::displayUpTime( unsigned long upSeconds )
+          //  Tools->getChargeTimeCounter(),
+void MDisplay::duration( int duration )     // unsigned long ??
+{
+    upSeconds = duration;
+}
+
+//void MDisplay::displayUpTime( unsigned long upSeconds )
+void MDisplay::displayDuration()
 {
     // the remaining hhhmmss are
     upSeconds = upSeconds % 86400;
@@ -220,7 +235,12 @@ void MDisplay::displayUpTime( unsigned long upSeconds )
     }
 }
 
-void MDisplay::displayAmpHours( float ah )
+void MDisplay::amphours( float val )
+{
+    ah = val;
+} 
+
+void MDisplay::displayAmphours()       //( float ah )
 {
     char newAmpHoursString[ MDisplay::MaxString ] = { 0 };
 

@@ -33,14 +33,13 @@ namespace CcCvFsm
 
         // Индикация
         #ifdef OLED_1_3
-            // Oled->showLine4Text("   Зарядное  ");
             // Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );              // example: "  12В  55Ач  "
-            // Oled->showLine2Text(" P-корр.С-старт ");        // Подсказка: активны две кнопки: P-сменить настройки, и C-старт
             // Oled->showLine1Time(0);                         // уточнить
             // Oled->showLine1Ah(0.0);                         // уточнить
         #endif
         Display->getTextMode( (char*) "   CC/CV SELECTED    " );
         Display->getTextHelp( (char*) "  P-DEFINE  C-START  " );
+        Display->fulfill( 0 );                                // GRAY
     }
     MState * MStart::fsm()
     {
@@ -109,12 +108,9 @@ namespace CcCvFsm
     // Коррекция максимального тока заряда.
     MSetCurrentMax::MSetCurrentMax(MTools * Tools) : MState(Tools)
     {
-        // Индикация
-        #ifdef OLED_1_3
-            // Oled->showLine4Text(" Imax заряда ");
-            // Oled->showLine3MaxI( Tools->getCurrentMax() );
-            // Tools->showUpDn(); // " UP/DN, В-выбор "
-        #endif
+        // Индикация помощи
+        Display->getTextMode( (char*) "U/D-SET CURRENT MAX" );
+        Display->getTextHelp( (char*) "  B-SAVE  C-START  " );
     }
     MState * MSetCurrentMax::fsm()
     {
@@ -142,19 +138,19 @@ namespace CcCvFsm
                 break;
             default:;
         }
-        #ifdef OLED_1_3
-//            Oled->showLine3MaxI( Tools->getCurrentMax() );
-        #endif
+        // Индикация ввода
+        Display->voltage( Board->getRealVoltage(), 2 );
+        Display->current( Tools->getCurrentMax(), 1 );
+
         return this;
     };
 
     // Коррекция максимального напряжения.
     MSetVoltageMax::MSetVoltageMax(MTools * Tools) : MState(Tools)
     {
-        // Индикация
-//        Oled->showLine4Text(" Vmax заряда ");
-//        Oled->showLine3MaxU( Tools->getVoltageMax() );
-        Tools->showUpDn(); // " UP/DN, В-выбор "
+        // Индикация помощи
+        Display->getTextMode( (char*) "U/D-SET VOLTAGE MAX" );
+        Display->getTextHelp( (char*) "  B-SAVE  C-START  " );
     }
     MState * MSetVoltageMax::fsm()
     {
@@ -182,9 +178,9 @@ namespace CcCvFsm
                 break;
             default:;
         }
-        #ifdef OLED_1_3
-//            Oled->showLine3MaxU( Tools->getVoltageMax() );
-        #endif
+        // Индикация ввода
+        Display->voltage( Tools->getVoltageMax(), 1 );
+        Display->current( Board->getRealCurrent(), 1 );
 
         return this;
     };
@@ -192,10 +188,9 @@ namespace CcCvFsm
     // Коррекция минимального тока заряда
     MSetCurrentMin::MSetCurrentMin(MTools * Tools) : MState(Tools)
     {
-        // Индикация
-//        Oled->showLine4Text(" Imin заряда ");
-//        Oled->showLine3MaxI( Tools->getCurrentMin() );
-        Tools->showUpDn(); // " UP/DN, В-выбор "
+        // Индикация помощи
+        Display->getTextMode( (char*) "U/D-SET CURRENT MIN" );
+        Display->getTextHelp( (char*) "  B-SAVE  C-START  " );
     }   
     MState * MSetCurrentMin::fsm()
     {
@@ -223,9 +218,9 @@ namespace CcCvFsm
                 break;
             default:;
         }
-        #ifdef OLED_1_3
-//            Oled->showLine3MaxI( Tools->getCurrentMin() );
-        #endif
+        // Индикация ввода
+        Display->voltage( Board->getRealVoltage(), 2 );
+        Display->current( Tools->getCurrentMin(), 1 );
 
         return this;
     };
@@ -233,10 +228,9 @@ namespace CcCvFsm
     // Коррекция минимального напряжения окончания заряда.
     MSetVoltageMin::MSetVoltageMin(MTools * Tools) : MState(Tools)
     {
-        // Индикация
-//        Oled->showLine4Text(" Vmin заряда ");
-//        Oled->showLine3MaxU( Tools->getVoltageMin() );
-        Tools->showUpDn(); // " UP/DN, В-выбор "
+    // Индикация помощи
+    Display->getTextMode( (char*) "U/D-SET VOLTAGE MIN" );
+    Display->getTextHelp( (char*) "  B-SAVE  C-START  " );
     }   
     MState * MSetVoltageMin::fsm()
     {
@@ -264,36 +258,30 @@ namespace CcCvFsm
                 break;
             default:;
         }
-        #ifdef OLED_1_3
-//            Oled->showLine3MaxU( Tools->getVoltageMin() );
-        #endif
+        // Индикация ввода
+        Display->voltage( Tools->getVoltageMin(), 1 );
+        Display->current( Board->getRealCurrent(), 1 );
 
         return this;
     };
-// **************************************************************************************
+// ************************************************************************************** OLD
 
-    // Задержка включения (отложенный старт), светидиод белый, мигает.
+    // Задержка включения (отложенный старт).
+    // Время ожидания старта задается в настройках.
     MPostpone::MPostpone(MTools * Tools) : MState(Tools)
     {
         // Параметр задержки начала заряда из энергонезависимой памяти, при первом включении - заводское
         Tools->postpone = Tools->readNvsInt( "qulon", "postp", 0 );
                 
-        // Индикация
-//        Oled->showLine4RealVoltage();
-//        Oled->showLine3RealCurrent();
-//        Oled->showLine2Text(" До старта...   ");
+        // Индикация помощи
+        Display->getTextMode( (char*) " C-START CLONG-STOP" );
+        Display->getTextHelp( (char*) " BEFORE THE START: " );
 
         // Инициализация счетчика времени до старта
         Tools->setTimeCounter( Tools->postpone * 36000 );                // Отложенный старт ( * 0.1s )
     }     
     MState * MPostpone::fsm()
     {
-        // // Возможно досрочное прекращение заряда или
-        // if (Keyboard->getKey(MKeyboard::C_LONG_CLICK)) { return new MStop(Tools); }    
-
-        // // ... старт по времени или оператором
-        // if( Tools->postponeCalculation() || Keyboard->getKey(MKeyboard::C_CLICK ) ) { return new MUpCurrent(Tools); }
-
         if( Tools->postponeCalculation() ) return new MUpCurrent(Tools);    // Старт по времени
 
         switch ( Keyboard->getKey() )
@@ -301,21 +289,28 @@ namespace CcCvFsm
             case MKeyboard::C_LONG_CLICK :        // Досрочное прекращение заряда оператором
                 return new MStop(Tools);
             case MKeyboard::C_CLICK :
-                return new MStop(Tools);
+                return new MUpCurrent(Tools);
             default:;
         }
-        #ifdef V22
-            Board->blinkWhite();           // Мигать белым – время пошло.
-        #endif
+        // Индикация в период ожидания старта (обратный отсчет)
+
+        // ...
+
         return this;
     };
+
+// **************************************************************************************
 
     // Начальный этап заряда - ток поднимается не выше заданного уровня,
     // при достижении заданного максимального напряжения переход к его удержанию.
     // Здесь и далее подсчитывается время и отданный заряд, а также
     // сохраняется возможность прекращения заряда оператором.
     MUpCurrent::MUpCurrent(MTools * Tools) : MState(Tools)
-    {
+    {   
+        // Индикация помощи
+        Display->getTextMode( (char*) " UP CURRENT TO MAX " );
+        Display->getTextHelp( (char*) "       C-STOP      " );
+
         // Обнуляются счетчики времени и отданного заряда
         Tools->clrTimeCounter();
         Tools->clrAhCharge();
@@ -362,6 +357,21 @@ namespace CcCvFsm
         if( Board->getRealCurrent() > Tools->getCurrentMax() ) { Tools->adjustIntegral( -0.250f ); } // -0.025A
 
         Tools->runPid( Board->getRealVoltage() );                                           // Подъём и поддержание тока.
+        
+        // Индикация фазы подъема тока не выше заданного
+        Display->voltage( Board->getRealVoltage(), 2 );
+        Display->current( Board->getRealCurrent(), 1 );
+
+        static int x = 0;
+        x += 4;
+    if (x >= 100 ) x = 0;
+
+        Display->fulfill( x );                                //   TEST
+    //Serial.println( x );
+    
+        Display->duration( Tools->getChargeTimeCounter() );
+        Display->amphours( Tools->getAhCharge() );
+        
         return this;
     };
 
@@ -369,13 +379,12 @@ namespace CcCvFsm
     // При падении тока ниже заданного уровня - переход к третьей фазе.
     MKeepVmax::MKeepVmax(MTools * Tools) : MState(Tools)
     {
+        // Индикация помощи
+        Display->getTextMode( (char*) "KEEP VOLTAGE TO MAX" );
+        Display->getTextHelp( (char*) "       C-STOP      " );
+
         // Порог регулирования по напряжению
         Tools->setSetPoint( Tools->getVoltageMax() );
-        // Индикация
-//        Oled->showLine2Text("  const Vmax... ");
-        #ifdef V22
-            Board->ledROn();                // Желтый светодиод (R & G) - процесс поддержания максимального напряжения
-        #endif
     }       
     MState * MKeepVmax::fsm()
     {
@@ -388,7 +397,13 @@ namespace CcCvFsm
         // Коррекция
         if( Board->getRealCurrent() > Tools->getCurrentMax() ) { Tools->adjustIntegral( -0.250f ); } // -0.025A
 
-        Tools->runPid( Board->getRealVoltage() );                                           // Поддержание максимального напряжения.
+        Tools->runPid( Board->getRealVoltage() ); 
+        
+                                                  // Поддержание максимального напряжения.
+        // Индикация фазы удержания максимального напряжения
+        // Реальные ток и напряжения - без изменения, можно не задавать?
+        
+
         return this;
     };
 

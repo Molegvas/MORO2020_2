@@ -14,7 +14,7 @@ class MDisplay
 
     void initLCD();
     //void runDisplay(float u, float i, float celsius, int time, float ah, int percent, bool ap);
-    void runDisplay( float celsius, int time, float ah, int percent, bool ap);
+    void runDisplay( float celsius, bool ap);
 
     void voltage( float voltage, int n );
     void displayVoltage();
@@ -23,10 +23,19 @@ class MDisplay
     void displayCurrent();
 
     void displayMode();    //( char *s );
-    void displayHelp();    //( char *s );      
-    void displayFulfill( int percent );
-    void displayUpTime( unsigned long upSeconds );
-    void displayAmpHours( float ah );
+    void displayHelp();    //( char *s );  
+
+    void fulfill( int percent );
+    void displayFulfill();                         //( int percent );
+
+
+    void duration( int time );
+    void amphours( float ah );
+
+    // void displayUpTime( unsigned long upSeconds );
+    // void displayAmpHours( float ah );
+    void displayDuration();
+    void displayAmphours();
 
     //void celsius();
     void displayCelsius( float celsius );
@@ -153,10 +162,13 @@ class MDisplay
     char newHelpString[ MaxString ]     = { 0 };
     char oldHelpString[ MaxString ]     = { 0 };
 
+    int  percent                        =  -1;
     int  oldPercent                     =   0; 
 
+    unsigned long upSeconds             =   0;
     char oldTimeString[ MaxString ]     = { 0 };
 
+    float ah                            =   0;
     char oldAmpHoursString[ MaxString ] = { 0 };
 
     //char newCelsiusString[ MaxString ]  = { 0 };
