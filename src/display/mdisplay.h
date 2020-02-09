@@ -15,6 +15,20 @@ class MDisplay
     // declare size of working string buffers.
     static constexpr size_t MaxString = 22;   // Max 21 + 1 for TextSize 1 TFT 1.8" 128*160
 
+    // Some ready-made 16-bit 5-6-5 my color settings:
+    static constexpr uint16_t BLACK   = 0x0000;
+    static constexpr uint16_t GRAY    = 0x39E7;
+    static constexpr uint16_t WHITE   = 0xFFFF;
+    static constexpr uint16_t RED     = 0xF800;
+    static constexpr uint16_t GREEN   = 0x07E0;
+    static constexpr uint16_t BLUE    = 0x001F;
+    static constexpr uint16_t CYAN    = 0x07FF;
+    static constexpr uint16_t MAGENTA = 0xF81F;
+    static constexpr uint16_t YELLOW  = 0xFFE0;
+    static constexpr uint16_t ORANGE  = 0xFC00;
+
+
+
     void initLCD();
     //void runDisplay(float u, float i, float celsius, int time, float ah, int percent, bool ap);
     void runDisplay( float celsius, bool ap);
@@ -28,7 +42,8 @@ class MDisplay
     void displayMode();
     void displayHelp();
 
-    void fulfill( int percent );
+    void fulfill( int percent, uint16_t rgb );
+
     void displayFulfill();
 
 
@@ -48,21 +63,14 @@ class MDisplay
     void getTextHelp( char *s );
     void getTextLabel( char *s );
 
+    void progessBarOff();
+    void progessBarExe( uint16_t rgb );
+    void progessBarStop();
+
 
   private:
     Adafruit_ST7735 * ST7735 = nullptr;
 
-    // Some ready-made 16-bit 5-6-5 my color settings:
-    static constexpr uint16_t BLACK   = 0x0000;
-    static constexpr uint16_t GRAY    = 0x39E7;
-    static constexpr uint16_t WHITE   = 0xFFFF;
-    static constexpr uint16_t RED     = 0xF800;
-    static constexpr uint16_t GREEN   = 0x07E0;
-    static constexpr uint16_t BLUE    = 0x001F;
-    static constexpr uint16_t CYAN    = 0x07FF;
-    static constexpr uint16_t MAGENTA = 0xF81F;
-    static constexpr uint16_t YELLOW  = 0xFFE0;
-    static constexpr uint16_t ORANGE  = 0xFC00;
 
     uint16_t displayBackroundColor = BLACK;
 
@@ -162,6 +170,7 @@ class MDisplay
     char oldHelpString[ MaxString ]     = { 0 };
 
     int  percent                        =  -1;
+    uint16_t color                      = GREEN;
     int  oldPercent                     =   0; 
 
     unsigned long upSeconds             =   0;

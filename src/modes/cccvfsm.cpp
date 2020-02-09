@@ -39,7 +39,8 @@ namespace CcCvFsm
         #endif
         Display->getTextMode( (char*) "   CC/CV SELECTED    " );
         Display->getTextHelp( (char*) "  P-DEFINE  C-START  " );
-        Display->fulfill( 0 );                                // GRAY
+        Display->progessBarOff();
+//Display->fulfill( 0 );                                // GRAY
     }
     MState * MStart::fsm()
     {
@@ -116,16 +117,16 @@ namespace CcCvFsm
     {
         switch ( Keyboard->getKey() )
         {
-            case MKeyboard::C_LONG_CLICK :                  // Отказ от продолжения ввода параметров - стоп
+            case MKeyboard::C_LONG_CLICK :               // Отказ от продолжения ввода параметров - стоп
                 return new MStop(Tools);
-            case MKeyboard::C_CLICK :                       // Отказ от дальнейшего ввода параметров - исполнение
+            case MKeyboard::C_CLICK :                    // Отказ от дальнейшего ввода параметров - исполнение
                 return new MPostpone(Tools);
-            case MKeyboard::B_CLICK :                       // Сохранить и перейти к следующему параметру
+            case MKeyboard::B_CLICK :                    // Сохранить и перейти к следующему параметру
                 Tools->saveFloat( "cccv", "currMax", Tools->getCurrentMax() ); 
                 return new MSetVoltageMax(Tools);
 
             case MKeyboard::UP_CLICK :
-                Tools->incCurrentMax( 0.1f, false );        // По кольцу? - Нет
+                Tools->incCurrentMax( 0.1f, false );     // По кольцу? - Нет
                 break;
             case MKeyboard::DN_CLICK:
                 Tools->decCurrentMax( 0.1f, false );
@@ -156,16 +157,16 @@ namespace CcCvFsm
     {
         switch ( Keyboard->getKey() )
         {
-            case MKeyboard::C_LONG_CLICK :                  // Отказ от продолжения ввода параметров - стоп
+            case MKeyboard::C_LONG_CLICK :               // Отказ от продолжения ввода параметров - стоп
                 return new MStop(Tools);
-            case MKeyboard::C_CLICK :                       // Отказ от дальнейшего ввода параметров - исполнение
+            case MKeyboard::C_CLICK :                    // Отказ от дальнейшего ввода параметров - исполнение
                 return new MPostpone(Tools);
-            case MKeyboard::B_CLICK :                       // Сохранить и перейти к следующему параметру
+            case MKeyboard::B_CLICK :                    // Сохранить и перейти к следующему параметру
                 Tools->saveFloat( "cccv", "voltMax", Tools->getVoltageMax() ); 
                 return new MSetCurrentMin(Tools);
 
             case MKeyboard::UP_CLICK :
-                Tools->incVoltageMax( 0.1f, false );        // По кольцу? - Нет
+                Tools->incVoltageMax( 0.1f, false );     // По кольцу? - Нет
                 break;
             case MKeyboard::DN_CLICK:
                 Tools->decVoltageMax( 0.1f, false );
@@ -196,16 +197,16 @@ namespace CcCvFsm
     {
         switch ( Keyboard->getKey() )
         {
-            case MKeyboard::C_LONG_CLICK :                  // Отказ от продолжения ввода параметров - стоп
+            case MKeyboard::C_LONG_CLICK :               // Отказ от продолжения ввода параметров - стоп
                 return new MStop(Tools);
-            case MKeyboard::C_CLICK :                       // Отказ от дальнейшего ввода параметров - исполнение
+            case MKeyboard::C_CLICK :                    // Отказ от дальнейшего ввода параметров - исполнение
                 return new MPostpone(Tools);
-            case MKeyboard::B_CLICK :                       // Сохранить и перейти к следующему параметру
+            case MKeyboard::B_CLICK :                    // Сохранить и перейти к следующему параметру
                 Tools->saveFloat( "cccv", "currMin", Tools->getCurrentMin() ); 
                 return new MSetVoltageMin(Tools);
 
             case MKeyboard::UP_CLICK :
-                Tools->incCurrentMin( 0.1f, false );        // По кольцу? - Нет
+                Tools->incCurrentMin( 0.1f, false );     // По кольцу? - Нет
                 break;
             case MKeyboard::DN_CLICK:
                 Tools->decCurrentMin( 0.1f, false );
@@ -236,16 +237,16 @@ namespace CcCvFsm
     {
         switch ( Keyboard->getKey() )
         {
-            case MKeyboard::C_LONG_CLICK :                  // Отказ от продолжения ввода параметров - стоп
+            case MKeyboard::C_LONG_CLICK :               // Отказ от продолжения ввода параметров - стоп
                 return new MStop(Tools);
-            case MKeyboard::C_CLICK :                       // Отказ от дальнейшего ввода параметров - исполнение
+            case MKeyboard::C_CLICK :                    // Отказ от дальнейшего ввода параметров - исполнение
                 return new MPostpone(Tools);
-            case MKeyboard::B_CLICK :                       // Сохранить и перейти к следующему параметру
+            case MKeyboard::B_CLICK :                    // Сохранить и перейти к следующему параметру
                 Tools->saveFloat( "cccv", "voltMin", Tools->getVoltageMin() ); 
                 return new MPostpone(Tools);
 
             case MKeyboard::UP_CLICK :
-                Tools->incVoltageMin( 0.1f, false );        // По кольцу? - Нет
+                Tools->incVoltageMin( 0.1f, false );     // По кольцу? - Нет
                 break;
             case MKeyboard::DN_CLICK:
                 Tools->decVoltageMin( 0.1f, false );
@@ -319,16 +320,7 @@ namespace CcCvFsm
         Board->setDischargeAmp( 0.0f );
         Board->setCurrentAmp( 0.0f );               // Ток в начале будет ограничен
         Board->powOn();     Board->swOn();          // Включение преобразователя и коммутатора.
-        #ifdef V22
-            Board->ledsOff();   Board->ledGOn();        // Зеленый светодиод - процесс заряда запущен
-        #endif
-        // Индикация построчно (4-я строка - верхняя)
-        // Oled->showLine4RealVoltage();
-        // Oled->showLine3RealCurrent();
-        // Oled->showLine2Text("  I up & const  ");
-        // Oled->showLine1Time( Tools->getChargeTimeCounter() );
-        // Oled->showLine1Ah( Tools->getAhCharge() );
-                
+   
         // Настройка ПИД-регулятора
         Tools->initPid( MPidConstants::outputMin,
                         MPidConstants::outputMaxFactor * Tools->getCurrentMax(),
@@ -356,19 +348,13 @@ namespace CcCvFsm
         // Коррекция источника тока по измерению (установщик откалиброван с некоторым завышением)
         if( Board->getRealCurrent() > Tools->getCurrentMax() ) { Tools->adjustIntegral( -0.250f ); } // -0.025A
 
-        Tools->runPid( Board->getRealVoltage() );                                           // Подъём и поддержание тока.
+        Tools->runPid( Board->getRealVoltage() );            // Подъём и поддержание тока.
         
         // Индикация фазы подъема тока не выше заданного
         Display->voltage( Board->getRealVoltage(), 2 );
         Display->current( Board->getRealCurrent(), 1 );
 
-        static int x = 0;
-        x += 4;
-    if (x >= 100 ) x = 0;
-
-        Display->fulfill( x );                                //   TEST
-    //Serial.println( x );
-    
+        Display->progessBarExe( MDisplay::GREEN );
         Display->duration( Tools->getChargeTimeCounter() );
         Display->amphours( Tools->getAhCharge() );
         
@@ -403,6 +389,9 @@ namespace CcCvFsm
         // Индикация фазы удержания максимального напряжения
         // Реальные ток и напряжения - без изменения, можно не задавать?
         
+        Display->progessBarExe( MDisplay::YELLOW );
+        Display->duration( Tools->getChargeTimeCounter() );
+        Display->amphours( Tools->getAhCharge() );
 
         return this;
     };
@@ -411,11 +400,13 @@ namespace CcCvFsm
     // Проверки различных причин завершения заряда.
     MKeepVmin::MKeepVmin(MTools * Tools) : MState(Tools)
     {
+        // Индикация помощи
+        Display->getTextMode( (char*) " KEEP VOLTAGE MIN  " );
+        Display->getTextHelp( (char*) "       C-STOP      " );
+
         // Порог регулирования по напряжению
         Tools->setSetPoint( Tools->getVoltageMin() );
                 
-        // Индикация
-//        Oled->showLine2Text("  const Vmin... ");
     }     
     MState * MKeepVmin::fsm()
     {
@@ -431,27 +422,34 @@ namespace CcCvFsm
 
         // Необходимая коррекция против выброса тока
         if( Board->getRealCurrent() > Tools->getCurrentMax() ) { Tools->adjustIntegral( -0.250f ); }        // -0.025A
-        #ifdef V22
-            Board->blinkYellow();           // Желтый светодиод мигает - процесс поддержания минимального напряжения
-        #endif
         Tools->runPid( Board->getRealVoltage() );           // Регулировка по напряжению
+
+        Display->progessBarExe( MDisplay::MAGENTA );
+        Display->duration( Tools->getChargeTimeCounter() );
+        Display->amphours( Tools->getAhCharge() );
+
         return this;
     };
 
     // Процесс выхода из режима заряда - до нажатия кнопки "С" удерживается индикация о продолжительности и отданном заряде.
     MStop::MStop(MTools * Tools) : MState(Tools)
     {
-        Tools->shutdownCharge();            // Включение красного светодиода здесь
+        Tools->shutdownCharge();
         Display->getTextMode( (char*) "   CC/CV CHARGE OFF  " );
-        Display->getTextHelp( (char*) " C-EXIT TO SELECTION " );
+        Display->getTextHelp( (char*) "  P-FACTORY   C-EXIT " );
+        Display->progessBarStop();
+
     }    
     MState * MStop::fsm()
     {
+        
         if(Keyboard->getKey(MKeyboard::C_CLICK))
         { 
             //Tools->activateExit("  CC/CV  заряд  ");
             Display->getTextMode( (char*) "    CC/CV CHARGE     " );
             Display->getTextHelp( (char*) " U/D-OTHER  B-SELECT " );
+            Display->progessBarOff();
+
             return nullptr;                             // Возврат к выбору режима
         }
         return this;

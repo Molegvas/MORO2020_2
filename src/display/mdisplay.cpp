@@ -132,9 +132,10 @@ void MDisplay::displayHelp()
     }
 }
 
-void MDisplay::fulfill( int val )
+void MDisplay::fulfill( int val, uint16_t rgb )
 {
     percent = val;
+    color   = rgb;
 }
 
 
@@ -148,7 +149,7 @@ void MDisplay::displayFulfill()
         {
             int y = MFilfull::cursorY + i;
 
-            ST7735->drawLine( MFilfull::minX, y, x, y, GREEN );
+            ST7735->drawLine( MFilfull::minX, y, x, y, color );
             ST7735->drawLine( x, y, MFilfull::maxX, y, GRAY ); 
         } 
 
@@ -291,3 +292,13 @@ void MDisplay::getTextLabel( char *s )
 {
     strcpy( newLabelString, s );
 }
+
+void MDisplay::progessBarOff() { fulfill( 0, GRAY ); }
+void MDisplay::progessBarExe( uint16_t rgb )
+{
+    static int x = 0;
+    x += 4;
+    if (x >= 100 ) x = 0;
+    fulfill( x, rgb );
+}
+void MDisplay::progessBarStop() { fulfill( 100, RED ); }
