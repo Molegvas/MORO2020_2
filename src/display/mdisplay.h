@@ -12,6 +12,9 @@ class MDisplay
     MDisplay();
     ~MDisplay();
 
+    // declare size of working string buffers.
+    static constexpr size_t MaxString = 22;   // Max 21 + 1 for TextSize 1 TFT 1.8" 128*160
+
     void initLCD();
     //void runDisplay(float u, float i, float celsius, int time, float ah, int percent, bool ap);
     void runDisplay( float celsius, bool ap);
@@ -22,26 +25,24 @@ class MDisplay
     void current( float current, int n );
     void displayCurrent();
 
-    void displayMode();    //( char *s );
-    void displayHelp();    //( char *s );  
+    void displayMode();
+    void displayHelp();
 
     void fulfill( int percent );
-    void displayFulfill();                         //( int percent );
+    void displayFulfill();
 
 
     void duration( int time );
     void amphours( float ah );
 
-    // void displayUpTime( unsigned long upSeconds );
-    // void displayAmpHours( float ah );
     void displayDuration();
     void displayAmphours();
 
     //void celsius();
     void displayCelsius( float celsius );
-    void displayLabel();   //( char *s );
 
-    size_t  getMaxString();
+    void displayLabel();
+
 
     void getTextMode( char *s );
     void getTextHelp( char *s );
@@ -145,8 +146,6 @@ class MDisplay
         static constexpr uint16_t textColor = CYAN;
     };
 
-    // declare size of working string buffers. Basic strlen("hhh:mm:ss") = 9
-    static constexpr size_t MaxString = 22;   // Max 21 + 1 for TextSize 1 
 
     // the string being displayed on the ST7735 (initially empty)
 

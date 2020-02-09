@@ -1,14 +1,8 @@
 /*
-  Colors:
-      ST77XX_BLACK 0x0000
-      ST77XX_WHITE 0xFFFF
-      ST77XX_RED 0xF800
-      ST77XX_GREEN 0x07E0
-      ST77XX_BLUE 0x001F
-      ST77XX_CYAN 0x07FF
-      ST77XX_MAGENTA 0xF81F
-      ST77XX_YELLOW 0xFFE0
-      ST77XX_ORANGE 0xFC00
+    Дисплей TFT 1.8" 4-SPI 128*160
+    HSPI
+    2020.02.09
+    OlMoro
 */
 
 #include "mdisplay.h"
@@ -49,19 +43,17 @@ void MDisplay::initLCD()
 //void MDisplay::runDisplay(float u, float i, float celsius, int time, float ah, int percent, bool ap)
 void MDisplay::runDisplay( float celsius, bool ap)
 {
-    displayVoltage();       //( u );
-    displayCurrent();           //( i );
+    displayVoltage();
+    displayCurrent();
     displayMode();
     displayHelp();      
-    displayFulfill();               //( percent );
-    //displayUpTime( time );
-    //displayAmpHours( ah );
+    displayFulfill();
     displayDuration();
     displayAmphours();
 
     displayCelsius( celsius );
     displayLabel();
-
+  // пример для русификации  
   //ST7735->setCursor(0, 80);
   //ST7735->println(utf8rus( (char *) " Настройки "));
 }
@@ -76,9 +68,6 @@ void MDisplay::voltage( float voltage, int n )
 // Пока без центровки в строке
 void MDisplay::displayVoltage()
 {
-//    char newVoltageString[ MDisplay::MaxString ] = { 0 };
-
-//    sprintf( newVoltageString, "%2.2fv", voltage );
     if (strcmp( newVoltageString, oldVoltageString) != 0) 
     {
         ST7735->setTextSize( MVoltage::textSize );
@@ -100,9 +89,6 @@ void MDisplay::current( float current, int n )
 
 void MDisplay::displayCurrent()
 {
-//    char newCurrentString[ MDisplay::MaxString ] = { 0 };
-
-//    sprintf( newCurrentString, "%2.1fA", current );
     if (strcmp( newCurrentString, oldCurrentString) != 0) 
     {
         ST7735->setTextSize( MCurrent::textSize );
@@ -116,11 +102,8 @@ void MDisplay::displayCurrent()
     }
 }
 
-void MDisplay::displayMode()   //( char *s )
+void MDisplay::displayMode()
 {
-    //char newModeString[ MDisplay::MaxString ] = { 0 };
-
-    //strcpy( newModeString, s );                         // 
     if (strcmp( newModeString, oldModeString) != 0) 
     {
         ST7735->setTextSize( MMode::textSize );
@@ -134,11 +117,8 @@ void MDisplay::displayMode()   //( char *s )
     }
 }
 
-void MDisplay::displayHelp()   //( char *s )     
+void MDisplay::displayHelp()
 {
-    //char newHelpString[ MDisplay::MaxString ] = { 0 };
-
-    //strcpy( newHelpString, s );
     if (strcmp( newHelpString, oldHelpString) != 0) 
     {
         ST7735->setTextSize( MHelp::textSize );
@@ -158,7 +138,7 @@ void MDisplay::fulfill( int val )
 }
 
 
-void MDisplay::displayFulfill()         //( int percent )
+void MDisplay::displayFulfill()
 {
     if ( percent != oldPercent ) 
     {
@@ -282,11 +262,8 @@ void MDisplay::displayCelsius( float celsius )
     }
 }
 
-void MDisplay::displayLabel()  //( char *s )
+void MDisplay::displayLabel()
 {
-    //char newLabelString[ MDisplay::MaxString ] = { 0 };
-
-    //strcpy( newLabelString, s );
     if (strcmp( newLabelString, oldLabelString) != 0) 
     {
         ST7735->setTextSize( MLabel::textSize );
@@ -298,13 +275,6 @@ void MDisplay::displayLabel()  //( char *s )
         ST7735->print( newLabelString );
         strcpy( oldLabelString, newLabelString );
     }
-}
-
-//int MDisplay::getMaxString()
-size_t MDisplay::getMaxString()
-{
-//    return ( int ) MaxString;
-    return MaxString;
 }
 
 void MDisplay::getTextMode( char *s )
