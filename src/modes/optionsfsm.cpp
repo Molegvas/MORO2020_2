@@ -3,40 +3,42 @@
 
 */
 
+
+
+
+
+
+#include "modes/optionsfsm.h"
 #include "mtools.h"
 #include "board/mboard.h"
-#include "display/mdisplay.h"
-#include "modes/optionsfsm.h"
 #include "measure/mkeyboard.h"
+#include "display/mdisplay.h"
 #include <Arduino.h>
+#include <string>
+
 
 namespace OptionFsm
 {
     // Переменные
     float vOffset   = 0.0f;
 
+    // Состояние "Старт", инициализация выбранного режима работы.
     MStart::MStart(MTools * Tools) : MState(Tools)
     {
         #ifdef DEBUG_OPTIONS
             Serial.println("Options: Start");
         #endif
         // Индикация
-        #ifdef OLED_1_3
-//            Oled->showLine4Text("333Батарея   ");
-//            Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );          // example: "  12В  55Ач  "
-            Tools->showUpDn();                  // " UP/DN, В-выбор "
-        #endif
-        #ifdef V22
-            Board->ledsOn();
-        #endif
+        Display->getTextMode( (char*) "  OPTIONS SELECTED   " );
+        Display->getTextHelp( (char*) "  P-DEFINE   C-EXIT  " );
     }
     MState * MStart::fsm()
     {
         switch ( Keyboard->getKey() )
         {
-        case MKeyboard::C_LONG_CLICK :
-            Tools->clearAllKeys ("qulon");     // Удаление всех старых ключей (очистка)
-            break;
+        // case MKeyboard::C_LONG_CLICK :
+        //     Tools->clearAllKeys ("qulon");     // Удаление всех старых ключей (очистка)
+        //     break;
         case MKeyboard::P_CLICK :
             // Продолжение выбора объекта настройки
             return new MSetPostpone(Tools);
@@ -97,9 +99,10 @@ namespace OptionFsm
     MSetPostpone::MSetPostpone(MTools * Tools) : MState(Tools) 
     {
         Tools->postpone = Tools->readNvsInt("qulon", "postp",  0 );
-//        Oled->showLine4Text(" Отложить на ");
-//        Oled->showLine3Delay( Tools->postpone );
-        Tools->showUpDn();                      // " UP/DN, В-выбор "
+
+        Display->getTextMode( (char*) "  U/D-SET POSTPONE   " );
+        Display->getTextHelp( (char*) "  P-DEFINE   C-EXIT  " );
+
     }
     MState * MSetPostpone::fsm()
     {
@@ -123,6 +126,9 @@ namespace OptionFsm
             return new MSetCurrentOffset(Tools);
         default :;
         }
+
+        Display->duration( Tools->postpone, MDisplay::HOUR );
+
         return this;
     };
 

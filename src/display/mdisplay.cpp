@@ -158,60 +158,41 @@ void MDisplay::displayFulfill()
 }
 
           //  Tools->getChargeTimeCounter(),
-void MDisplay::duration( int duration )     // unsigned long ??
+void MDisplay::duration( int duration, int _plan )     // unsigned long ??
 {
     upSeconds = duration;
+    plan = _plan;
 }
 
 //void MDisplay::displayUpTime( unsigned long upSeconds )
 void MDisplay::displayDuration()
 {
-    // the remaining hhhmmss are
-    upSeconds = upSeconds % 86400;
-
-    // calculate hours, truncated to the nearest whole hour
-    unsigned long hours = upSeconds / 3600;
-
-    // the remaining mmss are
-    upSeconds = upSeconds % 3600;
-
-    // calculate minutes, truncated to the nearest whole minute
-    unsigned long minutes = upSeconds / 60;
-
-    // the remaining ss are
-    upSeconds = upSeconds % 60;
-
-    // allocate a buffer
     char newTimeString[ MDisplay::MaxString ] = { 0 };
 
-    // construct the string representation
-    sprintf( newTimeString, "%03lu:%02lu:%02lu", hours, minutes, upSeconds );
+    if( plan == SEC )
+    {
+        upSeconds = upSeconds % 86400;
+        unsigned long hours = upSeconds / 3600;
+        upSeconds = upSeconds % 3600;
+        unsigned long minutes = upSeconds / 60;
+        upSeconds = upSeconds % 60;
+    //    char newTimeString[ MDisplay::MaxString ] = { 0 };
+        sprintf( newTimeString, "%03lu:%02lu:%02lu", hours, minutes, upSeconds );
+    }
+    else
+    {
+        sprintf( newTimeString, "%3d h", upSeconds );
+    }
 
-    // has the time string changed since the last tft update?
     if (strcmp( newTimeString, oldTimeString) != 0) 
     {
-
         ST7735->setTextSize( MTime::textSize );
-
-        // yes! home the cursor
         ST7735->setCursor( MTime::cursorX, MTime::cursorY );
-
-        // change the text color to the background color
         ST7735->setTextColor( displayBackroundColor );
-
-        // redraw the old value to erase
         ST7735->print( oldTimeString );
-
-        // home the cursor
         ST7735->setCursor( MTime::cursorX, MTime::cursorY );
-
-        // change the text color to foreground color
         ST7735->setTextColor( MTime::textColor );
-    
-        // draw the new time value
         ST7735->print( newTimeString );
-    
-        // and remember the new value
         strcpy( oldTimeString, newTimeString );
     }
 }

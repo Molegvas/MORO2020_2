@@ -30,19 +30,14 @@ namespace CcCvFsm
         static constexpr float k_d                  = 0.04f;
     };
 
+    //static bool done = false;
+
     class MStart : public MState
     {       
         public:
             MStart(MTools * Tools);
             virtual MState * fsm() override;
     };
-
-    // class MSetFactory : public MState
-    // {
-    //     public:
-    //         MSetFactory(MTools * Tools);
-    //         virtual MState * fsm() override;
-    // };
 
     class MSetCurrentMax : public MState
     {
@@ -106,6 +101,14 @@ namespace CcCvFsm
             MStop(MTools * Tools);
             virtual MState * fsm() override;
     };
+
+    class MExit : public MState
+    {
+        public:
+            MExit(MTools * Tools);
+            virtual MState * fsm() override;
+    };
+
 };
 
 #endif  // !_CCCVFSM_H_

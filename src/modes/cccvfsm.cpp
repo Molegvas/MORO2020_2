@@ -14,7 +14,6 @@
 #include "measure/mkeyboard.h"
 #include "display/mdisplay.h"
 #include <Arduino.h>
-
 #include <string>
 
 
@@ -32,20 +31,15 @@ namespace CcCvFsm
         Tools->setCurrentMin( Tools->readNvsFloat("cccv", "currMin", MChConsts::currentMinFactor * Tools->getCapacity()) );
 
         // Индикация
-        #ifdef OLED_1_3
-            // Oled->showLine3Akb( Tools->getVoltageNom(), Tools->getCapacity() );              // example: "  12В  55Ач  "
-            // Oled->showLine1Time(0);                         // уточнить
-            // Oled->showLine1Ah(0.0);                         // уточнить
-        #endif
         Display->getTextMode( (char*) "   CC/CV SELECTED    " );
         Display->getTextHelp( (char*) "  P-DEFINE  C-START  " );
         Display->progessBarOff();
-//Display->fulfill( 0 );                                // GRAY
+
+    //    done = false;              
+
     }
     MState * MStart::fsm()
     {
-        Display->voltage( Board->getRealVoltage(), 2 );
-        Display->current( Board->getRealCurrent(), 1 );
 
         switch ( Keyboard->getKey() )    //Здесь так можно
         {
@@ -64,6 +58,8 @@ namespace CcCvFsm
                 return new MSetCurrentMax(Tools);      // Выбрано уточнение настроек заряда.
             default:;
         }
+        Display->voltage( Board->getRealVoltage(), 2 );
+        Display->current( Board->getRealCurrent(), 1 );
 
         return this;
     };
@@ -355,7 +351,7 @@ namespace CcCvFsm
         Display->current( Board->getRealCurrent(), 1 );
 
         Display->progessBarExe( MDisplay::GREEN );
-        Display->duration( Tools->getChargeTimeCounter() );
+        Display->duration( Tools->getChargeTimeCounter(), MDisplay::SEC );
         Display->amphours( Tools->getAhCharge() );
         
         return this;
@@ -374,7 +370,7 @@ namespace CcCvFsm
     }       
     MState * MKeepVmax::fsm()
     {
-        Tools->chargeCalculations();                                                    // Подсчет отданных ампер-часов.
+        Tools->chargeCalculations();                   // Подсчет отданных ампер-часов.
 
         if (Keyboard->getKey(MKeyboard::C_CLICK)) { return new MStop(Tools); }                // Окончание процесса оператором.
 
@@ -383,14 +379,14 @@ namespace CcCvFsm
         // Коррекция
         if( Board->getRealCurrent() > Tools->getCurrentMax() ) { Tools->adjustIntegral( -0.250f ); } // -0.025A
 
-        Tools->runPid( Board->getRealVoltage() ); 
+        Tools->runPid( Board->getRealVoltage() ); // Поддержание максимального напряжения.
         
-                                                  // Поддержание максимального напряжения.
+                                                  
         // Индикация фазы удержания максимального напряжения
         // Реальные ток и напряжения - без изменения, можно не задавать?
         
         Display->progessBarExe( MDisplay::YELLOW );
-        Display->duration( Tools->getChargeTimeCounter() );
+        Display->duration( Tools->getChargeTimeCounter(), MDisplay::SEC );
         Display->amphours( Tools->getAhCharge() );
 
         return this;
@@ -410,48 +406,95 @@ namespace CcCvFsm
     }     
     MState * MKeepVmin::fsm()
     {
-        Tools->chargeCalculations();                                                    // Подсчет отданных ампер-часов.
+        Tools->chargeCalculations();        // Подсчет отданных ампер-часов.
 
-        if (Keyboard->getKey(MKeyboard::C_CLICK)) { return new MStop(Tools); }                // Окончание процесса оператором.
+        // Окончание процесса оператором.
+        if (Keyboard->getKey(MKeyboard::C_CLICK)) 
+        { return new MStop(Tools); }       
 
         // Здесь возможны проверки других условий окончания заряда
         // if( ( ... >= ... ) && ( ... <= ... ) )  { return new MStop(Tools); }
 
         // Максимальное время заряда, задается в "Настройках"
-        if( Tools->getChargeTimeCounter() >= ( Tools->charge_time_out_limit * 36000 ) ) { return new MStop(Tools); }
+        if( Tools->getChargeTimeCounter() >= ( Tools->charge_time_out_limit * 36000 ) ) 
+        { return new MStop(Tools); }
 
         // Необходимая коррекция против выброса тока
-        if( Board->getRealCurrent() > Tools->getCurrentMax() ) { Tools->adjustIntegral( -0.250f ); }        // -0.025A
+        if( Board->getRealCurrent() > Tools->getCurrentMax() ) 
+        { Tools->adjustIntegral( -0.250f ); }        // -0.025A
+
         Tools->runPid( Board->getRealVoltage() );           // Регулировка по напряжению
 
         Display->progessBarExe( MDisplay::MAGENTA );
-        Display->duration( Tools->getChargeTimeCounter() );
+        Display->duration( Tools->getChargeTimeCounter(), MDisplay::SEC );
         Display->amphours( Tools->getAhCharge() );
 
         return this;
     };
 
-    // Процесс выхода из режима заряда - до нажатия кнопки "С" удерживается индикация о продолжительности и отданном заряде.
+    // Завершение режима заряда - до нажатия кнопки "С" удерживается индикация 
+    // о продолжительности и отданном заряде.
     MStop::MStop(MTools * Tools) : MState(Tools)
     {
-        Tools->shutdownCharge();
-        Display->getTextMode( (char*) "   CC/CV CHARGE OFF  " );
-        Display->getTextHelp( (char*) "  P-FACTORY   C-EXIT " );
-        Display->progessBarStop();
 
+        Tools->shutdownCharge();            // повторяется...
+        // if( done )
+        //     {
+        //         Display->getTextMode( (char*) " PARAMETERS RESTORED " );
+        //     }
+        // else
+        //     {
+        //         Display->getTextMode( (char*) "   CC/CV CHARGE OFF  " );
+        //     }
+
+        Display->getTextHelp( (char*) "  P-FACTORY   C-EXIT " );
+        Display->getTextMode( (char*) "   CC/CV CHARGE OFF  " );
+        Display->progessBarStop();
     }    
     MState * MStop::fsm()
     {
+        switch ( Keyboard->getKey() )
+        {
+            case MKeyboard::P_CLICK :
+                // Восстановление заводских параметров заряда дефолтными значениями,
+                // указанными в состоянии Start. В этом примере дефолтными являются номинальные
+                // напряжения и токи, выбранные в пользовательских настройках прибора
+                // из предположения, что однажды задав номинал батареи пользователь 
+                // не затрудняет себя выбором параметров меняя один режим заряда на другой.
+                // Реализовано на этом шаге из нежелания загромождать стартовое меню. 
+                Tools->clearAllKeys("cccv");
+//                done = true;              
+                // Производится выход и требуется повторный вход в режим.
+         //   break;
+            case MKeyboard::C_CLICK :
+                return new MExit(Tools);
+            default:;
         
-        if(Keyboard->getKey(MKeyboard::C_CLICK))
-        { 
-            //Tools->activateExit("  CC/CV  заряд  ");
-            Display->getTextMode( (char*) "    CC/CV CHARGE     " );
-            Display->getTextHelp( (char*) " U/D-OTHER  B-SELECT " );
-            Display->progessBarOff();
-
-            return nullptr;                             // Возврат к выбору режима
+//Display->progessBarOff();
         }
         return this;
     };
+
+    // Процесс выхода из режима заряда - до нажатия кнопки "С" удерживается индикация о продолжительности и отданном заряде.
+    MExit::MExit(MTools * Tools) : MState(Tools)
+    {
+        Tools->shutdownCharge();
+        Display->getTextMode( (char*) "   CC/CV CHARGE OFF  " );
+        Display->getTextHelp( (char*) "              C-EXIT " );
+        Display->progessBarOff();
+    }    
+    MState * MExit::fsm()
+    {
+        switch ( Keyboard->getKey() )
+        {
+            case MKeyboard::C_CLICK :
+                // Надо бы восстанавливать средствами диспетчера...
+                Display->getTextMode( (char*) "    CC/CV CHARGE     " );
+                Display->getTextHelp( (char*) " U/D-OTHER  B-SELECT " );
+                return nullptr;                             // Возврат к выбору режима
+            default:;
+        }
+        return this;
+    };
+
 };

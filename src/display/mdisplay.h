@@ -27,6 +27,8 @@ class MDisplay
     static constexpr uint16_t YELLOW  = 0xFFE0;
     static constexpr uint16_t ORANGE  = 0xFC00;
 
+        static constexpr uint16_t SEC   = 0;
+        static constexpr uint16_t HOUR  = 1;
 
 
     void initLCD();
@@ -47,7 +49,7 @@ class MDisplay
     void displayFulfill();
 
 
-    void duration( int time );
+    void duration( int time, int plan );
     void amphours( float ah );
 
     void displayDuration();
@@ -173,6 +175,7 @@ class MDisplay
     uint16_t color                      = GREEN;
     int  oldPercent                     =   0; 
 
+    uint16_t plan = SEC;
     unsigned long upSeconds             =   0;
     char oldTimeString[ MaxString ]     = { 0 };
 

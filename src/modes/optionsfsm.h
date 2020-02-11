@@ -1,9 +1,6 @@
 #ifndef _OPTIONSFSM_H_
 #define _OPTIONSFSM_H_
 
-// #include "mtools.h"           //-
-// #include "board/mboard.h"     //-
-// #include "display/moled.h"    //-
 #include "mstate.h"
 
 namespace OptionFsm
