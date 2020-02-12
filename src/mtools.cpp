@@ -517,33 +517,6 @@ float MTools::stopPulse() {
 
 //==================== common ==========================
 
-void MTools::incCurrentOffset( float delta, bool way )
-{
-    Board->currentOffset = incfValue( Board->currentOffset, curr_offset_l, curr_offset_h, delta, way );
-    //Oled->showLine3MaxI( Board->currentOffset );
-    //Oled->showLine4RealVoltage();
-//    Oled->showLine3RealCurrent();
-}
-void MTools::decCurrentOffset( float delta, bool way )
-{
-    Board->currentOffset = decfValue( Board->currentOffset, curr_offset_l, curr_offset_h, delta, way );
-    //Oled->showLine3MaxI( Board->currentOffset );
-//    Oled->showLine3RealCurrent();
-}
-
-void MTools::incVoltageOffset( float delta, bool way )
-{
-    Board->voltageOffset = incfValue( Board->voltageOffset, volt_offset_l, volt_offset_h, delta, way );
-//    Oled->showLine4RealVoltage();
-}
-void MTools::decVoltageOffset( float delta, bool way )
-{
-    Board->voltageOffset = decfValue( Board->voltageOffset, volt_offset_l, volt_offset_h, delta, way );
-//    Oled->showLine4RealVoltage();
-}
-
-
-
 void MTools::incBattery()
 {
     if(akbInd == 0 ) { akbInd = number_of_batteries - 1; }
@@ -653,16 +626,16 @@ void MTools::decDurationOff( bool way )
 //    Oled->showLine3Sec(durationOff); 
 }
 
-void MTools::incPostpone( int delta )
-{
-    postpone = inciValue( postpone, postpone_l, postpone_h, delta );
-//    Oled->showLine3Delay( postpone );
-}
-void MTools::decPostpone( int delta )
-{
-    postpone = deciValue( postpone, postpone_l, postpone_h, delta );
-//    Oled->showLine3Delay( postpone );
-}
+// void MTools::incPostpone( int delta )
+// {
+//     postpone = inciValue( postpone, postpone_l, postpone_h, delta );
+// //    Oled->showLine3Delay( postpone );
+// }
+// void MTools::decPostpone( int delta )
+// {
+//     postpone = deciValue( postpone, postpone_l, postpone_h, delta );
+// //    Oled->showLine3Delay( postpone );
+// }
 
 void MTools::incVoltagePre( float delta, bool way )
 {
@@ -1753,6 +1726,13 @@ float MTools::incfValue( float value,  float value_l, float value_h, float delta
     } else return value += delta;
 }
 
+float MTools::upfVal( float val, float val_l, float val_h, float delta )   //2020
+{
+    if( (val += delta) > val_h ) return val_h; 
+    return val;
+}
+
+
 float MTools::decfValue( float value,  float value_l, float value_h, float delta, bool way )
 {
     if( value <= value_l + delta )
@@ -1762,18 +1742,36 @@ float MTools::decfValue( float value,  float value_l, float value_h, float delta
     } else return value -= delta;
 }
 
+float MTools::dnfVal( float val, float val_l, float val_h, float delta )   //2020
+{
+    if( (val -= delta) < val_l ) return val_l; 
+    return val;
+}
+
+
 int MTools::inciValue( int value,  int value_l, int value_h, int delta ) 
 {
     if( value >= value_h ) return value_l; 
     return value += delta; 
 }
 
-int MTools::deciValue( int value,  int value_l, int value_h, int delta ) 
+int MTools::upiVal( int val, int val_l, int val_h, int delta ) //2020
+{
+    if( (val += delta) > val_h ) return val_h; 
+    return val;
+}
+
+int MTools::deciValue( int value,  int value_l, int value_h, int delta )
 {
     if( value <= value_l ) return value_h; 
     return value -= delta; 
 }
 
+int MTools::dniVal( int val, int val_l, int val_h, int delta ) //2020
+{
+    if( (val -= delta) < val_l ) return val_l; 
+    return val;
+}
 
 void MTools::activatePause()
 {

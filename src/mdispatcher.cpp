@@ -48,8 +48,10 @@ Tools(tools), Board(tools->Board), Display(tools->Display)
     Tools->powInd = Tools->readNvsInt  ("qulon", "powInd", 3);      // 3 - дефолтный индекс массива
     Tools->akbInd = Tools->readNvsInt  ("qulon", "akbInd", 3);                  // Индекс массива с набором батарей
     Tools->setVoltageNom( Tools->readNvsFloat("qulon", "akbU", Tools->akb[3][0]) );   // Начальный выбор 12 вольт
-    Tools->setCapacity( Tools->readNvsFloat("qulon", "akbAh",  Tools->akb[3][1]) );   //                 55 Ач
+    Tools->setCapacity( Tools->readNvsFloat("qulon", "akbAh",  Tools->akb[3][1]) );   //             55 Ач
 
+    Tools->postpone = Tools->readNvsInt("qulon", "postp",  3 );
+Serial.println(Tools->postpone);
     // Калибровки измерителей
     Board->voltageMultiplier  = Tools->readNvsFloat("qulon", "vMult",   1.00f); 
     Board->voltageOffset      = Tools->readNvsFloat("qulon", "vOffset", 0.00f);

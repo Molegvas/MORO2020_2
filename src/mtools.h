@@ -149,11 +149,6 @@ class MTools
 
     void  clearAllKeys (const char * name);
 
-    void incCurrentOffset( float delta, bool way );
-    void decCurrentOffset( float delta, bool way );
-
-    void incVoltageOffset( float delta, bool way );
-    void decVoltageOffset( float delta, bool way );
 
     void incBattery();
     void decBattery();
@@ -190,8 +185,6 @@ class MTools
     void incDurationOff( bool way );
     void decDurationOff( bool way );
 
-    void incPostpone( int delta );
-    void decPostpone( int delta );
 
     void incCycles();
     void decCycles();
@@ -214,6 +207,11 @@ class MTools
     float decFloatValue( float value,  float value_l, float value_h, float delta );
     int   incIntValue( int value, int value_l, int value_h, int delta );
     int   decIntValue( int value, int value_l, int value_h, int delta );
+//2020
+    int   upiVal( int val, int min, int max, int delta );
+    int   dniVal( int val, int min, int max, int delta );
+    float upfVal( float val, float min, float max, float delta ); 
+    float dnfVal( float val, float min, float max, float delta ); 
 
 
     void saveInt(const char * name, const char * key, const int ivalue );
@@ -436,14 +434,6 @@ private:
     const bool onlimit = false;
     const bool onloop  = true;
 
-    const float curr_offset_h =  2.00f;
-    const float curr_offset_l = -2.00f;
-
-    const float volt_offset_h =  2.00f;
-    const float volt_offset_l = -2.00f;
-
-
-
 
     const float curr_max_l =  0.2f;
     const float curr_max_h = 12.2f;
@@ -465,9 +455,6 @@ private:
     const float duration_off_l  = 2.5f;
     const float duration_off_h  = 5.0f;
 
-    const int   postpone_l =  0;        // задержка включения (Отложенный старт)
-    const int   postpone_h = 24;
-
     const float volt_min_l = 10.0f;
     const float volt_min_h = 16.0f;
 
@@ -486,7 +473,6 @@ private:
     float decfValue( float value, float min, float max, float delta, bool way );
     int   inciValue( int value,  int min, int max, int delta );
     int   deciValue( int value,  int min, int max, int delta );
-
 
 
     // Power

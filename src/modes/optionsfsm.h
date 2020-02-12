@@ -10,6 +10,18 @@ namespace OptionFsm
         // Примеры
         static constexpr float offsetV  = 0.0f;
         static constexpr float multV    = 1.0f;
+
+
+        static constexpr int ppone_l =  0;        // задержка включения (Отложенный старт)
+        static constexpr int ppone_h = 24;
+
+        static constexpr float c_offset_h =  2.00f;
+        static constexpr float c_offset_l = -2.00f;
+
+        static constexpr float v_offset_h =  2.00f;
+        static constexpr float v_offset_l = -2.00f;
+
+
     };
 
     class MStart : public MState
@@ -19,12 +31,12 @@ namespace OptionFsm
             virtual MState * fsm() override;
     };
 
-    class MSelectBattery : public MState
-    {
-        public:     
-            MSelectBattery(MTools * Tools);   
-            virtual MState * fsm() override;
-    };
+    // class MSelectBattery : public MState
+    // {
+    //     public:     
+    //         MSelectBattery(MTools * Tools);   
+    //         virtual MState * fsm() override;
+    // };
 
     class MSetPostpone : public MState
     {       
@@ -46,32 +58,31 @@ namespace OptionFsm
             MSetVoltageOffset(MTools * Tools);
             virtual MState * fsm() override;
     };
-  
 
 
 
 
 
-    // class MSetFactory : public MState
-    // {
-    //   public:
-    //     MSetFactory(MTools * Tools) : MState(Tools) {
-    //       Oled->showLine4Text("   Factory   ");
-    //       Oled->showLine3Text("     Y/NO    ");
-    //       Oled->showLine2Text("  B-yes,  C-no  ");
-    //     }
-    //     virtual MState * fsm() override;
-    // };
 
+    class MSetCcCvChargeFactory : public MState
+    {
+        public:
+            MSetCcCvChargeFactory(MTools * Tools);
+            virtual MState * fsm() override;
+    };
 
+    class MSetQulonFactory : public MState
+    {
+        public:
+            MSetQulonFactory(MTools * Tools);
+            virtual MState * fsm() override;
+    };
 
-
-
-    class MStop : public MState
+    class MExit : public MState
     {
         public:  
-          MStop(MTools * Tools); // : MState(Tools) {}      
-          virtual MState * fsm() override;
+            MExit(MTools * Tools);   
+            virtual MState * fsm() override;
     };
 
 };

@@ -437,16 +437,7 @@ namespace CcCvFsm
     MStop::MStop(MTools * Tools) : MState(Tools)
     {
 
-        Tools->shutdownCharge();            // повторяется...
-        // if( done )
-        //     {
-        //         Display->getTextMode( (char*) " PARAMETERS RESTORED " );
-        //     }
-        // else
-        //     {
-        //         Display->getTextMode( (char*) "   CC/CV CHARGE OFF  " );
-        //     }
-
+        Tools->shutdownCharge();
         Display->getTextHelp( (char*) "  P-FACTORY   C-EXIT " );
         Display->getTextMode( (char*) "   CC/CV CHARGE OFF  " );
         Display->progessBarStop();
