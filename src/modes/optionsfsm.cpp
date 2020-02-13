@@ -184,7 +184,7 @@ namespace OptionFsm
         case MKeyboard::C_CLICK :
             return new MExit(Tools);
         case MKeyboard::P_CLICK :
-            return new MSetCcCvChargeFactory(Tools);
+            return new MSetDCSupplyFactory(Tools);
         case MKeyboard::UP_CLICK :
             //Tools->incVoltageOffset( 0.01f, false );
             Board->voltageOffset = Tools->upfVal( Board->voltageOffset, MOptConsts::v_offset_l, MOptConsts::v_offset_h, 0.01f );
@@ -208,9 +208,31 @@ namespace OptionFsm
     };
 
 
+    // Возврат к заводским настройкам простого источника
+    MSetDCSupplyFactory::MSetDCSupplyFactory(MTools * Tools) : MState(Tools) 
+    {
+        // Индикация помощи
+        Display->getTextMode( (char*) " SET DC_SUPP.FACTORY " );
+        Display->getTextHelp( (char*) " B-YES  P-NO  C-EXIT " );
+    }
+    MState * MSetDCSupplyFactory::fsm()
+    {
+        switch ( Keyboard->getKey() )
+        {
+        case MKeyboard::C_CLICK :
+            return new MExit(Tools);
+        case MKeyboard::P_CLICK :
+            return new MSetQulonFactory(Tools);
+        case MKeyboard::B_CLICK :
+            Tools->clearAllKeys("s-power");    // Выбор заносится в энергонезависимую память
+            return new MSetQulonFactory(Tools);
+        default :;
+        }
 
+        return this;
+    };
 
-
+    // Возврат к заводским настройкам CC/CV заряда
     MSetCcCvChargeFactory::MSetCcCvChargeFactory(MTools * Tools) : MState(Tools) 
     {
         // Индикация помощи
@@ -234,6 +256,7 @@ namespace OptionFsm
         return this;
     };
 
+    // Возврат к заводским настройкам прибора
     MSetQulonFactory::MSetQulonFactory(MTools * Tools) : MState(Tools) 
     {
         // Индикация помощи

@@ -34,9 +34,6 @@ namespace CcCvFsm
         Display->getTextMode( (char*) "   CC/CV SELECTED    " );
         Display->getTextHelp( (char*) "  P-DEFINE  C-START  " );
         Display->progessBarOff();
-
-    //    done = false;              
-
     }
     MState * MStart::fsm()
     {
@@ -63,44 +60,6 @@ namespace CcCvFsm
 
         return this;
     };
-
-    // // Выбор заводских параметров или пользовательских ("профиль")
-    // MSetFactory::MSetFactory(MTools * Tools) : MState(Tools)
-    // {
-    //     // Индикация
-    //     #ifdef OLED_1_3
-    //         // Oled->showLine4Text("   Factory   ");
-    //         // Oled->showLine3Text("     Y/NO    ");
-    //         // Oled->showLine2Text("  B-yes,  C-no  ");
-    //     #endif
-
-    //     #ifdef TFT_1_44
-    //         // no leds
-    //     #endif
-    //     #ifdef TFT_1_8
-    //         // no leds
-    //     #endif
-    // }
-    // MState * MSetFactory::fsm()
-    // {
-    //     switch ( Keyboard->getKey() )
-    //     {
-    //         case MKeyboard::C_CLICK :
-    //             return new MSetCurrentMax(Tools);           // Отказ в восстановлении заводских параметров.
-    //         case MKeyboard::B_CLICK :
-    //             Tools->clearAllKeys("cccv");                // Очистка в энергонезависимой памяти.
-
-    //             // Восстановление параметров заряда (после очистки – дефолтными значениями).
-    //             Tools->setVoltageMax( Tools->readNvsFloat("cccv", "voltMax", MChConsts::voltageMaxFactor * Tools->getVoltageNom()) );
-    //             Tools->setVoltageMin( Tools->readNvsFloat("cccv", "voltMin", MChConsts::voltageMinFactor * Tools->getVoltageNom()) );
-    //             Tools->setCurrentMax( Tools->readNvsFloat("cccv", "currMax", MChConsts::currentMaxFactor * Tools->getCapacity()) );
-    //             Tools->setCurrentMin( Tools->readNvsFloat("cccv", "currMin", MChConsts::currentMinFactor * Tools->getCapacity()) );
-    //             return new MSetCurrentMax(Tools);
-    //         default:;
-    //     }
-
-    //     return this;
-    // };
 
     // Коррекция максимального тока заряда.
     MSetCurrentMax::MSetCurrentMax(MTools * Tools) : MState(Tools)
@@ -290,9 +249,7 @@ namespace CcCvFsm
             default:;
         }
         // Индикация в период ожидания старта (обратный отсчет)
-
-        // ...
-
+        Display->duration( Tools->getChargeTimeCounter(), MDisplay::SEC );
         return this;
     };
 
@@ -438,7 +395,7 @@ namespace CcCvFsm
     {
 
         Tools->shutdownCharge();
-        Display->getTextHelp( (char*) "  P-FACTORY   C-EXIT " );
+        Display->getTextHelp( (char*) "              C-EXIT " );
         Display->getTextMode( (char*) "   CC/CV CHARGE OFF  " );
         Display->progessBarStop();
     }    
@@ -446,17 +403,6 @@ namespace CcCvFsm
     {
         switch ( Keyboard->getKey() )
         {
-            case MKeyboard::P_CLICK :
-                // Восстановление заводских параметров заряда дефолтными значениями,
-                // указанными в состоянии Start. В этом примере дефолтными являются номинальные
-                // напряжения и токи, выбранные в пользовательских настройках прибора
-                // из предположения, что однажды задав номинал батареи пользователь 
-                // не затрудняет себя выбором параметров меняя один режим заряда на другой.
-                // Реализовано на этом шаге из нежелания загромождать стартовое меню. 
-                Tools->clearAllKeys("cccv");
-//                done = true;              
-                // Производится выход и требуется повторный вход в режим.
-         //   break;
             case MKeyboard::C_CLICK :
                 return new MExit(Tools);
             default:;

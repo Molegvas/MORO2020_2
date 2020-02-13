@@ -24,6 +24,12 @@ class MTools
     bool getLocalization() const;
     void setLocalization(bool);
 
+// перенесенные из privat
+
+    float voltageMax  = 14.5f;   // Заданное напряжение заряда или источника питания, В
+    float currentMax  =  5.0f;   // Заданный максимальный ток заряда, А
+
+
     // Номинальное напряжение батареи, В
     float getVoltageNom() const;
     void  setVoltageNom(float);
@@ -398,14 +404,14 @@ class MTools
 //==== PRIVATE ==== PRIVATE ==== PRIVATE ==== PRIVATE ==== PRIVATE ==== PRIVATE ==== PRIVATE ==== PRIVATE ==== PRIVATE ====
 private:
 
-// Переменные будут здесь
+// Переменные будут здесь // это параноя //
     bool  localization = true ;     // LAT
     float voltageNom  = 12.0f;   // Номинальное напряжение батареи, В
   //float capacityNom = 55.0f;   // Номинальная емкость батареи, А    nu
     float capacity    = 50.f;    // Заданная емкость батареи, А-ч
-    float voltageMax  = 14.5f;   // Заданное напряжение заряда, В
+//    float voltageMax  = 14.5f;   // Заданное напряжение заряда, В
     float voltageMin  = 13.2f;   // Заданное минимальное снижение напряжения, В
-    float currentMax  =  5.0f;   // Заданный максимальный ток заряда, А
+//    float currentMax  =  5.0f;   // Заданный максимальный ток заряда, А
     float currentMin  =  0.5f;   // Заданный минимальный ток заряда, А
     float voltagePre  =  6.0f;   // Заданное напряжение предзаряда, В
     float currentPre  =  3.0f;   // Заданный ток предзаряда, А

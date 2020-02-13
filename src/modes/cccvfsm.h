@@ -30,8 +30,6 @@ namespace CcCvFsm
         static constexpr float k_d                  = 0.04f;
     };
 
-    //static bool done = false;
-
     class MStart : public MState
     {       
         public:

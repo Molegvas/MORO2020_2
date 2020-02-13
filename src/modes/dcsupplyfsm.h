@@ -8,6 +8,14 @@ namespace DcSupplyFsm
     //Any constants of DC supply
     struct MDcConst
     {
+        // Пределы регулировок напряжения и тока
+        static constexpr float v_l =  2.0f;
+        static constexpr float v_h = 16.0f;
+        static constexpr float c_l =  0.2f;
+        static constexpr float c_h = 12.2f;
+
+
+        // Параметры ПИД-регулятора
         static constexpr float outputMin          = 0.0f;
         static constexpr float outputMaxFactor    = 1.05f;     // factor for current limit
         static constexpr float integralVoltFactor = 9.95f;
@@ -20,8 +28,6 @@ namespace DcSupplyFsm
         static constexpr float k_d                = 0.04f;
     };
 
-    
-
     class MStart : public MState
     {       
         public:
@@ -29,13 +35,15 @@ namespace DcSupplyFsm
             virtual MState * fsm() override;
     };
 
-    class MSelectUI : public MState
+    class MSetVoltage : public MState
     {
-        public: 
-            MSelectUI(MTools * Tools);
+        public:   
+            MSetVoltage(MTools * Tools);
             virtual MState * fsm() override;
     };
-       
+    
+
+      
     class MSetCurrentMax : public MState
     {
         public:   
@@ -43,12 +51,6 @@ namespace DcSupplyFsm
             virtual MState * fsm() override;
     };
     
-    class MSetVoltage : public MState
-    {
-        public:   
-            MSetVoltage(MTools * Tools);
-            virtual MState * fsm() override;
-    };
     
     class MExecution : public MState
     {
@@ -60,7 +62,7 @@ namespace DcSupplyFsm
     class MExit : public MState
     {
         public:  
-            MExit(MTools * Tools);    // : MState(Tools) 
+            MExit(MTools * Tools);
             virtual MState * fsm() override;
     };
 

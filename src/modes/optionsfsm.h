@@ -62,7 +62,12 @@ namespace OptionFsm
 
 
 
-
+    class MSetDCSupplyFactory : public MState
+    {
+        public:
+            MSetDCSupplyFactory(MTools * Tools);
+            virtual MState * fsm() override;
+    };
 
     class MSetCcCvChargeFactory : public MState
     {
