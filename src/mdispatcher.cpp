@@ -156,7 +156,7 @@ void MDispatcher::run()
               #endif 
 
               case SERVICE:
-                  State = new ServiceFsm::MInvitation(Tools);
+                  State = new ServiceFsm::MStart(Tools);
               break;
               default:
               break;

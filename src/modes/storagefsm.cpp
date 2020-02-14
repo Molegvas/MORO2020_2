@@ -7,11 +7,28 @@
 */
 
 #include "modes/storagefsm.h"
+#include "mtools.h"
+#include "board/mboard.h"
+#include "board/moverseer.h"
+#include "display/mdisplay.h"
 #include "measure/mkeyboard.h"
 #include <Arduino.h>
 
 namespace StorageFsm
 {
+    // Состояние "Старт", инициализация выбранного режима работы
+    MStart::MStart(MTools * Tools) : MState(Tools)
+    {
+        // Индикация
+        Display->getTextMode( (char*) " DISCHARGE SELECTED  " );
+        Display->getTextHelp( (char*) "  P-DEFINE  C-START  " );
+        Display->progessBarOff();
+
+        // Параметры заряда из энергонезависимой памяти, при первом включении - заводские
+        Tools->setVoltageMin( Tools->readNvsFloat("storage", "voltMin", 11.8f) );
+        Tools->setCurrentDis( Tools->readNvsFloat("storage", "currDis",  1.0f) );
+
+    }
     // Старт тестового разряда
     MState * MStart::fsm()
     {
@@ -31,6 +48,14 @@ namespace StorageFsm
     };
 
     // Выбор максимального тока разряда
+    MSetCurrentDis::MSetCurrentDis(MTools * Tools) : MState(Tools)
+    {
+                    // Индикация
+//            Oled->showLine4Text("  Imax разр. ");
+//            Oled->showLine3MaxI( Tools->getCurrentDis() );
+            Tools->showUpDn(); // " UP/DN, В-выбор "
+
+    }
     MState * MSetCurrentDis::fsm()
     {
         // Выход без сохранения корректируемого параметра
@@ -50,6 +75,14 @@ namespace StorageFsm
     };
 
     // Выбор напряжения окончания разряда
+    MSetVoltageMin::MSetVoltageMin(MTools * Tools) : MState(Tools)
+    {
+                    // Индикация
+//            Oled->showLine4Text("  Vmin разр. ");
+//            Oled->showLine3MaxU( Tools->getVoltageMin() );
+            Tools->showUpDn(); // " UP/DN, В-выбор "
+
+    }
     MState * MSetVoltageMin::fsm()
     {
         // Выход без сохранения корректируемого параметра
@@ -68,6 +101,39 @@ namespace StorageFsm
         return this;
     };
 
+    MExecution::MExecution(MTools * Tools) : MState(Tools)
+    {
+                    //Tools->clrAhCharge();                  // Обнуляются счетчики времени и отданного заряда
+
+            // Задаются начальные напряжение и ток
+            Board->setVoltageVolt( 0.0f );        //Tools->getVoltageMax() );         // Voltage limit
+            Board->setCurrentAmp( 0.0f );
+            Board->setDischargeAmp( Tools->getCurrentDis() );  // 
+            Board->powOn();   Board->swOn();                    // Включение преобразователя и коммутатора. 
+            #ifdef V22
+                Board->ledsGreen();                  // Зеленый светодиод - процесс разряда запущен
+            #endif
+            // Задание отображения на экране дисплея построчно (4-я строка - верхняя)
+            // Oled->showLine4RealVoltage();
+            // Oled->showLine3RealCurrent();
+            // Oled->showLine2Text(" Идёт разряд... ");            // 
+            // Oled->showLine1Time( Tools->getChargeTimeCounter() );
+            // //Oled->showLine1Ah( Tools->getAhCharge() );
+            // Oled->showLine1Celsius( Board->Overseer->getCelsius() );
+
+
+    //      Tools->setSetPoint( Tools->getVoltageMax() );
+
+        //   #ifdef DEBUG_SUPPLY
+        //       Serial.println(" Источник питания стартовал с параметрами:");
+        //       Serial.print("  Voltage max, B  *** = ");  Serial.println( Tools->getVoltageMax() );
+        //       Serial.print("  Current max, A  *** = ");  Serial.println( Tools->getCurrentMax() );
+        //   #endif
+
+//                                                            // задающей напряжение цепи
+
+
+    }
     MState * MExecution::fsm()
     {
         Tools->chargeCalculations();
@@ -81,20 +147,67 @@ namespace StorageFsm
         return this;
     };
 
-    // Процесс выхода из тестового режима - до нажатия кнопки "С" удерживается индикация
+    // // Процесс выхода из тестового режима - до нажатия кнопки "С" удерживается индикация
+    // // о продолжительности и отданном заряде.
+    // MState * MStop::fsm()
+    // {
+    //     if(Keyboard->getKey(MKeyboard::C_CLICK)) 
+    //     {
+    //         Tools->activateExit("    Хранение    ");
+    //         // #ifdef DEBUG_SUPPLY
+    //         //     Serial.println("DcSupply: Exit"); 
+    //         //     Serial.print("\t charge = ");   Serial.println( Tools->getAhCharge() );
+    //         // #endif  
+    //         return 0;   // Возврат к выбору режима
+    //     }
+    //     return this;
+    // };
+
+    // Завершение режима заряда - до нажатия кнопки "С" удерживается индикация 
     // о продолжительности и отданном заряде.
+    MStop::MStop(MTools * Tools) : MState(Tools)
+    {
+
+        Tools->shutdownCharge();
+        Display->getTextMode( (char*) "   PULSE CHARGE END  " );
+        Display->getTextHelp( (char*) "              C-EXIT " );
+        Display->progessBarStop();
+    }    
     MState * MStop::fsm()
     {
-        if(Keyboard->getKey(MKeyboard::C_CLICK)) 
+        switch ( Keyboard->getKey() )
         {
-            Tools->activateExit("    Хранение    ");
-            // #ifdef DEBUG_SUPPLY
-            //     Serial.println("DcSupply: Exit"); 
-            //     Serial.print("\t charge = ");   Serial.println( Tools->getAhCharge() );
-            // #endif  
-            return 0;   // Возврат к выбору режима
+            case MKeyboard::C_CLICK :
+                return new MExit(Tools);
+            default:;
+        
+//Display->progessBarOff();
         }
         return this;
     };
+
+    // Процесс выхода из режима заряда - до нажатия кнопки "С"
+    // удерживается индикация о продолжительности и отданном заряде.
+    MExit::MExit(MTools * Tools) : MState(Tools)
+    {
+        Tools->shutdownCharge();
+        Display->getTextMode( (char*) "   PULSE CHARGE OFF  " );
+        Display->getTextHelp( (char*) "              C-EXIT " );
+        Display->progessBarOff();
+    }    
+    MState * MExit::fsm()
+    {
+        switch ( Keyboard->getKey() )
+        {
+            case MKeyboard::C_CLICK :
+                // Надо бы восстанавливать средствами диспетчера...
+                Display->getTextMode( (char*) "     PULSE CHARGE:   " );
+                Display->getTextHelp( (char*) "   EXTENDED CHARGE   " );
+                return nullptr;                             // Возврат к выбору режима
+            default:;
+        }
+        return this;
+    };
+
 
 };

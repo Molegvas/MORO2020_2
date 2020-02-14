@@ -282,9 +282,32 @@ namespace OptionFsm
         case MKeyboard::C_CLICK :
             return new MExit(Tools);
         case MKeyboard::P_CLICK :
-            return new MSetQulonFactory(Tools);
+            return new MServiceFactory(Tools);
         case MKeyboard::B_CLICK :
             Tools->clearAllKeys("recovery");    // Выбор заносится в энергонезависимую память
+            return new MServiceFactory(Tools);
+        default :;
+        }
+        return this;
+    };
+
+    // Возврат к заводским настройкам режима сервиса АКБ 
+    MServiceFactory::MServiceFactory(MTools * Tools) : MState(Tools) 
+    {
+        // Индикация помощи
+        Display->getTextMode( (char*) " SET SERVICE FACTORY " );
+        Display->getTextHelp( (char*) " B-YES  P-NO  C-EXIT " );
+    }
+    MState * MServiceFactory::fsm()
+    {
+        switch ( Keyboard->getKey() )
+        {
+        case MKeyboard::C_CLICK :
+            return new MExit(Tools);
+        case MKeyboard::P_CLICK :
+            return new MSetQulonFactory(Tools);
+        case MKeyboard::B_CLICK :
+            Tools->clearAllKeys("service");    // Выбор заносится в энергонезависимую память
             return new MSetQulonFactory(Tools);
         default :;
         }

@@ -89,6 +89,12 @@ namespace OptionFsm
             virtual MState * fsm() override;
     };
 
+    class MServiceFactory : public MState
+    {
+        public:
+            MServiceFactory(MTools * Tools);
+            virtual MState * fsm() override;
+    };
 
     class MSetQulonFactory : public MState
     {
