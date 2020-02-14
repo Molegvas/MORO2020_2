@@ -224,16 +224,20 @@ namespace DcSupplyFsm
     MExit::MExit(MTools * Tools) : MState(Tools)
     {
         Tools->powShutdown();
+        // Tools->shutdownCharge();
+        Display->getTextMode( (char*) "   DC DCSUPPLY OFF   " );
+        Display->getTextHelp( (char*) "              C-EXIT " );
+        Display->progessBarOff();
     }      
     MState * MExit::fsm()
     {
         if(Keyboard->getKey(MKeyboard::C_CLICK)) 
         {
-            Tools->activateExit("  DC источник   ");
-            #ifdef DEBUG_SUPPLY
-                Serial.println("DcSupply: Exit"); 
-                Serial.print("\t charge = ");   Serial.println( Tools->getAhCharge() );
-            #endif  
+            //Tools->activateExit("  DC источник   ");
+
+            Display->getTextMode( (char*) "     DC DCSUPPLY:    " );
+            Display->getTextHelp( (char*) " SIMPLE POWER SUPPLY " );
+
             return 0;   // Возврат к выбору режима
         }
         return this;

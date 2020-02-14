@@ -5,23 +5,22 @@
 
 namespace OptionFsm
 {
+    // Константы, ограничивающие пользовательские регулировки
     struct MOptConsts
     {
-        // Примеры
-        static constexpr float offsetV  = 0.0f;
-        static constexpr float multV    = 1.0f;
-
-
-        static constexpr int ppone_l =  0;        // задержка включения (Отложенный старт)
+        // задержка включения (Отложенный старт)
+        static constexpr int ppone_l =  0;
         static constexpr int ppone_h = 24;
 
+        // смещение показаний по току
         static constexpr float c_offset_h =  2.00f;
         static constexpr float c_offset_l = -2.00f;
 
+        // смещение показаний по напряжению
         static constexpr float v_offset_h =  2.00f;
         static constexpr float v_offset_l = -2.00f;
 
-
+        //...
     };
 
     class MStart : public MState
