@@ -206,7 +206,7 @@ void MDispatcher::textMode(int mode)
       #endif
 
       #ifdef PULSE_CHARGE_ENABLE
-        case PULSECHARGE: s = " Импульсный зар.";          
+        case PULSECHARGE:
             sprintf( sMode, "    PULSE CHARGE:    " );
             sprintf( sHelp, "   EXTENDED CHARGE   " );
         break;

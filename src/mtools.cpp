@@ -1007,35 +1007,35 @@ bool MTools::postponeCalculation()
 }
 
 
-void MTools::activatePostpone( float volt, float amp )
-{
-    // volt - напряжение окончания предзаряда, не более того
-    // Возможны 2 варианта старта - "быстрый" и по профилю
-    voltagePre = volt;
-    currentPre = amp;
+// void MTools::activatePostpone( float volt, float amp )
+// {
+//     // volt - напряжение окончания предзаряда, не более того
+//     // Возможны 2 варианта старта - "быстрый" и по профилю
+//     voltagePre = volt;
+//     currentPre = amp;
 
-    timeCounter = postpone * 7200;                      // Отложенный старт в полусекундах
+//     timeCounter = postpone * 7200;                      // Отложенный старт в полусекундах
 
-    toKeepVolt = false;                                 // Признак удержания напряжения снять
+//     toKeepVolt = false;                                 // Признак удержания напряжения снять
 
-    // if( ( amp + 0.2 ) > max_akb_i) amp = max_akb_i;  // Поправка на погрешность установки ограничения тока
-    setPoint = amp;                                     // Ток будет стремиться к этому значению
+//     // if( ( amp + 0.2 ) > max_akb_i) amp = max_akb_i;  // Поправка на погрешность установки ограничения тока
+//     setPoint = amp;                                     // Ток будет стремиться к этому значению
 
-    // Настройка ПИД-регулятора
-    Pid.stop();
-    Pid.setOutputRange( 0.0, amp + 0.6 );               // Пределы регулирования тока
-    Pid.setBangBang(20.0);                              // отключение min/max
-    Pid.setTimeStep(100);   //(1000);                          // Подобрать
-    output = 0.0;
+//     // Настройка ПИД-регулятора
+//     Pid.stop();
+//     Pid.setOutputRange( 0.0, amp + 0.6 );               // Пределы регулирования тока
+//     Pid.setBangBang(20.0);                              // отключение min/max
+//     Pid.setTimeStep(100);   //(1000);                          // Подобрать
+//     output = 0.0;
 
-    // Задается выходное напряжение и начальный ток
-    Board->setVoltageVolt( voltageNom * 1.234 + 0.6 );  // с некоторым запасом на погрешность задания
-    Board->setCurrentAmp( 0.0 );                        // Ток в начале будет ограничен
+//     // Задается выходное напряжение и начальный ток
+//     Board->setVoltageVolt( voltageNom * 1.234 + 0.6 );  // с некоторым запасом на погрешность задания
+//     Board->setCurrentAmp( 0.0 );                        // Ток в начале будет ограничен
 
-    // Oled->showLine4RealVoltage();
-    // Oled->showLine3RealCurrent();
-    // Oled->showLine2Text(" До старта...   ");
-}
+//     // Oled->showLine4RealVoltage();
+//     // Oled->showLine3RealCurrent();
+//     // Oled->showLine2Text(" До старта...   ");
+// }
 
 void MTools::activatePreliminaryCharge()
 {
@@ -1414,27 +1414,27 @@ void MTools::activateImpulsCharge( float volt, float amp, float delta )
 // ****************
 
 
-// Активация импульса разряда в фазе поддержания напряжения
-void MTools::activateImpulsDischarge2( float amp )
-{
-    Board->setVoltageVolt( 0.0 );
-    Board->setCurrentAmp( 0.0 );            // на время разряда тока заряда не должно быть
+// // Активация импульса разряда в фазе поддержания напряжения
+// void MTools::activateImpulsDischarge2( float amp )
+// {
+//     Board->setVoltageVolt( 0.0 );
+//     Board->setCurrentAmp( 0.0 );            // на время разряда тока заряда не должно быть
 
-    float disI = amp * 0.8;                 // ток разряда test 0.8
-    Board->setDischargeAmp( disI );
+//     float disI = amp * 0.8;                 // ток разряда test 0.8
+//     Board->setDischargeAmp( disI );
 
-            #ifdef DEBUG_CHARGE
-                Serial.println("ExCharger: Imp Discharge at Keep Voltage activated");
-                Serial.print("    Discharge current, A  = "); Serial.println( disI );
-                Serial.print("    Discharge duration, s = "); Serial.println( durationOff );
-            #endif
+//             #ifdef DEBUG_CHARGE
+//                 Serial.println("ExCharger: Imp Discharge at Keep Voltage activated");
+//                 Serial.print("    Discharge current, A  = "); Serial.println( disI );
+//                 Serial.print("    Discharge duration, s = "); Serial.println( durationOff );
+//             #endif
 
-//    Oled->showLine3RealCurrent();              //Oled->showLine3MaxI( -disI );
-//    Oled->showLine2Text(" Время: Разряд: ");
+// //    Oled->showLine3RealCurrent();              //Oled->showLine3MaxI( -disI );
+// //    Oled->showLine2Text(" Время: Разряд: ");
 
-    cycle = (int)( durationOff * 10.0 ); //    cycle = (int)( durationOff * 2.0 );
+//     cycle = (int)( durationOff * 10.0 ); //    cycle = (int)( durationOff * 2.0 );
 
-}
+// }
 
 
 
@@ -1479,40 +1479,40 @@ initCurrentAvr();
 
 }
 
-void MTools::runImpulsCharge2()
-{
-    // setPoint задана 14,2 или 14,8
+// void MTools::runImpulsCharge2()
+// {
+//     // setPoint задана 14,2 или 14,8
 
-    // Накопление отсчетов тока, исключая первый шаг, где ток нулевой
-    //if( cycle < ( (int)( durationOn * 2.0 ) ) )  { addCollectAvr( Board->getRealCurrent() ); }
-    if( cycle < ( (int)( durationOn * 10.0 ) ) )  { addCollectAvr( Board->getRealCurrent() ); }
+//     // Накопление отсчетов тока, исключая первый шаг, где ток нулевой
+//     //if( cycle < ( (int)( durationOn * 2.0 ) ) )  { addCollectAvr( Board->getRealCurrent() ); }
+//     if( cycle < ( (int)( durationOn * 10.0 ) ) )  { addCollectAvr( Board->getRealCurrent() ); }
 
-    #ifdef DEBUG_CHARGE
-        printAll("@+ : ");
-    #endif
-
-
-    input = Board->getRealVoltage();        // Текущее напряжение
-    Pid.run();
-    Board->setCurrentAmp( output );
+//     #ifdef DEBUG_CHARGE
+//         printAll("@+ : ");
+//     #endif
 
 
-    // незадолго до окончания импульса (средний ток бы)
-    if( cycle == 1 ) 
-    {
-        //Serial.print("@+: Средний ток в импульсе = ");  Serial.println( getCurrentAverage() );
-        //currentOld = Board->getRealCurrent();  // Это может и не понадобится - ПИД должен справиться
+//     input = Board->getRealVoltage();        // Текущее напряжение
+//     Pid.run();
+//     Board->setCurrentAmp( output );
 
-  //currentOld = getCurrentAverage();
-        currentAvr = calcCurrentAvr();
 
-    //Serial.print(" Средний ток: "); Serial.println( currentAvr );
-        //Pid.stop();
+//     // незадолго до окончания импульса (средний ток бы)
+//     if( cycle == 1 ) 
+//     {
+//         //Serial.print("@+: Средний ток в импульсе = ");  Serial.println( getCurrentAverage() );
+//         //currentOld = Board->getRealCurrent();  // Это может и не понадобится - ПИД должен справиться
 
- Board->setCurrentAmp( 0.0 );
-    }
+//   //currentOld = getCurrentAverage();
+//         currentAvr = calcCurrentAvr();
 
-}
+//     //Serial.print(" Средний ток: "); Serial.println( currentAvr );
+//         //Pid.stop();
+
+//  Board->setCurrentAmp( 0.0 );
+//     }
+
+// }
 
 void MTools::initCurrentAvr() { collectAvr = 0.0f;  cnt = 0; count = 0; }       // оставить один счетчик
 

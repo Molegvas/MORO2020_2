@@ -258,8 +258,8 @@ class MTools
 
 // Импульсный заряд, фаза удержания напряжения
     void activateImpulsCharge2( float volt, float amp );
-    void runImpulsCharge2();
-    void activateImpulsDischarge2( float amp ); 
+//    void runImpulsCharge2();
+//    void activateImpulsDischarge2( float amp ); 
     void runImpulsDischarge2();
 
 // Общие для импульсного разряда
@@ -335,7 +335,7 @@ class MTools
     void runChargePh1();
 
 // новые, с честным подъёмом тока без ПИД
-    void activatePostpone( float volt, float amp );
+//    void activatePostpone( float volt, float amp );
     bool postponeCalculation();
     void activatePreliminaryCharge();
     void runPreliminaryCharge( float volt, float amp, float delta );

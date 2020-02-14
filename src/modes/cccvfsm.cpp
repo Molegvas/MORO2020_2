@@ -416,8 +416,8 @@ namespace CcCvFsm
     MExit::MExit(MTools * Tools) : MState(Tools)
     {
         Tools->shutdownCharge();
-        Display->getTextMode( (char*) "   CC/CV CHARGE OFF  " );
         Display->getTextHelp( (char*) "              C-EXIT " );
+        Display->getTextMode( (char*) "   CC/CV CHARGE OFF  " );
         Display->progessBarOff();
     }    
     MState * MExit::fsm()
