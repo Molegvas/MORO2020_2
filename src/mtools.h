@@ -249,17 +249,10 @@ class MTools
 
     bool getPidStopped();
 
-    void activateImpulsCharge( float volt, float amp, float delta );
-//  void activateImpulsChargeVar2( float volt, float delta );
-   
-//    void runImpulsCharge();
-//    void activateImpulsDischarge( float amp );
-//    void runImpulsDischarge( float amp );
+//    void activateImpulsCharge( float volt, float amp, float delta );
 
 // Импульсный заряд, фаза удержания напряжения
-    void activateImpulsCharge2( float volt, float amp );
-//    void runImpulsCharge2();
-//    void activateImpulsDischarge2( float amp ); 
+//    void activateImpulsCharge2( float volt, float amp );
     void runImpulsDischarge2();
 
 // Общие для импульсного разряда

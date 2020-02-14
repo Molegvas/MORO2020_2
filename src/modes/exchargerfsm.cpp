@@ -32,7 +32,7 @@ namespace ExChargerFsm
         Tools->setCurrentMax( Tools->readNvsFloat("e-charge", "currMax", MChConsts::currentMaxFactor * Tools->getCapacity()) );
         Tools->setCurrentMin( Tools->readNvsFloat("e-charge", "currMin", MChConsts::currentMinFactor * Tools->getCapacity()) );
     }
-MState * MStart::fsm()
+    MState * MStart::fsm()
     {
 
         switch ( Keyboard->getKey() )    //Здесь так можно
@@ -68,7 +68,7 @@ MState * MStart::fsm()
     {
 
         Tools->shutdownCharge();
-        Display->getTextMode( (char*) "   PULSE CHARGE OFF  " );
+        Display->getTextMode( (char*) "   PULSE CHARGE END  " );
         Display->getTextHelp( (char*) "              C-EXIT " );
         Display->progessBarStop();
     }    

@@ -139,7 +139,7 @@ void MDispatcher::run()
 
               #ifdef RECOVERY_ENABLE
                 case RECOVERY:
-                    State = new RecoveryFsm::MInvitation(Tools);
+                    State = new RecoveryFsm::MStart(Tools);
                 break;
               #endif
 

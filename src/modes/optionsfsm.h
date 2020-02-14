@@ -75,6 +75,21 @@ namespace OptionFsm
             virtual MState * fsm() override;
     };
 
+    class MSetExChargeFactory : public MState
+    {
+        public:
+            MSetExChargeFactory(MTools * Tools);
+            virtual MState * fsm() override;
+    };
+
+    class MSetRecoveryFactory : public MState
+    {
+        public:
+            MSetRecoveryFactory(MTools * Tools);
+            virtual MState * fsm() override;
+    };
+
+
     class MSetQulonFactory : public MState
     {
         public:

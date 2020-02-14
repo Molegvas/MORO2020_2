@@ -3,11 +3,6 @@
 
 */
 
-
-
-
-
-
 #include "modes/optionsfsm.h"
 #include "mtools.h"
 #include "board/mboard.h"
@@ -19,9 +14,6 @@
 
 namespace OptionFsm
 {
-    // Переменные
-    //float vOffset   = 0.0f;
-    
     // Состояние "Старт", инициализация выбранного режима работы.
     MStart::MStart(MTools * Tools) : MState(Tools)
     {
@@ -127,7 +119,6 @@ namespace OptionFsm
         }
 
         Display->duration( Tools->postpone, MDisplay::HOUR );
-
         return this;
     };
 
@@ -228,7 +219,6 @@ namespace OptionFsm
             return new MSetQulonFactory(Tools);
         default :;
         }
-
         return this;
     };
 
@@ -246,13 +236,58 @@ namespace OptionFsm
         case MKeyboard::C_CLICK :
             return new MExit(Tools);
         case MKeyboard::P_CLICK :
-            return new MSetQulonFactory(Tools);
+            return new MSetExChargeFactory(Tools);
         case MKeyboard::B_CLICK :
             Tools->clearAllKeys("cccv");    // Выбор заносится в энергонезависимую память
+            return new MSetExChargeFactory(Tools);
+        default :;
+        }
+        return this;
+    };
+
+    // Возврат к заводским настройкам расширенного заряда
+    MSetExChargeFactory::MSetExChargeFactory(MTools * Tools) : MState(Tools) 
+    {
+        // Индикация помощи
+        Display->getTextMode( (char*) " SET EXT.CH. FACTORY " );
+        Display->getTextHelp( (char*) " B-YES  P-NO  C-EXIT " );
+    }
+    MState * MSetExChargeFactory::fsm()
+    {
+        switch ( Keyboard->getKey() )
+        {
+        case MKeyboard::C_CLICK :
+            return new MExit(Tools);
+        case MKeyboard::P_CLICK :
+            return new MSetRecoveryFactory(Tools);
+        case MKeyboard::B_CLICK :
+            Tools->clearAllKeys("e-charge");    // Выбор заносится в энергонезависимую память
+            return new MSetRecoveryFactory(Tools);
+        default :;
+        }
+        return this;
+    };
+
+    // Возврат к заводским настройкам режима восстановления
+    MSetRecoveryFactory::MSetRecoveryFactory(MTools * Tools) : MState(Tools) 
+    {
+        // Индикация помощи
+        Display->getTextMode( (char*) "  SET RECOV. FACTORY " );
+        Display->getTextHelp( (char*) " B-YES  P-NO  C-EXIT " );
+    }
+    MState * MSetRecoveryFactory::fsm()
+    {
+        switch ( Keyboard->getKey() )
+        {
+        case MKeyboard::C_CLICK :
+            return new MExit(Tools);
+        case MKeyboard::P_CLICK :
+            return new MSetQulonFactory(Tools);
+        case MKeyboard::B_CLICK :
+            Tools->clearAllKeys("recovery");    // Выбор заносится в энергонезависимую память
             return new MSetQulonFactory(Tools);
         default :;
         }
-
         return this;
     };
 
@@ -276,7 +311,6 @@ namespace OptionFsm
             return new MExit(Tools);
         default :;
         }
-
         return this;
     };
 
@@ -300,7 +334,6 @@ namespace OptionFsm
         }
         return this;
     };
-
 
 };
 
