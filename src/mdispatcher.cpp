@@ -1,4 +1,5 @@
 #include "mdispatcher.h"
+#include "nvs.h"
 #include "mtools.h"
 #include "board/mboard.h"
 #include "measure/mkeyboard.h"
@@ -42,21 +43,22 @@ Tools(tools), Board(tools->Board), Display(tools->Display)
     strcpy( sLabel, "  OLMORO  *  BALSAT  " );
     Display->getTextLabel( sLabel );
 
-    latrus = Tools->readNvsBool("qulon", "local", true );
-    mode = Tools->readNvsInt  ("qulon", "mode", 0);                 // Индекс массива
-    textMode( mode );
-    Tools->powInd = Tools->readNvsInt  ("qulon", "powInd", 3);      // 3 - дефолтный индекс массива
-    Tools->akbInd = Tools->readNvsInt  ("qulon", "akbInd", 3);                  // Индекс массива с набором батарей
-    Tools->setVoltageNom( Tools->readNvsFloat("qulon", "akbU", Tools->akb[3][0]) );   // Начальный выбор 12 вольт
-    Tools->setCapacity( Tools->readNvsFloat("qulon", "akbAh",  Tools->akb[3][1]) );   //             55 Ач
+    latrus = Tools->readNvsBool( MNvs::nQulon, MNvs::kQulonLocal, true );
+    mode   = Tools->readNvsInt ( MNvs::nQulon, MNvs::kQulonMode, 0 );   // Индекс массива
 
-    Tools->postpone = Tools->readNvsInt("qulon", "postp",  3 );
-Serial.println(Tools->postpone);
+    textMode( mode );
+    Tools->powInd = Tools->readNvsInt  ( MNvs::nQulon, MNvs::kQulonPowInd, 3); // 3 - дефолтный индекс массива
+    Tools->akbInd = Tools->readNvsInt  ( MNvs::nQulon, MNvs::kQulonAkbInd, 3); // Индекс массива с набором батарей
+    Tools->setVoltageNom( Tools->readNvsFloat( MNvs::nQulon, MNvs::kQulonAkbU, Tools->akb[3][0]) );   // Начальный выбор 12 вольт
+    Tools->setCapacity( Tools->readNvsFloat( MNvs::nQulon, MNvs::kQulonAkbAh, Tools->akb[3][1]) );   //             55 Ач
+
+    Tools->postpone = Tools->readNvsInt( MNvs::nQulon, MNvs::kQulonPostpone,  3 );
+
     // Калибровки измерителей
-    Board->voltageMultiplier  = Tools->readNvsFloat("qulon", "vMult",   1.00f); 
-    Board->voltageOffset      = Tools->readNvsFloat("qulon", "vOffset", 0.00f);
-    Board->currentMultiplier  = Tools->readNvsFloat("qulon", "cMult",   1.40f); 
-    Board->currentOffset      = Tools->readNvsFloat("qulon", "cOffset", 0.00f); 
+    Board->voltageMultiplier  = Tools->readNvsFloat( MNvs::nQulon, MNvs::kQulonVmult,   1.00f ); 
+    Board->voltageOffset      = Tools->readNvsFloat( MNvs::nQulon, MNvs::kQulonVoffset, 0.00f );
+    Board->currentMultiplier  = Tools->readNvsFloat( MNvs::nQulon, MNvs::kQulonImult,   1.40f ); 
+    Board->currentOffset      = Tools->readNvsFloat( MNvs::nQulon, MNvs::kQulonIoffset, 0.00f ); 
 }
 
 void MDispatcher::run()
@@ -96,7 +98,8 @@ void MDispatcher::run()
         if (Tools->Keyboard->getKey(MKeyboard::B_CLICK))
         {
             // Запомнить крайний выбор режима
-            Tools->writeNvsInt( "qulon", "mode", mode );
+            Tools->writeNvsInt( MNvs::nQulon, "mode", mode );
+            //Tools->writeNvsInt( MNvs::nQulon, MNvs::kQulonMode );
 
             // Serial.print("Available heap: "); Serial.println(ESP.getFreeHeap());
             // Serial.print("Core ID: ");        Serial.println(xPortGetCoreID());

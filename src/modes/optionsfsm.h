@@ -23,6 +23,21 @@ namespace OptionFsm
         //...
     };
 
+    enum MODES
+    {
+      QULON = 0,         // 
+      TEMPLATE,               // шаблон режима 
+      DCSUPPLY,               // режим источника постоянного тока
+      PULSEGEN,               // режим источника импульсного тока
+      CCCVCHARGE,             // режим заряда "постоянный ток / постоянное напряжение"
+      PULSECHARGE,            // режим импульсного заряда
+      RECOVERY,               // режим восстановления
+      STORAGE,                // режим хранения
+      DEVICE,                 // режим заводских регулировок
+      SERVICE                // режим Сервис АКБ
+    };
+
+
     class MStart : public MState
     {       
         public:
@@ -58,9 +73,21 @@ namespace OptionFsm
             virtual MState * fsm() override;
     };
 
+    class MNameSelection : public MState
+    {
+        public:
+            MNameSelection(MTools * Tools);
+            virtual MState * fsm() override;
+    };
 
+    class MSetFactory : public MState
+    {
+        public:
+            MSetFactory(MTools * Tools);
+            virtual MState * fsm() override;
+    };
 
-
+//***********
     class MSetDCSupplyFactory : public MState
     {
         public:
@@ -102,6 +129,7 @@ namespace OptionFsm
             MSetQulonFactory(MTools * Tools);
             virtual MState * fsm() override;
     };
+//***************
 
     class MExit : public MState
     {

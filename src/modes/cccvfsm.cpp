@@ -9,6 +9,7 @@
 */
 
 #include "modes/cccvfsm.h"
+#include "nvs.h"
 #include "mtools.h"
 #include "board/mboard.h"
 #include "measure/mkeyboard.h"
@@ -25,10 +26,10 @@ namespace CcCvFsm
         // Параметры заряда из энергонезависимой памяти, Занесенные в нее при предыдущих включениях, как и
         // выбранные ранее номинальные параметры батареи (напряжение, емкость).
         // При первом включении, как правило заводском, номиналы батареи задаются в mdispather.h. 
-        Tools->setVoltageMax( Tools->readNvsFloat("cccv", "voltMax", MChConsts::voltageMaxFactor * Tools->getVoltageNom()) );
-        Tools->setVoltageMin( Tools->readNvsFloat("cccv", "voltMin", MChConsts::voltageMinFactor * Tools->getVoltageNom()) );
-        Tools->setCurrentMax( Tools->readNvsFloat("cccv", "currMax", MChConsts::currentMaxFactor * Tools->getCapacity()) );
-        Tools->setCurrentMin( Tools->readNvsFloat("cccv", "currMin", MChConsts::currentMinFactor * Tools->getCapacity()) );
+        Tools->setVoltageMax( Tools->readNvsFloat( MNvs::nCcCv, MNvs::kCcCvVmax, MChConsts::voltageMaxFactor * Tools->getVoltageNom()) );
+        Tools->setVoltageMin( Tools->readNvsFloat( MNvs::nCcCv, MNvs::kCcCvVmin, MChConsts::voltageMinFactor * Tools->getVoltageNom()) );
+        Tools->setCurrentMax( Tools->readNvsFloat( MNvs::nCcCv, MNvs::kCcCvImax, MChConsts::currentMaxFactor * Tools->getCapacity()) );
+        Tools->setCurrentMin( Tools->readNvsFloat( MNvs::nCcCv, MNvs::kCcCvImin, MChConsts::currentMinFactor * Tools->getCapacity()) );
 
         // Индикация
         Display->getTextMode( (char*) "   CC/CV SELECTED    " );
@@ -77,21 +78,26 @@ namespace CcCvFsm
             case MKeyboard::C_CLICK :                    // Отказ от дальнейшего ввода параметров - исполнение
                 return new MPostpone(Tools);
             case MKeyboard::B_CLICK :                    // Сохранить и перейти к следующему параметру
-                Tools->saveFloat( "cccv", "currMax", Tools->getCurrentMax() ); 
+                Tools->saveFloat( MNvs::nCcCv, MNvs::kCcCvImax, Tools->getCurrentMax() ); 
                 return new MSetVoltageMax(Tools);
-
             case MKeyboard::UP_CLICK :
-                Tools->incCurrentMax( 0.1f, false );     // По кольцу? - Нет
+            case MKeyboard::UP_AUTO_CLICK :
+
+                //Tools->incCurrentMax( 0.1f, false );     // По кольцу? - Нет
+                Tools->currentMax = Tools->upfVal( Tools->currentMax, MChConsts::i_max_l, MChConsts::i_max_h, 0.1f );
                 break;
             case MKeyboard::DN_CLICK:
-                Tools->decCurrentMax( 0.1f, false );
+            case MKeyboard::DN_AUTO_CLICK :
+
+                //Tools->decCurrentMax( 0.1f, false );
+                Tools->currentMax = Tools->dnfVal( Tools->currentMax, MChConsts::i_max_l, MChConsts::i_max_h, 0.1f );
                 break;
-            case MKeyboard::UP_AUTO_CLICK:
-                Tools->incCurrentMax( 0.1f, false );
-                break;
-            case MKeyboard::DN_AUTO_CLICK:
-                Tools->decCurrentMax( 0.1f, false );
-                break;
+            // case MKeyboard::UP_AUTO_CLICK :
+            //     Tools->incCurrentMax( 0.1f, false );
+            //     break;
+            // case MKeyboard::DN_AUTO_CLICK :
+            //     Tools->decCurrentMax( 0.1f, false );
+            //     break;
             default:;
         }
         // Индикация ввода
@@ -117,7 +123,7 @@ namespace CcCvFsm
             case MKeyboard::C_CLICK :                    // Отказ от дальнейшего ввода параметров - исполнение
                 return new MPostpone(Tools);
             case MKeyboard::B_CLICK :                    // Сохранить и перейти к следующему параметру
-                Tools->saveFloat( "cccv", "voltMax", Tools->getVoltageMax() ); 
+                Tools->saveFloat( MNvs::nCcCv, MNvs::kCcCvVmax, Tools->getVoltageMax() ); 
                 return new MSetCurrentMin(Tools);
 
             case MKeyboard::UP_CLICK :
@@ -157,7 +163,7 @@ namespace CcCvFsm
             case MKeyboard::C_CLICK :                    // Отказ от дальнейшего ввода параметров - исполнение
                 return new MPostpone(Tools);
             case MKeyboard::B_CLICK :                    // Сохранить и перейти к следующему параметру
-                Tools->saveFloat( "cccv", "currMin", Tools->getCurrentMin() ); 
+                Tools->saveFloat( MNvs::nCcCv, MNvs::kCcCvImin, Tools->getCurrentMin() ); 
                 return new MSetVoltageMin(Tools);
 
             case MKeyboard::UP_CLICK :
@@ -197,7 +203,7 @@ namespace CcCvFsm
             case MKeyboard::C_CLICK :                    // Отказ от дальнейшего ввода параметров - исполнение
                 return new MPostpone(Tools);
             case MKeyboard::B_CLICK :                    // Сохранить и перейти к следующему параметру
-                Tools->saveFloat( "cccv", "voltMin", Tools->getVoltageMin() ); 
+                Tools->saveFloat( MNvs::nCcCv, MNvs::kCcCvVmin, Tools->getVoltageMin() ); 
                 return new MPostpone(Tools);
 
             case MKeyboard::UP_CLICK :
@@ -227,7 +233,7 @@ namespace CcCvFsm
     MPostpone::MPostpone(MTools * Tools) : MState(Tools)
     {
         // Параметр задержки начала заряда из энергонезависимой памяти, при первом включении - заводское
-        Tools->postpone = Tools->readNvsInt( "qulon", "postp", 0 );
+        Tools->postpone = Tools->readNvsInt( MNvs::nQulon, MNvs::kQulonPostpone, 0 );
                 
         // Индикация помощи
         Display->getTextMode( (char*) " C-START CLONG-STOP" );

@@ -4,6 +4,7 @@
 */
 
 #include "modes/optionsfsm.h"
+#include "nvs.h"
 #include "mtools.h"
 #include "board/mboard.h"
 #include "measure/mkeyboard.h"
@@ -14,6 +15,10 @@
 
 namespace OptionFsm
 {
+    static int mode = QULON;
+    char sName[ 15 ] = { 0 };   // Ограничение ESP32
+
+
     // Состояние "Старт", инициализация выбранного режима работы.
     MStart::MStart(MTools * Tools) : MState(Tools)
     {
@@ -110,7 +115,7 @@ namespace OptionFsm
             Tools->postpone = Tools->dniVal( Tools->postpone, MOptConsts::ppone_l, MOptConsts::ppone_h, 1 );
             break;
         case MKeyboard::B_CLICK :
-            Tools->saveInt( "qulon", "postp", Tools->postpone );   // Выбор заносится в энергонезависимую память
+            Tools->saveInt( MNvs::nQulon, MNvs::kQulonPostpone, Tools->postpone );   // Выбор заносится в энергонезависимую память
             // #ifdef DEBUG_OPTIONS
             //     Serial.println(Tools->postpone);
             // #endif
@@ -146,7 +151,7 @@ namespace OptionFsm
             Board->currentOffset = Tools->dnfVal( Board->currentOffset, MOptConsts::c_offset_l, MOptConsts::c_offset_h, 0.01f );
             break;
         case MKeyboard::B_CLICK :
-            Tools->saveInt( "qulon", "cOffset", Board->currentOffset );
+            Tools->saveInt( MNvs::nQulon, MNvs::kQulonIoffset, Board->currentOffset );
             // #ifdef DEBUG_OPTIONS
             //     Serial.println(Board->currentOffset);
             // #endif
@@ -185,7 +190,7 @@ namespace OptionFsm
             Board->voltageOffset = Tools->dnfVal( Board->voltageOffset, MOptConsts::v_offset_l, MOptConsts::v_offset_h, 0.01f );
             break;
         case MKeyboard::B_CLICK :
-            Tools->saveInt( "qulon", "vOffset", Board->voltageOffset );
+            Tools->saveInt( MNvs::nQulon, MNvs::kQulonVoffset, Board->voltageOffset );
             // #ifdef DEBUG_OPTIONS
             //     Serial.println(Board->voltageOffset);
             // #endif
@@ -198,7 +203,81 @@ namespace OptionFsm
         return this;
     };
 
+    // Возврат к заводским настройкам режимов и прибора
+    // Выбор имени в nvs 
+    MNameSelection::MNameSelection(MTools * Tools) : MState(Tools)
+    {
+        // Индикация помощи
+        //Display->getTextMode( (char*) "    SELECTED MODE    " );
+        Display->getTextHelp( (char*) " P-NEXT B-YES C-EXIT " );
 
+    }
+    MState * MNameSelection::fsm()
+    {
+        switch( mode )
+            {
+                case TEMPLATE: Display->getTextMode( (char*)    "      TEMPLATE?      " ); 
+                    sprintf( sName, "template" );
+                break;
+                case DCSUPPLY: Display->getTextMode( (char*)    "      DC SUPPLY?     " ); 
+                    sprintf( sName, "s-power" );
+                break;
+                case PULSEGEN: Display->getTextMode( (char*)    "      PULSEGEN?      " ); 
+                    sprintf( sName, "e-power" );
+                break;
+                case CCCVCHARGE: Display->getTextMode( (char*)  "    CC/CV CHARGE?    " ); 
+                    sprintf( sName, "cccv" );
+                break;
+                case PULSECHARGE: Display->getTextMode( (char*) "    PULSE CHARGE?    " ); 
+                    sprintf( sName, "e-charge" );
+                break;
+                case RECOVERY: Display->getTextMode( (char*)    "      RECOVERY?      " ); 
+                    sprintf( sName, "recovery" );
+                break;
+                case STORAGE: Display->getTextMode( (char*)     "       STORAGE?      " ); 
+                    sprintf( sName, "storage" );
+                break;
+                case DEVICE: Display->getTextMode( (char*)      "        DEVICE?      " ); 
+                    sprintf( sName, "dc" ); 
+                break;
+                case SERVICE: Display->getTextMode( (char*)     "        SERVICE?     " ); 
+                    sprintf( sName, "service" );
+                break;
+                case QULON: Display->getTextMode( (char*)       "        QULON?       " ); 
+                    sprintf( sName, MNvs::nQulon );
+                break;
+    
+            }
+
+        return this;
+    };
+
+
+    MSetFactory::MSetFactory(MTools * Tools) : MState(Tools) 
+    {
+        // Индикация помощи
+        //Display->getTextMode( (char*) "    SELECTED MODE    " );
+        Display->getTextHelp( (char*) " P-NEXT B-YES C-EXIT " );
+    }
+    MState * MSetFactory::fsm()
+    {
+        // switch(mode)
+        // {
+        //     case OPTIONS:
+        //         Display->getTextMode( (char*) "      DC SUPPLY?     " );
+        //         //            sprintf( sHelp, "CALIBRATION,TIMER ETC" );
+        //     break;
+        // }
+
+
+
+
+
+        return this;
+    };
+
+
+//***********
     // Возврат к заводским настройкам простого источника
     MSetDCSupplyFactory::MSetDCSupplyFactory(MTools * Tools) : MState(Tools) 
     {
@@ -215,7 +294,7 @@ namespace OptionFsm
         case MKeyboard::P_CLICK :
             return new MSetQulonFactory(Tools);
         case MKeyboard::B_CLICK :
-            Tools->clearAllKeys("s-power");    // Выбор заносится в энергонезависимую память
+            Tools->clearAllKeys( MNvs::nDcPower );    // Выбор заносится в энергонезависимую память
             return new MSetQulonFactory(Tools);
         default :;
         }
@@ -238,7 +317,7 @@ namespace OptionFsm
         case MKeyboard::P_CLICK :
             return new MSetExChargeFactory(Tools);
         case MKeyboard::B_CLICK :
-            Tools->clearAllKeys("cccv");    // Выбор заносится в энергонезависимую память
+            Tools->clearAllKeys( MNvs::nCcCv );    // Выбор заносится в энергонезависимую память
             return new MSetExChargeFactory(Tools);
         default :;
         }
@@ -261,7 +340,7 @@ namespace OptionFsm
         case MKeyboard::P_CLICK :
             return new MSetRecoveryFactory(Tools);
         case MKeyboard::B_CLICK :
-            Tools->clearAllKeys("e-charge");    // Выбор заносится в энергонезависимую память
+            Tools->clearAllKeys( MNvs::nExChrg );    // Выбор заносится в энергонезависимую память
             return new MSetRecoveryFactory(Tools);
         default :;
         }
@@ -284,7 +363,7 @@ namespace OptionFsm
         case MKeyboard::P_CLICK :
             return new MServiceFactory(Tools);
         case MKeyboard::B_CLICK :
-            Tools->clearAllKeys("recovery");    // Выбор заносится в энергонезависимую память
+            Tools->clearAllKeys( MNvs::nRecBat );    // Выбор заносится в энергонезависимую память
             return new MServiceFactory(Tools);
         default :;
         }
@@ -307,7 +386,7 @@ namespace OptionFsm
         case MKeyboard::P_CLICK :
             return new MSetQulonFactory(Tools);
         case MKeyboard::B_CLICK :
-            Tools->clearAllKeys("service");    // Выбор заносится в энергонезависимую память
+            Tools->clearAllKeys( MNvs::nServBat );    // Выбор заносится в энергонезависимую память
             return new MSetQulonFactory(Tools);
         default :;
         }
@@ -330,12 +409,15 @@ namespace OptionFsm
         case MKeyboard::P_CLICK :           // Так как последний в списке
             return new MExit(Tools);
         case MKeyboard::B_CLICK :
-            Tools->clearAllKeys("qulon");    // Выбор заносится в энергонезависимую память
+            Tools->clearAllKeys(MNvs::nQulon);    // Выбор заносится в энергонезависимую память
             return new MExit(Tools);
         default :;
         }
         return this;
     };
+
+
+//***********
 
     // Завершение режима - до нажатия кнопки "С" удерживается индикация 
     MExit::MExit(MTools * Tools) : MState(Tools)

@@ -7,6 +7,10 @@ namespace CcCvFsm
 {
     struct MChConsts
     {
+        // Пределы регулирования
+        static constexpr float i_max_l =  0.2f;
+        static constexpr float i_max_h = 12.2f;
+
         // Параметры условий заряда (здесь – для батарей типа AGM)
         static constexpr float voltageMaxFactor     = 1.234f;    // 12v  * 1.234 = 14.8v
         static constexpr float voltageMinFactor     = 0.890f;    // 12v  * 0.89  = 10.7v

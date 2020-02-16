@@ -19,7 +19,7 @@ namespace DcSupplyFsm
     {
         Tools->setVoltageMax( Tools->readNvsFloat("s-power", "voltMax", Tools->pows[4][0]) );   // Начальный выбор 12.0 вольт
         Tools->setCurrentMax( Tools->readNvsFloat("s-power", "currMax", Tools->pows[4][1]) );   //                  3.0 А
-        Tools->powO   = Tools->readNvsFloat("s-power", "powO", 0.0f);                // Планируется для быстрого входа в режим, nu
+    //    Tools->powO   = Tools->readNvsFloat("s-power", "powO", 0.0f);                // Планируется для быстрого входа в режим, nu
         
         #ifdef DEBUG_SUPPLY
             Serial.print("Voltage     : "); Serial.println(Tools->getVoltageMax(), 2);         // формат XX.XX
