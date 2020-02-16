@@ -82,22 +82,13 @@ namespace CcCvFsm
                 return new MSetVoltageMax(Tools);
             case MKeyboard::UP_CLICK :
             case MKeyboard::UP_AUTO_CLICK :
-
-                //Tools->incCurrentMax( 0.1f, false );     // По кольцу? - Нет
-                Tools->currentMax = Tools->upfVal( Tools->currentMax, MChConsts::i_max_l, MChConsts::i_max_h, 0.1f );
+                Tools->currentMax = Tools->upfVal( Tools->currentMax, MChConsts::i_l, MChConsts::i_h, 0.1f );
                 break;
             case MKeyboard::DN_CLICK:
             case MKeyboard::DN_AUTO_CLICK :
-
-                //Tools->decCurrentMax( 0.1f, false );
-                Tools->currentMax = Tools->dnfVal( Tools->currentMax, MChConsts::i_max_l, MChConsts::i_max_h, 0.1f );
+                Tools->currentMax = Tools->dnfVal( Tools->currentMax, MChConsts::i_l, MChConsts::i_h, 0.1f );
                 break;
-            // case MKeyboard::UP_AUTO_CLICK :
-            //     Tools->incCurrentMax( 0.1f, false );
-            //     break;
-            // case MKeyboard::DN_AUTO_CLICK :
-            //     Tools->decCurrentMax( 0.1f, false );
-            //     break;
+
             default:;
         }
         // Индикация ввода
@@ -125,18 +116,13 @@ namespace CcCvFsm
             case MKeyboard::B_CLICK :                    // Сохранить и перейти к следующему параметру
                 Tools->saveFloat( MNvs::nCcCv, MNvs::kCcCvVmax, Tools->getVoltageMax() ); 
                 return new MSetCurrentMin(Tools);
-
             case MKeyboard::UP_CLICK :
-                Tools->incVoltageMax( 0.1f, false );     // По кольцу? - Нет
+            case MKeyboard::UP_AUTO_CLICK :
+                Tools->voltageMax = Tools->upfVal( Tools->voltageMax, MChConsts::v_l, MChConsts::v_h, 0.1f );
                 break;
             case MKeyboard::DN_CLICK:
-                Tools->decVoltageMax( 0.1f, false );
-                break;
-            case MKeyboard::UP_AUTO_CLICK:
-                Tools->incVoltageMax( 0.1f, false );
-                break;
-            case MKeyboard::DN_AUTO_CLICK:
-                Tools->decVoltageMax( 0.1f, false );
+            case MKeyboard::DN_AUTO_CLICK :
+                Tools->voltageMax = Tools->dnfVal( Tools->voltageMax, MChConsts::v_l, MChConsts::v_h, 0.1f );
                 break;
             default:;
         }
