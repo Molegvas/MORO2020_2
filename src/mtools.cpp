@@ -598,11 +598,11 @@ void MTools::incVoltageMin( float delta, bool way )
     voltageMin = incfValue( voltageMin, volt_end_l, volt_end_h, delta, way );   // пределы уточнить
 //    Oled->showLine3MaxU( voltageMin );
 }
-void MTools::decVoltageMin( float delta, bool way )
-{
-    voltageMin = decfValue( voltageMin, volt_end_l, volt_end_h, delta, way );   // пределы уточнить
-//    Oled->showLine3MaxU(voltageMin);
-}
+// void MTools::decVoltageMin( float delta, bool way )
+// {
+//     voltageMin = decfValue( voltageMin, volt_end_l, volt_end_h, delta, way );   // пределы уточнить
+// //    Oled->showLine3MaxU(voltageMin);
+// }
 
 void MTools::incDurationOn( bool way )
 {

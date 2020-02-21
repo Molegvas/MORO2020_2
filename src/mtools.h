@@ -27,7 +27,9 @@ class MTools
 // перенесенные из privat
 
     float voltageMax  = 14.5f;   // Заданное напряжение заряда или источника питания, В
+    float voltageMin  = 13.2f;   // Заданное минимальное снижение напряжения, В
     float currentMax  =  5.0f;   // Заданный максимальный ток заряда, А
+    float currentMin  =  0.5f;   // Заданный минимальный ток заряда, А
 
 
     // Номинальное напряжение батареи, В
@@ -175,7 +177,7 @@ class MTools
     void decVoltageMax( float delta, bool way );
 
     void incVoltageMin( float delta, bool way );
-    void decVoltageMin( float delta, bool way );
+//    void decVoltageMin( float delta, bool way );
 
     void incVoltagePow( float delta, bool way );
     void decVoltagePow( float delta, bool way );
@@ -403,9 +405,9 @@ private:
   //float capacityNom = 55.0f;   // Номинальная емкость батареи, А    nu
     float capacity    = 50.f;    // Заданная емкость батареи, А-ч
 //    float voltageMax  = 14.5f;   // Заданное напряжение заряда, В
-    float voltageMin  = 13.2f;   // Заданное минимальное снижение напряжения, В
+//    float voltageMin  = 13.2f;   // Заданное минимальное снижение напряжения, В
 //    float currentMax  =  5.0f;   // Заданный максимальный ток заряда, А
-    float currentMin  =  0.5f;   // Заданный минимальный ток заряда, А
+//    float currentMin  =  0.5f;   // Заданный минимальный ток заряда, А
     float voltagePre  =  6.0f;   // Заданное напряжение предзаряда, В
     float currentPre  =  3.0f;   // Заданный ток предзаряда, А
     float voltageDis  = 10.7f;   // Заданное минимальное напряжение разряда, В

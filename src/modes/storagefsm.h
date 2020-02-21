@@ -10,6 +10,24 @@
 
 namespace StorageFsm
 {
+    struct MChConsts
+    {
+        // Пределы регулирования
+        static constexpr float i_l =  0.2f;
+        static constexpr float i_h = 12.2f;
+        static constexpr float v_l = 10.0f;
+        static constexpr float v_h = 16.0f;
+
+
+        // // Параметры условий заряда (здесь – для батарей типа AGM)
+        // static constexpr float voltageMaxFactor     = 1.234f;    // 12v  * 1.234 = 14.8v
+        // static constexpr float voltageMinFactor     = 0.890f;    // 12v  * 0.89  = 10.7v
+        // static constexpr float currentMaxFactor     = 0.200f;    // 55ah * 0.1   = 5,5A 
+        // static constexpr float currentMinFactor     = 0.050f;    // 55ah * 0.05  = 2.75A
+    };
+
+
+
     class MStart : public MState
     {       
         public:

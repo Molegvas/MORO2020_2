@@ -8,6 +8,7 @@
 */
 
 #include "modes/storagefsm.h"
+#include "nvs.h"
 #include "mtools.h"
 #include "board/mboard.h"
 #include "board/moverseer.h"
@@ -73,32 +74,66 @@ namespace StorageFsm
             return new MSetVoltageMin(Tools);
         }
         return this;
+
+
+        
     };
 
     // Выбор напряжения окончания разряда
     MSetVoltageMin::MSetVoltageMin(MTools * Tools) : MState(Tools)
     {
-                    // Индикация
-//            Oled->showLine4Text("  Vmin разр. ");
-//            Oled->showLine3MaxU( Tools->getVoltageMin() );
-            Tools->showUpDn(); // " UP/DN, В-выбор "
-
+        // Индикация помощи
+        Display->getTextMode( (char*) "U/D-SET VOLTAGE MIN" );
+        Display->getTextHelp( (char*) "  B-SAVE  C-START  " );
     }
     MState * MSetVoltageMin::fsm()
     {
-        // Выход без сохранения корректируемого параметра
-        if( Keyboard->getKey(MKeyboard::C_LONG_CLICK)) { Tools->shutdownCharge(); return new MStop(Tools); }
+        // // Выход без сохранения корректируемого параметра
+        // if( Keyboard->getKey(MKeyboard::C_LONG_CLICK)) { Tools->shutdownCharge(); return new MStop(Tools); }
 
-        if( Keyboard->getKey(MKeyboard::UP_CLICK))      { Tools->incVoltageMin( 0.1f, false ); return this; }
-        if( Keyboard->getKey(MKeyboard::DN_CLICK))      { Tools->decVoltageMin( 0.1f, false ); return this; }
-        if( Keyboard->getKey(MKeyboard::UP_LONG_CLICK)) { Tools->incVoltageMin( 1.0f, false ); return this; }
-        if( Keyboard->getKey(MKeyboard::DN_LONG_CLICK)) { Tools->decVoltageMin( 1.0f, false ); return this; }
+        // if( Keyboard->getKey(MKeyboard::UP_CLICK))      { Tools->incVoltageMin( 0.1f, false ); return this; }
+        // if( Keyboard->getKey(MKeyboard::DN_CLICK))      
+        // { 
+        //     //Tools->decVoltageMin( 0.1f, false );
+        //     Tools->voltageMin = Tools->dnfVal( Tools->voltageMin, MChConsts::v_l, MChConsts::v_h, 0.1f );
+        //     return this; 
+        // }
+        // if( Keyboard->getKey(MKeyboard::UP_LONG_CLICK)) { Tools->incVoltageMin( 1.0f, false ); return this; }
+        // if( Keyboard->getKey(MKeyboard::DN_LONG_CLICK)) 
+        // {
+        //     //Tools->decVoltageMin( 1.0f, false );
+        //     Tools->voltageMin = Tools->dnfVal( Tools->voltageMin, MChConsts::v_l, MChConsts::v_h, 0.1f );
+        //     return this; 
+        // }
 
-        if( Keyboard->getKey(MKeyboard::B_CLICK))
-        {   // Выбор заносится в энергонезависимую память
-            Tools->writeNvsFloat( "storage", "voltMin", Tools->getVoltageMin() );
-            return new MExecution(Tools);
+        // if( Keyboard->getKey(MKeyboard::B_CLICK))
+        // {   // Выбор заносится в энергонезависимую память
+        //     Tools->writeNvsFloat( "storage", "voltMin", Tools->getVoltageMin() );
+        //     return new MExecution(Tools);
+        // }
+        // return this;
+        switch ( Keyboard->getKey() )
+        {
+            case MKeyboard::C_LONG_CLICK :      // Отказ от продолжения ввода параметров - стоп
+                return new MStop(Tools);
+            case MKeyboard::C_CLICK :           // Отказ от дальнейшего ввода параметров - исполнение
+                return new MExecution(Tools);
+            case MKeyboard::B_CLICK :           // Сохранить и перейти к следующему параметру
+                Tools->saveFloat( MNvs::nStor, MNvs::kStorVmin, Tools->getVoltageMin() ); 
+                return new MExecution(Tools);
+            case MKeyboard::UP_CLICK :
+            case MKeyboard::UP_AUTO_CLICK :
+                Tools->voltageMin = Tools->upfVal( Tools->voltageMin, MChConsts::v_l, MChConsts::v_h, 0.1f );
+                break;
+            case MKeyboard::DN_CLICK :
+            case MKeyboard::DN_AUTO_CLICK :
+                Tools->voltageMin = Tools->dnfVal( Tools->voltageMin, MChConsts::v_l, MChConsts::v_h, 0.1f );
+                break;
+            default:;
         }
+        // Индикация ввода
+        Display->voltage( Tools->getVoltageMin(), 1 );
+        Display->current( Board->getRealCurrent(), 1 );
         return this;
     };
 

@@ -46,6 +46,13 @@ namespace MNvs
 
     static constexpr const char* nRecBat         = "recovery"; // Восстановление
 
+    static constexpr const char* nStor           = "storage";  // Хранение
+        static constexpr const char* kStorVmax       = "voltMax";
+        static constexpr const char* kStorVmin       = "voltMin";
+        static constexpr const char* kStorImax       = "currMax";
+        static constexpr const char* kStorImin       = "currMin";
+
+
     static constexpr const char* nServBat        = "service";  // Сервис батареи
 
 

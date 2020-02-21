@@ -33,7 +33,7 @@ namespace MPins
     constexpr uint8_t neg_pin       = 22; // in         NEGIN       Порт обратной полярности (Ц)
     constexpr uint8_t pow_good_pin  = 36; // in(SVP)    PG_U        Порт наличия сетевого питания 
    
-    // HSPI для дисплея 128*160. Порт IO12(MOSI) не используется
+    // HSPI для дисплея 128*160. Порт IO12(MISO) не используется
     constexpr uint8_t scl_pin       = 14; //            SCLK  
     constexpr uint8_t sda_pin       = 13; //            MOSI
     constexpr uint8_t res_pin       = 19; //            RES         Аппаратный сброс OLED дисплея

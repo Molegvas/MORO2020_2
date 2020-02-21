@@ -84,7 +84,7 @@ namespace CcCvFsm
             case MKeyboard::UP_AUTO_CLICK :
                 Tools->currentMax = Tools->upfVal( Tools->currentMax, MChConsts::i_l, MChConsts::i_h, 0.1f );
                 break;
-            case MKeyboard::DN_CLICK:
+            case MKeyboard::DN_CLICK :
             case MKeyboard::DN_AUTO_CLICK :
                 Tools->currentMax = Tools->dnfVal( Tools->currentMax, MChConsts::i_l, MChConsts::i_h, 0.1f );
                 break;
@@ -120,7 +120,7 @@ namespace CcCvFsm
             case MKeyboard::UP_AUTO_CLICK :
                 Tools->voltageMax = Tools->upfVal( Tools->voltageMax, MChConsts::v_l, MChConsts::v_h, 0.1f );
                 break;
-            case MKeyboard::DN_CLICK:
+            case MKeyboard::DN_CLICK :
             case MKeyboard::DN_AUTO_CLICK :
                 Tools->voltageMax = Tools->dnfVal( Tools->voltageMax, MChConsts::v_l, MChConsts::v_h, 0.1f );
                 break;
@@ -153,17 +153,24 @@ namespace CcCvFsm
                 return new MSetVoltageMin(Tools);
 
             case MKeyboard::UP_CLICK :
-                Tools->incCurrentMin( 0.1f, false );     // По кольцу? - Нет
+            case MKeyboard::UP_AUTO_CLICK :
+
+                //Tools->incCurrentMin( 0.1f, false );     // По кольцу? - Нет
+                Tools->currentMin = Tools->upfVal( Tools->currentMin, MChConsts::i_l, MChConsts::i_h, 0.1f );
+
                 break;
-            case MKeyboard::DN_CLICK:
-                Tools->decCurrentMin( 0.1f, false );
+            case MKeyboard::DN_CLICK :
+            case MKeyboard::DN_AUTO_CLICK :
+                //Tools->decCurrentMin( 0.1f, false );
+                Tools->currentMin = Tools->dnfVal( Tools->currentMin, MChConsts::i_l, MChConsts::i_h, 0.1f );
+
                 break;
-            case MKeyboard::UP_AUTO_CLICK:
-                Tools->incCurrentMin( 0.1f, false );
-                break;
-            case MKeyboard::DN_AUTO_CLICK:
-                Tools->decCurrentMin( 0.1f, false );
-                break;
+            // case MKeyboard::UP_AUTO_CLICK:
+            //     Tools->incCurrentMin( 0.1f, false );
+            //     break;
+            // case MKeyboard::DN_AUTO_CLICK:
+            //     Tools->decCurrentMin( 0.1f, false );
+            //     break;
             default:;
         }
         // Индикация ввода
@@ -184,32 +191,26 @@ namespace CcCvFsm
     {
         switch ( Keyboard->getKey() )
         {
-            case MKeyboard::C_LONG_CLICK :               // Отказ от продолжения ввода параметров - стоп
+            case MKeyboard::C_LONG_CLICK :      // Отказ от продолжения ввода параметров - стоп
                 return new MStop(Tools);
-            case MKeyboard::C_CLICK :                    // Отказ от дальнейшего ввода параметров - исполнение
+            case MKeyboard::C_CLICK :           // Отказ от дальнейшего ввода параметров - исполнение
                 return new MPostpone(Tools);
-            case MKeyboard::B_CLICK :                    // Сохранить и перейти к следующему параметру
+            case MKeyboard::B_CLICK :           // Сохранить и перейти к следующему параметру
                 Tools->saveFloat( MNvs::nCcCv, MNvs::kCcCvVmin, Tools->getVoltageMin() ); 
                 return new MPostpone(Tools);
-
             case MKeyboard::UP_CLICK :
-                Tools->incVoltageMin( 0.1f, false );     // По кольцу? - Нет
+            case MKeyboard::UP_AUTO_CLICK :
+                Tools->voltageMin = Tools->upfVal( Tools->voltageMin, MChConsts::v_l, MChConsts::v_h, 0.1f );
                 break;
-            case MKeyboard::DN_CLICK:
-                Tools->decVoltageMin( 0.1f, false );
-                break;
-            case MKeyboard::UP_AUTO_CLICK:
-                Tools->incVoltageMin( 0.1f, false );
-                break;
-            case MKeyboard::DN_AUTO_CLICK:
-                Tools->decVoltageMin( 0.1f, false );
+            case MKeyboard::DN_CLICK :
+            case MKeyboard::DN_AUTO_CLICK :
+                Tools->voltageMin = Tools->dnfVal( Tools->voltageMin, MChConsts::v_l, MChConsts::v_h, 0.1f );
                 break;
             default:;
         }
         // Индикация ввода
         Display->voltage( Tools->getVoltageMin(), 1 );
         Display->current( Board->getRealCurrent(), 1 );
-
         return this;
     };
 // ************************************************************************************** OLD
